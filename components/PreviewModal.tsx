@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Prism from "prismjs";
 import "prismjs/components/prism-cshtml";
 
@@ -28,6 +28,9 @@ export function PreviewModal({
 
   return (
     <div
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       className="bg-white rounded-lg shadow-xl flex flex-col"
       style={{
         width: "calc(100% - 64px)",
