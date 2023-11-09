@@ -84,7 +84,7 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
           const json = await resp.json();
 
           if (json.error) {
-            alert("Error from open ai: " + json.error);
+            alert("Error from open ai: " + JSON.stringify(json.error));
             return;
           }
 
