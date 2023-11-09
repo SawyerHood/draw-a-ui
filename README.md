@@ -18,4 +18,14 @@ npm install
 npm run dev
 ```
 
+## Docker
+
+To run this app as a docker container do the following:
+
+```bash
+echo "OPENAI_API_KEY=sk-your-key" > .env.local
+docker build -t draw-a-ui:latest .
+docker run --env-file .env.local -p 3000 -d --name draw-ai draw-a-ui:latest
+```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
