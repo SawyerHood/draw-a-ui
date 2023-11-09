@@ -82,6 +82,12 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
           });
 
           const json = await resp.json();
+
+          if (json.error) {
+            alert(json.error.message);
+            return;
+          }
+
           const message = json.choices[0].message.content;
           const start = message.indexOf("<!DOCTYPE html>");
           const end = message.indexOf("</html>");
