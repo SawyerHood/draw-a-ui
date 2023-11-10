@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/canvas-size": "^1.2.1",
     "@types/node": "^20",
+    "@types/prismjs": "^1.26.3",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
