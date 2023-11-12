@@ -12,8 +12,11 @@ This works by just taking the current canvas SVG, converting it to a PNG, and se
 
 This is a Next.js app. To get started run the following commands in the root directory of the project. You will need an OpenAI API key with access to the GPT-4 Vision API.
 
+> **Note**: The command `npm i node@lts` is intended for users with an older version of Node.js. If you're already running a recent LTS version of Node.js, you can skip this step.
+
 ```bash
 echo "OPENAI_API_KEY=sk-your-key" > .env.local
+npm i node@lts
 npm install
 npm run dev
 ```
