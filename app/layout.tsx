@@ -17,6 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+      <title>
+        draw-a-ui ::  Generate HTML based on a wireframe
+      </title>
+      <meta name="description" content="This is an app that uses tldraw and the gpt-4-vision api to generate html based on a wireframe you draw." />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, viewport-fit=cover"
