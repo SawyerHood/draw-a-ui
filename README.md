@@ -19,3 +19,14 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Self Host
+
+Deploy on Zeabur with one click.
+
+- Click on the button below.
+- Select a region and input you OpenAI API key.
+
+[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/FN3ACJ)
+
+<img width="1451" alt="image" src="https://github.com/MichaelYuhe/draw-a-ui/assets/63531512/7472f61e-ce31-4fb5-9b6d-f54869d3eb7a">
