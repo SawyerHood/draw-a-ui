@@ -54,15 +54,39 @@ export default function Home() {
 function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
   const editor = useEditor();
   const [loading, setLoading] = useState(false);
+  const [freshHtml, setFreshHtml] = useState(false);
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   // A tailwind styled button that is pinned to the bottom right of the screen
   return (<>
-    <textarea placeholder="Write any additional instruction need to give to your UI developer assistant"
-    className="fixed bottom-8 right-4 bg-white-500 hover:bg-grey-700 text-black font-bold p-4 w-96 h-1/4 border-dotted border-2 border-blue-500 rounded ="
-    style={{ zIndex: 1000 }}
-    value={additionalInstructions}
-    onChange={(e) => setAdditionalInstructions(e.target.value)}
-     />
+    <textarea
+      placeholder="Write any additional instruction to your UI developer assistant. More instructions makes the task more clear..."
+      className="fixed bottom-8 right-4 bg-white-500 hover:bg-grey-700 text-black font-bold p-4 w-96 h-1/4 border-dotted border-2 border-blue-500 rounded"
+      style={{ zIndex: 1000 }}
+      value={additionalInstructions}
+      onChange={(e) => setAdditionalInstructions(e.target.value)}
+    />
+
+    <div className="fixed bottom-4 right-4 bg-slate-200 text-black font-bold py-0 px-4 rounded-lg shadow-inner"
+      style={{ zIndex: 1000, width: '24rem', padding: '5px', boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
+      <div className="flex flex-col items-start space-y-1">
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="freshHtmlCheckbox"
+            className="custom-checkbox"
+            checked={freshHtml}
+            onChange={(e) => {
+              setFreshHtml(e.target.checked ? true : false);
+            }}
+          />
+          <label htmlFor="freshHtmlCheckbox" className="ml-2 text-xs">Recreate Html</label>
+        </div>
+        <span className="text-xs text-gray-600">
+          Clear the current version and get a fresh Html
+        </span>
+      </div>
+    </div>
+
     <button
       onClick={async (e) => {
         setLoading(true);
@@ -87,7 +111,7 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
             },
             body: JSON.stringify({
               image: dataUrl,
-              currentHtml: window.localStorage.getItem("currentHtml"),
+              currentHtml: freshHtml ? '' : window.localStorage.getItem("currentHtml"),
               additionalInstructions
             }),
           });
@@ -99,6 +123,8 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
             return;
           }
 
+          setAdditionalInstructions("");
+          setFreshHtml(false);
           const message = json.choices[0].message.content;
           const start = message.indexOf("<!DOCTYPE html>");
           const end = message.indexOf("</html>");
@@ -113,12 +139,12 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
     >
       {loading ? (
         <div className="flex justify-center items-center ">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
         </div>
       ) : (
         "Make Real"
       )}
     </button>
-    </>
+  </>
   );
 }
