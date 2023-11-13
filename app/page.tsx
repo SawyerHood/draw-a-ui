@@ -54,8 +54,15 @@ export default function Home() {
 function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
   const editor = useEditor();
   const [loading, setLoading] = useState(false);
+  const [additionalInstructions, setAdditionalInstructions] = useState("");
   // A tailwind styled button that is pinned to the bottom right of the screen
-  return (
+  return (<>
+    <textarea placeholder="Write any additional instruction need to give to your UI developer assistant"
+    className="fixed bottom-8 right-4 bg-white-500 hover:bg-grey-700 text-black font-bold p-4 w-96 h-1/4 border-dotted border-2 border-blue-500 rounded ="
+    style={{ zIndex: 1000 }}
+    value={additionalInstructions}
+    onChange={(e) => setAdditionalInstructions(e.target.value)}
+     />
     <button
       onClick={async (e) => {
         setLoading(true);
@@ -81,6 +88,7 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
             body: JSON.stringify({
               image: dataUrl,
               currentHtml: window.localStorage.getItem("currentHtml"),
+              additionalInstructions
             }),
           });
 
@@ -111,5 +119,6 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
         "Make Real"
       )}
     </button>
+    </>
   );
 }
