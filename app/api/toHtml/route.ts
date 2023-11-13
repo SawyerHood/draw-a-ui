@@ -1,7 +1,7 @@
 const systemPrompt = `You are an expert tailwind developer. A user will provide you with a
  low-fidelity wireframe of an application and you will return 
- a single html file that uses tailwind to create the website. Use creative license to make the application more fleshed out.
-if you need to insert an image, use placehold.co to create a placeholder image. Respond only with the html file.`;
+ a single html file that uses tailwind to create the website. The wireframe may include designs for different screen sizes. Make your website responsive, so that it accurately represents the different designs at different breakpoints. Use creative license to make the application more fleshed out.
+if you need to insert an image, use a colored fill rectangle as a placeholder. Respond only with the html file.`;
 
 export async function POST(request: Request) {
   const { image } = await request.json();
