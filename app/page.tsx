@@ -78,7 +78,10 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ image: dataUrl }),
+            body: JSON.stringify({
+              image: dataUrl,
+              currentHtml: window.localStorage.getItem("currentHtml"),
+            }),
           });
 
           const json = await resp.json();

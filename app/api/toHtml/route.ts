@@ -4,7 +4,7 @@ const systemPrompt = `You are an expert tailwind developer. A user will provide 
 if you need to insert an image, use placehold.co to create a placeholder image. Respond only with the html file.`;
 
 export async function POST(request: Request) {
-  const { image } = await request.json();
+  const { image, currentHtml } = await request.json();
   const body: GPT4VCompletionRequest = {
     model: "gpt-4-vision-preview",
     max_tokens: 4096,
@@ -15,7 +15,15 @@ export async function POST(request: Request) {
       },
       {
         role: "user",
-        content: [
+        content: currentHtml?  [
+          {
+            type: "image_url",
+            image_url: image,
+          },
+          `Update this html content, based on the updated image given. 
+          Don't make drastic changes from the given html, based on the image. 
+          And do not change anything arbitrarily if not changed in the given image explicitly. Current HTML: ${currentHtml}`
+        ] : [
           {
             type: "image_url",
             image_url: image,
@@ -32,7 +40,7 @@ export async function POST(request: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer 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`,
       },
       body: JSON.stringify(body),
     });

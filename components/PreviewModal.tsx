@@ -26,6 +26,8 @@ export function PreviewModal({
     return null;
   }
 
+  window?.localStorage.setItem("currentHtml", html);
+
   return (
     <div
       onClick={(e) => {
