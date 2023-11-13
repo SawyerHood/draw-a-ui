@@ -19,3 +19,12 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
+## Configure the OpenAI Proxy
+
+You can specify a proxy for OpenAI.com for the app by executing the following command:
+
+```bash
+echo "OPENAI_PROXY=https://proxy.example.com/v1" > .env.local
+```
