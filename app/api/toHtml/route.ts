@@ -1,13 +1,18 @@
 const systemPrompt = `You are an expert tailwind developer. A user will provide you with a
  low-fidelity wireframe of an application and you will return 
- a single html file that uses tailwind to create the website. Use creative license to make the application more fleshed out.
-if you need to insert an image, use placehold.co to create a placeholder image. Respond only with the html file.`;
+ a single html file that uses tailwind to create the website.
+ They may also provide you with the html of a previous design that they want you to iterate from.
+ Carry out any changes they request from you.
+ In the wireframe, the previous design's html will appear as a white rectangle.
+ Use creative license to make the application more fleshed out.
+if you need to insert an image, use a colored fill rectangle as a placeholder. Respond only with the html file.`;
 
 export async function POST(request: Request) {
-  const { image } = await request.json();
+  const { image, html } = await request.json();
   const body: GPT4VCompletionRequest = {
     model: "gpt-4-vision-preview",
     max_tokens: 4096,
+    temperature: 0,
     messages: [
       {
         role: "system",
@@ -18,9 +23,19 @@ export async function POST(request: Request) {
         content: [
           {
             type: "image_url",
-            image_url: image,
+            image_url: {
+              url: image,
+              detail: "high",
+            },
           },
-          "Turn this into a single html file using tailwind.",
+          {
+            type: "text",
+            text: "Turn this into a single html file using tailwind.",
+          },
+          {
+            type: "text",
+            text: html,
+          },
         ],
       },
     ],
@@ -50,7 +65,22 @@ export async function POST(request: Request) {
 
 type MessageContent =
   | string
-  | (string | { type: "image_url"; image_url: string })[];
+  | (
+      | string
+      | {
+          type: "image_url";
+          image_url:
+            | string
+            | {
+                url: string;
+                detail: "low" | "high" | "auto";
+              };
+        }
+      | {
+          type: "text";
+          text: string;
+        }
+    )[];
 
 export type GPT4VCompletionRequest = {
   model: "gpt-4-vision-preview";
