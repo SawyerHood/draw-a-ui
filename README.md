@@ -1,4 +1,8 @@
-> This is a fork of Sawyer Hood's [draw a ui](https://github.com/SawyerHood/draw-a-ui). Check out some of our changes in the [embed](https://github.com/tldraw/draw-a-ui/tree/lu/embed) branch.
+> This is a fork of Sawyer Hood's [draw a ui](https://github.com/SawyerHood/draw-a-ui).
+> - It changes the preview to an embedded shape that appears on the canvas.
+> - Only selected shapes are used when generating a website.
+> - One embedded preview can be given back to GPT, with annotations.
+> - Some other tweaks.
 
 # draw-a-ui
 
