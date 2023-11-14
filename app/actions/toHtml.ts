@@ -1,3 +1,5 @@
+"use server";
+
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -9,11 +11,15 @@ const systemPrompt = `You are an expert tailwind developer. A user will provide 
  a single html file that uses tailwind to create the website. Use creative license to make the application more fleshed out.
 if you need to insert an image, use placehold.co to create a placeholder image. Respond only with the html file.`;
 
-export async function POST(request: Request) {
-  const { image } = await request.json();
-
+export async function toHtml(imageUrl: string) {
   try {
-    const response = await openai.chat.completions.create({
+    const {
+      choices: [
+        {
+          message: { content },
+        },
+      ],
+    } = await openai.chat.completions.create({
       model: "gpt-4-vision-preview",
       max_tokens: 4096,
       messages: [
@@ -26,7 +32,7 @@ export async function POST(request: Request) {
           content: [
             {
               type: "image_url",
-              image_url: image,
+              image_url: { url: imageUrl },
             },
             {
               type: "text",
@@ -36,12 +42,13 @@ export async function POST(request: Request) {
         },
       ],
     });
-    return new Response(JSON.stringify(response), {
-      headers: {
-        "content-type": "application/json; charset=UTF-8",
-      },
-    });
+    if (!content) throw new Error("No content returned from OpenAI");
+    const start = content.indexOf("<!DOCTYPE html>");
+    const end = content.indexOf("</html>");
+    const html = content.slice(start, end + "</html>".length);
+    return html;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
