@@ -12,9 +12,11 @@ import {
   ShapeUtil,
   TLBaseShape,
   TLEmbedShape,
+  TLImageShape,
   TLShapeUtilFlag,
   toDomPrecision,
   useEditor,
+  useExportAs,
   useIsEditing,
 } from "@tldraw/tldraw";
 import { getSvgAsImage } from "@/lib/getSvgAsImage";
@@ -22,6 +24,7 @@ import { blobToBase64 } from "@/lib/blobToBase64";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { PreviewModal } from "@/components/PreviewModal";
+import { format } from "path";
 
 type PreviewShapeType = TLBaseShape<
   "preview",
@@ -117,6 +120,7 @@ export default function Home() {
 function ExportButton(/*{ setHtml }: { setHtml: (html: string) => void }*/) {
   const editor = useEditor();
   const [loading, setLoading] = useState(false);
+  const exportAs = useExportAs();
   // A tailwind styled button that is pinned to the bottom right of the screen
   return (
     <button
@@ -124,10 +128,40 @@ function ExportButton(/*{ setHtml }: { setHtml: (html: string) => void }*/) {
         setLoading(true);
         try {
           e.preventDefault();
+
+          const previewPosition = editor.selectedShapes.reduce(
+            (acc, shape) => {
+              const bounds = editor.getShapePageBounds(shape);
+              const right = bounds?.maxX ?? 0;
+              const top = bounds?.minY ?? 0;
+              return {
+                x: Math.max(acc.x, right),
+                y: Math.min(acc.y, top),
+              };
+            },
+            { x: 0, y: Infinity }
+          );
+
+          const previousPreviews = editor.selectedShapes.filter((shape) => {
+            return shape.type === "preview";
+          }) as PreviewShapeType[];
+
+          if (previousPreviews.length > 1) {
+            throw new Error(
+              "You can only give the developer one previous design to work with."
+            );
+          }
+
+          const previousHtml =
+            previousPreviews.length === 1
+              ? previousPreviews[0].props.html
+              : "No previous design has been provided this time.";
+
           const svg = await editor.getSvg(editor.selectedShapeIds);
           if (!svg) {
             return;
           }
+
           const png = await getSvgAsImage(svg, {
             type: "png",
             quality: 1,
@@ -139,7 +173,10 @@ function ExportButton(/*{ setHtml }: { setHtml: (html: string) => void }*/) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ image: dataUrl }),
+            body: JSON.stringify({
+              image: dataUrl,
+              html: previousHtml,
+            }),
           });
 
           const json = await resp.json();
@@ -154,12 +191,10 @@ function ExportButton(/*{ setHtml }: { setHtml: (html: string) => void }*/) {
           const end = message.indexOf("</html>");
           const html = message.slice(start, end + "</html>".length);
 
-          const position = editor.inputs.currentPagePoint;
-
           editor.createShape<PreviewShapeType>({
             type: "preview",
-            x: position.x,
-            y: position.y,
+            x: previewPosition.x,
+            y: previewPosition.y,
             props: { html },
           });
 
