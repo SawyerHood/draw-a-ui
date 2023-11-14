@@ -1,6 +1,6 @@
 const systemPrompt = `You are an expert tailwind developer. A user will provide you with a
  low-fidelity wireframe of an application and you will return 
- a single html file that uses tailwind to create the website. The wireframe may include designs for different screen sizes. Make your website responsive, so that it accurately represents the different designs at different breakpoints. Use creative license to make the application more fleshed out.
+ a single html file that uses tailwind to create the website. Use creative license to make the application more fleshed out.
 if you need to insert an image, use a colored fill rectangle as a placeholder. Respond only with the html file.`;
 
 export async function POST(request: Request) {
@@ -8,6 +8,7 @@ export async function POST(request: Request) {
   const body: GPT4VCompletionRequest = {
     model: "gpt-4-vision-preview",
     max_tokens: 4096,
+    temperature: 0,
     messages: [
       {
         role: "system",
@@ -20,7 +21,7 @@ export async function POST(request: Request) {
             type: "image_url",
             image_url: image,
           },
-          "Turn this into a single html file using tailwind.",
+          `Turn this into a single html file using tailwind.`,
         ],
       },
     ],
