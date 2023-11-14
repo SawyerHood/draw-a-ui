@@ -1,6 +1,7 @@
-> This is a fork of Sawyer Hood's [draw a ui](https://github.com/SawyerHood/draw-a-ui).
-> - It changes the preview to an embedded shape that appears on the canvas.
-> - Only selected shapes are used when generating a website.
+> This is an experimental fork of Sawyer Hood's [draw a ui](https://github.com/SawyerHood/draw-a-ui).
+> Hopefully some of these changes can make it upstream!
+> - Changes the preview to an embedded shape that appears on the canvas.
+> - Only selected shapes are used when generating html.
 > - One embedded preview can be given back to GPT, with annotations.
 > - Some other tweaks.
 
