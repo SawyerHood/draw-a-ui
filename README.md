@@ -8,7 +8,7 @@ This works by just taking the current canvas SVG, converting it to a PNG, and se
 
 > Disclaimer: This is a demo and is not intended for production use. It doesn't have any auth so you will go broke if you deploy it.
 
-## Getting Started
+## Getting Startedf
 
 This is a Next.js app. To get started run the following commands in the root directory of the project. You will need an OpenAI API key with access to the GPT-4 Vision API.
 
