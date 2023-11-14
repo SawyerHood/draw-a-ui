@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       },
       {
         role: "user",
-        content: currentHtml?  [
+        content: currentHtml ? [
           {
             type: "image_url",
             image_url: image,
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
           Don't make drastic changes from the given html, based on the image. 
           And do not change anything arbitrarily if not changed in the given image explicitly. Current HTML: ${currentHtml}`,
           additionalInstructions ? `This is the user's additional instructions on how to convert the image to html. 
-          Give EXTRA ATTENTION to this also. User: ${additionalInstructions}`: '',
+          Give EXTRA ATTENTION to this also. User: ${additionalInstructions}` : '',
         ] : [
           {
             type: "image_url",
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer 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`,
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify(body),
     });
@@ -80,9 +80,9 @@ export type GPT4VCompletionRequest = {
   frequency_penalty?: number | undefined;
   presence_penalty?: number | undefined;
   logit_bias?:
-    | {
-        [x: string]: number;
-      }
-    | undefined;
+  | {
+    [x: string]: number;
+  }
+  | undefined;
   stop?: (string[] | string) | undefined;
 };
