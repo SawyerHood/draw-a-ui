@@ -1,3 +1,5 @@
+> This is a fork of Sawyer Hood's [draw a ui](https://github.com/SawyerHood/draw-a-ui). Check out some of our changes in the [embed](https://github.com/tldraw/draw-a-ui/tree/lu/embed) branch.
+
 # draw-a-ui
 
 This is an app that uses tldraw and the gpt-4-vision api to generate html based on a wireframe you draw.
