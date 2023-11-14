@@ -17,7 +17,7 @@ This is a Next.js app. To get started run the following commands in the root dir
 ```bash
 echo "OPENAI_API_KEY=sk-your-key" > .env.local
 npm install
-npm run dev
+npm run devы
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
