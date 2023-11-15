@@ -8,6 +8,7 @@ import { blobToBase64 } from "@/lib/blobToBase64";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { PreviewModal } from "@/components/PreviewModal";
+import { toHtml } from "./actions/toHtml";
 
 const Tldraw = dynamic(async () => (await import("@tldraw/tldraw")).Tldraw, {
   ssr: false,
@@ -73,26 +74,13 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
             scale: 1,
           });
           const dataUrl = await blobToBase64(png!);
-          const resp = await fetch("/api/toHtml", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ image: dataUrl }),
-          });
-
-          const json = await resp.json();
-
-          if (json.error) {
-            alert("Error from open ai: " + JSON.stringify(json.error));
+          const html = await toHtml(dataUrl);
+          setHtml(html);
+        } catch (e) {
+          if (e instanceof Error) {
+            alert("Error: " + JSON.stringify(e.message));
             return;
           }
-
-          const message = json.choices[0].message.content;
-          const start = message.indexOf("<!DOCTYPE html>");
-          const end = message.indexOf("</html>");
-          const html = message.slice(start, end + "</html>".length);
-          setHtml(html);
         } finally {
           setLoading(false);
         }
