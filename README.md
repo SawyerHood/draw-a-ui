@@ -23,3 +23,35 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Contribution Guidelines
+
+Contribute using `husky` and `lint-staged` for quality commits. Ensure code passes linting (`eslint`, `stylelint`) and tests before committing.
+
+### Husky Setup
+
+To ensure the proper functioning of code commit hooks (like pre-commit), team members should execute the following command after pulling the latest code containing Husky's configuration:
+
+```bash
+npx husky install
+```
+
+### Commit Message Standards
+
+Use `commitlint` for standardized messages. Format: `<type>(<scope>): <summary>`. Types: feat, fix, docs, style, refactor, test, chore.
+
+### Submitting Changes
+
+1. Make changes in your local branch.
+2. `git add` for staging.
+3. `git commit -m '<message>'` (follow standards).
+4. `git push` for pushing changes.
+
+### Standard Pull Request Process
+
+1. **Fork the Repository**: Start by forking the repository to your GitHub account.
+2. **Create a New Branch**: Create a new branch for your changes. Name it appropriately.
+3. **Implement Your Changes**: Make your changes in your branch and commit them.
+4. **Pull Request**: Go to the original repository and click on "Pull Request". Select your branch and describe the changes you've made.
+5. **Review Process**: Wait for the maintainers to review your PR. Be responsive to any comments or requests for changes.
+6. **Merging**: Once your PR is approved, it will be merged into the main branch.

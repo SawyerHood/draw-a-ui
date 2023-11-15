@@ -2,11 +2,15 @@
   "name": "draw-a-ui",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky install",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx}\""
   },
   "dependencies": {
     "@tldraw/tldraw": "2.0.0-alpha.17",
@@ -17,6 +21,8 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.4.1",
+    "@commitlint/config-conventional": "^18.4.0",
     "@types/canvas-size": "^1.2.1",
     "@types/node": "^20",
     "@types/prismjs": "^1.26.3",
@@ -25,7 +31,10 @@
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.1.0",
     "postcss": "^8",
+    "prettier": "^3.1.0",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   },
