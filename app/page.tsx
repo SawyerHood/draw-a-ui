@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-
 'use client'
+import Lockup from './lockup.svg'
 
 import dynamic from 'next/dynamic'
 import '@tldraw/tldraw/tldraw.css'
@@ -18,8 +18,28 @@ export default function Home() {
 	return (
 		<>
 			<div className={`w-screen h-screen`}>
-				<Tldraw persistenceKey="tldraw" shapeUtils={shapeUtils}>
-					<ExportButton />
+				<Tldraw
+					persistenceKey="tldraw"
+					shapeUtils={shapeUtils}
+					shareZone={<ExportButton />}
+				>
+					<a
+						href="https://www.tldraw.dev"
+						style={{
+							pointerEvents: 'all',
+							position: 'fixed',
+							zIndex: 100000,
+							bottom: 0,
+							right: 0,
+						}}
+					>
+						<img
+							className="lockup"
+							src="/lockup.svg"
+							style={{ padding: 8, height: 40 }}
+						/>
+						{/* <img src={lockup} style={{ height: 40, width: 'auto' }} /> */}
+					</a>
 				</Tldraw>
 			</div>
 		</>
