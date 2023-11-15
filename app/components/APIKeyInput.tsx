@@ -5,7 +5,7 @@ export function APIKeyInput() {
 	return (
 		<div
 			className={`your-own-api-key ${
-				breakpoint < 4 ? 'your-own-api-key__mobile' : ''
+				breakpoint < 5 ? 'your-own-api-key__mobile' : ''
 			}`}
 		>
 			<div className="your-own-api-key__inner">

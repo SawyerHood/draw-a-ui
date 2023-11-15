@@ -37,7 +37,7 @@ function LockupLink() {
 	const breakpoint = useBreakpoint()
 	return (
 		<a
-			className={`lockup__link ${breakpoint < 4 ? 'lockup__link__mobile' : ''}`}
+			className={`lockup__link ${breakpoint < 5 ? 'lockup__link__mobile' : ''}`}
 			href="https://www.tldraw.dev"
 		>
 			<img
