@@ -10,10 +10,9 @@ export function APIKeyInput() {
 		>
 			<div className="your-own-api-key__inner">
 				<div>Have your own OpenAI API key?</div>
-				<input
-					id="openai_key_risky_but_cool"
-					placeholder="Your OpenAI API key (risky but cool)"
-				/>
+				<div className="input__wrapper">
+					<input id="openai_key_risky_but_cool" />
+				</div>
 			</div>
 		</div>
 	)
