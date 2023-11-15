@@ -14,7 +14,7 @@ Use JavaScript modules and unkpkg to import any necessary dependencies.
 Respond ONLY with the contents of the html file.`
 
 export async function POST(request: Request) {
-	const { image, html } = await request.json()
+	const { image, html, apiKey } = await request.json()
 	const body: GPT4VCompletionRequest = {
 		model: 'gpt-4-vision-preview',
 		max_tokens: 4096,
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+				Authorization: `Bearer ${apiKey ?? process.env.OPENAI_API_KEY}`,
 			},
 			body: JSON.stringify(body),
 		})

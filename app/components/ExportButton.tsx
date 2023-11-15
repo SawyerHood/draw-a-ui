@@ -83,6 +83,12 @@ export function ExportButton() {
 						body: JSON.stringify({
 							image: dataUrl,
 							html: previousHtml,
+							apiKey:
+								(
+									document.getElementById(
+										'openai_key_risky_but_cool'
+									) as HTMLInputElement
+								)?.value ?? null,
 						}),
 					})
 
