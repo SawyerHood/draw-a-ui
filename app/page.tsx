@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { PreviewShapeUtil } from './PreviewShape/PreviewShape'
 import { ExportButton } from './components/ExportButton'
 import { useDialogs, useEditor } from '@tldraw/tldraw'
-import { APIKeyInput } from './components/APIKeyInput'
+import { APIKeyInput, APIKeyInput } from './components/APIKeyInput'
 
 const Tldraw = dynamic(async () => (await import('@tldraw/tldraw')).Tldraw, {
 	ssr: false,
@@ -42,28 +42,9 @@ export default function Home() {
 						/>
 						{/* <img src={lockup} style={{ height: 40, width: 'auto' }} /> */}
 					</a>
-					<DialogWarning />
 					<APIKeyInput />
 				</Tldraw>
 			</div>
 		</>
 	)
-}
-
-function DialogWarning() {
-	const [state, setState] = useState(
-		() => localStorage.getItem('dialog_warning') ?? false
-	)
-
-	useEffect(() => {
-		if (!state) {
-			alert(
-				'This is almost certainly not going to work due to rate limits on OpenAI keys. But it normally really does work! Sorry!'
-			)
-			localStorage.setItem('dialog_warning', 'true')
-			setState(false)
-		}
-	}, [state])
-
-	return null
 }
