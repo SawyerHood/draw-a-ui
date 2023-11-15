@@ -1,41 +1,22 @@
-import { Input } from '@tldraw/tldraw'
+import { Input, useBreakpoint } from '@tldraw/tldraw'
 
 export function APIKeyInput() {
+	const breakpoint = useBreakpoint()
 	return (
 		<div
-			style={{
-				position: 'absolute',
-				bottom: 100,
-				width: '100%',
-				height: 50,
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				zIndex: 99999,
-			}}
+			className={`your-own-api-key ${
+				breakpoint < 4 ? 'your-own-api-key__mobile' : ''
+			}`}
 		>
-			<div
-				style={{
-					background: 'var(--color-low)',
-					padding: 12,
-					borderRadius: 12,
-					display: 'flex',
-					gap: 8,
-					flexDirection: 'column',
-				}}
-			>
-				<div>
-					Have your own OpenAI API key? Use it instead. (Risky but cool)
-				</div>
+			<div className="your-own-api-key__inner">
+				<div>Have your own OpenAI API key?</div>
 				<input
 					id="openai_key_risky_but_cool"
-					placeholder="OpenAPI Key"
+					placeholder="Your OpenAI API key (risky but cool)"
 					style={{
 						width: '100%',
-						padding: 12,
 						fontSize: 'inherit',
 						fontFamily: 'inherit',
-						borderRadius: 8,
 					}}
 				/>
 			</div>

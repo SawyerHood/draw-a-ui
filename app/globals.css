@@ -3,9 +3,49 @@
 @tailwind utilities;
 
 .tlui-help-menu {
-  display: none !important;
+	display: none !important;
 }
 
 .tlui-debug-panel {
-  display: none !important;
+	display: none !important;
+}
+
+.tldraw__editor {
+	position: fixed;
+	inset: 0px;
+	overflow: hidden;
+}
+
+.your-own-api-key {
+	position: absolute;
+	bottom: 72px;
+	right: 0px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999999;
+}
+
+.your-own-api-key__inner {
+	display: flex;
+	font-size: 12px;
+	font-family: Inter, sans-serif;
+	flex-direction: column;
+	max-width: 300px;
+	width: 100%;
+	gap: 8px;
+	background-color: var(--color-low);
+	border-radius: 8px;
+	padding: 8px;
+}
+
+.your-own-api-key__mobile {
+	bottom: 108px;
+}
+
+.your-own-api-key input {
+	padding: 6px 12px;
+	border-radius: 4px;
 }
