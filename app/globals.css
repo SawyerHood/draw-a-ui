@@ -49,3 +49,14 @@
 	padding: 6px 12px;
 	border-radius: 4px;
 }
+
+.lockup__link {
+	position: absolute;
+	z-index: 9999999;
+	bottom: 0px;
+	right: 0px;
+}
+
+.lockup__link__mobile {
+	bottom: 60px;
+}
