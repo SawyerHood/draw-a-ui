@@ -101,6 +101,7 @@ export function ExportButton() {
 							title: 'OpenAI API Error',
 							description: `${json.error.message?.slice(0, 100)}...`,
 						})
+						editor.deleteShape(id)
 						return
 					}
 
