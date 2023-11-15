@@ -1,10 +1,16 @@
-import { useEditor, getSvgAsImage } from '@tldraw/tldraw'
+import {
+	useEditor,
+	getSvgAsImage,
+	useToasts,
+	createShapeId,
+} from '@tldraw/tldraw'
 import { useState } from 'react'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 
 export function ExportButton() {
 	const editor = useEditor()
 	const [loading, setLoading] = useState(false)
+	const toast = useToasts()
 
 	// A tailwind styled button that is pinned to the bottom right of the screen
 	return (
@@ -14,7 +20,8 @@ export function ExportButton() {
 				try {
 					e.preventDefault()
 
-					const previewPosition = editor.selectedShapes.reduce(
+					const selectedShapes = editor.getSelectedShapes()
+					const previewPosition = selectedShapes.reduce(
 						(acc, shape) => {
 							const bounds = editor.getShapePageBounds(shape)
 							const right = bounds?.maxX ?? 0
@@ -27,7 +34,7 @@ export function ExportButton() {
 						{ x: 0, y: Infinity }
 					)
 
-					const previousPreviews = editor.selectedShapes.filter((shape) => {
+					const previousPreviews = selectedShapes.filter((shape) => {
 						return shape.type === 'preview'
 					}) as PreviewShape[]
 
@@ -42,7 +49,7 @@ export function ExportButton() {
 							? previousPreviews[0].props.html
 							: 'No previous design has been provided this time.'
 
-					const svg = await editor.getSvg(editor.selectedShapeIds)
+					const svg = await editor.getSvg(selectedShapes)
 					if (!svg) {
 						return
 					}
@@ -57,10 +64,15 @@ export function ExportButton() {
 						scale: 1,
 					})
 
-					const dataUrl = await new Promise((resolve, _) => {
-						const reader = new FileReader()
-						reader.onloadend = () => resolve(reader.result)
-						reader.readAsDataURL(blob!)
+					const dataUrl = await blobToBase64(blob!)
+
+					const id = createShapeId()
+					editor.createShape<PreviewShape>({
+						id,
+						type: 'preview',
+						x: previewPosition.x,
+						y: previewPosition.y,
+						props: { html: '', source: dataUrl as string },
 					})
 
 					const resp = await fetch('/api/toHtml', {
@@ -77,7 +89,12 @@ export function ExportButton() {
 					const json = await resp.json()
 
 					if (json.error) {
-						alert('Error from open ai: ' + JSON.stringify(json.error))
+						console.error(json)
+						toast.addToast({
+							icon: 'cross-2',
+							title: 'Error',
+							description: `Could not get from OpenAI.`,
+						})
 						return
 					}
 
@@ -86,14 +103,18 @@ export function ExportButton() {
 					const end = message.indexOf('</html>')
 					const html = message.slice(start, end + '</html>'.length)
 
-					editor.createShape<PreviewShape>({
+					editor.updateShape<PreviewShape>({
+						id,
 						type: 'preview',
-						x: previewPosition.x,
-						y: previewPosition.y,
-						props: { html },
+						props: { html, source: dataUrl as string },
 					})
-
-					// setHtml(html);
+				} catch (e: any) {
+					console.error(e)
+					toast.addToast({
+						icon: 'cross-2',
+						title: 'Error',
+						description: `Something went wrong: ${e.message.slice(0, 100)}`,
+					})
 				} finally {
 					setLoading(false)
 				}
@@ -110,4 +131,12 @@ export function ExportButton() {
 			)}
 		</button>
 	)
+}
+
+export function blobToBase64(blob: Blob) {
+	return new Promise((resolve, _) => {
+		const reader = new FileReader()
+		reader.onloadend = () => resolve(reader.result)
+		reader.readAsDataURL(blob)
+	})
 }

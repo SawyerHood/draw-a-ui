@@ -10,12 +10,14 @@ import {
 	Icon,
 	useToasts,
 	stopEventPropagation,
+	DefaultSpinner,
 } from '@tldraw/tldraw'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
 	{
 		html: string
+		source: string
 		w: number
 		h: number
 	}
@@ -26,6 +28,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 	getDefaultProps(): PreviewShape['props'] {
 		return {
 			html: '',
+			source: '',
 			w: (960 * 2) / 3,
 			h: (540 * 2) / 3,
 		}
@@ -41,17 +44,33 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		const toast = useToasts()
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
-				<iframe
-					className="tl-embed"
-					srcDoc={shape.props.html}
-					width={toDomPrecision(shape.props.w)}
-					height={toDomPrecision(shape.props.h)}
-					draggable={false}
-					style={{
-						border: 0,
-						pointerEvents: isEditing ? 'auto' : 'none',
-					}}
-				/>
+				{shape.props.html ? (
+					<iframe
+						className="tl-embed"
+						srcDoc={shape.props.html}
+						width={toDomPrecision(shape.props.w)}
+						height={toDomPrecision(shape.props.h)}
+						draggable={false}
+						style={{
+							border: 0,
+							pointerEvents: isEditing ? 'auto' : 'none',
+						}}
+					/>
+				) : (
+					<div
+						style={{
+							width: '100%',
+							height: '100%',
+							backgroundColor: 'var(--color-muted-2)',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							border: '1px solid var(--color-muted-1)',
+						}}
+					>
+						<DefaultSpinner />
+					</div>
+				)}
 				<div
 					style={{
 						position: 'absolute',

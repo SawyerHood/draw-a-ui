@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tldraw/tldraw": "^2.0.0-canary.81f6fae070ad",
+    "@vercel/analytics": "^1.1.1",
     "canvas-size": "^1.2.6",
     "html2canvas": "^1.4.1",
     "next": "14.0.1",
