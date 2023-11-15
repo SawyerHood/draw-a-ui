@@ -2,6 +2,8 @@
 
 This is an app that uses tldraw and the gpt-4-vision api to generate html based on a wireframe you draw.
 
+> I'm currently working on a hosted version of draw-a-ui. You can join the waitlist at [draw-a-ui.com](https://draw-a-ui.com). The core of it will always be open source and available here.
+
 ![A demo of the app](./demo.gif)
 
 This works by just taking the current canvas SVG, converting it to a PNG, and sending that png to gpt-4-vision with instructions to return a single html file with tailwind.
