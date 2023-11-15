@@ -98,8 +98,8 @@ export function ExportButton() {
 						console.error(json)
 						toast.addToast({
 							icon: 'cross-2',
-							title: 'Error',
-							description: `Could not get from OpenAI.`,
+							title: 'OpenAI API Error',
+							description: `${json.error.message?.slice(0, 100)}...`,
 						})
 						return
 					}
