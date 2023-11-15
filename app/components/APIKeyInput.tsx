@@ -13,11 +13,6 @@ export function APIKeyInput() {
 				<input
 					id="openai_key_risky_but_cool"
 					placeholder="Your OpenAI API key (risky but cool)"
-					style={{
-						width: '100%',
-						fontSize: 'inherit',
-						fontFamily: 'inherit',
-					}}
 				/>
 			</div>
 		</div>

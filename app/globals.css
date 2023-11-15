@@ -44,10 +44,19 @@
 .your-own-api-key__mobile {
 	bottom: 108px;
 }
+.your-own-api-key__mobile input {
+	bottom: 108px;
+	font-size: 16px !important;
+}
 
 .your-own-api-key input {
 	padding: 6px 12px;
 	border-radius: 4px;
+	color: transparent;
+}
+
+.your-own-api-key input:focus {
+	color: var(--color-text-0);
 }
 
 .lockup__link {
