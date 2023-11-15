@@ -664,16 +664,16 @@
   dependencies:
     tslib "^2.4.0"
 
-"@tldraw/editor@2.0.0-canary.c4564dc2bea2":
-  version "2.0.0-canary.c4564dc2bea2"
-  resolved "https://registry.yarnpkg.com/@tldraw/editor/-/editor-2.0.0-canary.c4564dc2bea2.tgz#0600299934bb5745b1b1f89b848a571ccdc8d245"
-  integrity sha512-8cjkz6FpTawpm84AArJO6VRiPszCinGqcIxw8x6dwBKVO2Gt0or8oto4jMar7CNRAP9emUDzUl3KuaeBPyab8w==
+"@tldraw/editor@2.0.0-canary.81f6fae070ad":
+  version "2.0.0-canary.81f6fae070ad"
+  resolved "https://registry.yarnpkg.com/@tldraw/editor/-/editor-2.0.0-canary.81f6fae070ad.tgz#4b4ebc899d9ed02e24f7a15059adb69ae669bd40"
+  integrity sha512-TTfckOh34EaqtjewGlILMgnKVDrKqX/tGk8ZBwDgER+X1SvIHQJ4zR3exZqzFDC98mvKMd4jmFSZ1HunHFCraQ==
   dependencies:
-    "@tldraw/state" "2.0.0-canary.c4564dc2bea2"
-    "@tldraw/store" "2.0.0-canary.c4564dc2bea2"
-    "@tldraw/tlschema" "2.0.0-canary.c4564dc2bea2"
-    "@tldraw/utils" "2.0.0-canary.c4564dc2bea2"
-    "@tldraw/validate" "2.0.0-canary.c4564dc2bea2"
+    "@tldraw/state" "2.0.0-canary.81f6fae070ad"
+    "@tldraw/store" "2.0.0-canary.81f6fae070ad"
+    "@tldraw/tlschema" "2.0.0-canary.81f6fae070ad"
+    "@tldraw/utils" "2.0.0-canary.81f6fae070ad"
+    "@tldraw/validate" "2.0.0-canary.81f6fae070ad"
     "@types/core-js" "^2.5.5"
     "@use-gesture/react" "^10.2.27"
     classnames "^2.3.2"
@@ -685,25 +685,25 @@
     lodash.uniq "^4.5.0"
     nanoid "4.0.2"
 
-"@tldraw/state@2.0.0-canary.c4564dc2bea2":
-  version "2.0.0-canary.c4564dc2bea2"
-  resolved "https://registry.yarnpkg.com/@tldraw/state/-/state-2.0.0-canary.c4564dc2bea2.tgz#13e633c65365e07bd6e5ca04e1b83baec0644b11"
-  integrity sha512-Bo86dqDifpGkQqCTdKNS3wmSHaXfp7hMmKcdb7EKtY9oN2pSkR8MR8/nJlC61PyCrGqp9vdwEZaP3DyvhxNHng==
+"@tldraw/state@2.0.0-canary.81f6fae070ad":
+  version "2.0.0-canary.81f6fae070ad"
+  resolved "https://registry.yarnpkg.com/@tldraw/state/-/state-2.0.0-canary.81f6fae070ad.tgz#b7508649da033848b103267b589cc01e42a855e4"
+  integrity sha512-fbEbDqPS32jpbgwXx31nXDfP7fkB/p7OzR4Msf5GzoZSRIIJ5td8AlBtDAbnJjspJzDtNAxgjNZynAiBq6wAUw==
 
-"@tldraw/store@2.0.0-canary.c4564dc2bea2":
-  version "2.0.0-canary.c4564dc2bea2"
-  resolved "https://registry.yarnpkg.com/@tldraw/store/-/store-2.0.0-canary.c4564dc2bea2.tgz#2ba1868f756c75035d678d032a0f1e3f655e770b"
-  integrity sha512-W/p6iLofMqTWUQT8q1M4D09+Htlz5Rzs9oTkmEJKiEDB96nt7SrjBkpLL4dQNm1XvCZhg/9OCo5+fmIb8GkMdA==
+"@tldraw/store@2.0.0-canary.81f6fae070ad":
+  version "2.0.0-canary.81f6fae070ad"
+  resolved "https://registry.yarnpkg.com/@tldraw/store/-/store-2.0.0-canary.81f6fae070ad.tgz#bda08945cb3610d4c4793251a3da0564fdf0c9a9"
+  integrity sha512-qhJLASCDmDKkRRyaEyYn2Mq6ZBDiybGp9LJOeyFU9L2LtScpoL3yxLvTxE5RceXanVw4JXhGeT/1JKlDOjnZBg==
   dependencies:
-    "@tldraw/state" "2.0.0-canary.c4564dc2bea2"
-    "@tldraw/utils" "2.0.0-canary.c4564dc2bea2"
+    "@tldraw/state" "2.0.0-canary.81f6fae070ad"
+    "@tldraw/utils" "2.0.0-canary.81f6fae070ad"
     lodash.isequal "^4.5.0"
     nanoid "4.0.2"
 
-"@tldraw/tldraw@^2.0.0-canary.c4564dc2bea2":
-  version "2.0.0-canary.c4564dc2bea2"
-  resolved "https://registry.yarnpkg.com/@tldraw/tldraw/-/tldraw-2.0.0-canary.c4564dc2bea2.tgz#efb95eb009d411941f0de266a0e662a901d1cf08"
-  integrity sha512-qBFg+BnwzNAuQw3K/96e3RYXJOiZVk31yVNLIZtD9YAmalnkyt7IbwzF3Ryrc0Wb7X7bazkaEgFuvFF/0PecBw==
+"@tldraw/tldraw@^2.0.0-canary.81f6fae070ad":
+  version "2.0.0-canary.81f6fae070ad"
+  resolved "https://registry.yarnpkg.com/@tldraw/tldraw/-/tldraw-2.0.0-canary.81f6fae070ad.tgz#057c9ac6376cd0f783e468b6c966644f27f5a17a"
+  integrity sha512-qNYJ1xtVgdETShffF5gn8abfiCJ8awvLQMB/zMEzn/DZzz99QhwZR7r5ctrSI9JZbREBIzLqor8+QxMqGhjt8g==
   dependencies:
     "@radix-ui/react-alert-dialog" "^1.0.0"
     "@radix-ui/react-context-menu" "^2.1.5"
@@ -713,35 +713,35 @@
     "@radix-ui/react-select" "^1.2.0"
     "@radix-ui/react-slider" "^1.1.0"
     "@radix-ui/react-toast" "^1.1.1"
-    "@tldraw/editor" "2.0.0-canary.c4564dc2bea2"
+    "@tldraw/editor" "2.0.0-canary.81f6fae070ad"
     canvas-size "^1.2.6"
     classnames "^2.3.2"
     downscale "^1.0.6"
     hotkeys-js "^3.11.2"
     lz-string "^1.4.4"
 
-"@tldraw/tlschema@2.0.0-canary.c4564dc2bea2":
-  version "2.0.0-canary.c4564dc2bea2"
-  resolved "https://registry.yarnpkg.com/@tldraw/tlschema/-/tlschema-2.0.0-canary.c4564dc2bea2.tgz#baf78ab08dd97a0a8fc9db4819fb018d622bfc83"
-  integrity sha512-JMWGK47N62L08JQyARQwSB99Vi1TheSquh9XiBOQu8Xo1l2j9dApqyifkCfGYAX++rKjm0nt3Po/O/pHkEOdLA==
+"@tldraw/tlschema@2.0.0-canary.81f6fae070ad":
+  version "2.0.0-canary.81f6fae070ad"
+  resolved "https://registry.yarnpkg.com/@tldraw/tlschema/-/tlschema-2.0.0-canary.81f6fae070ad.tgz#e6c3bd4da1b1caa906714e930909065e313eadaa"
+  integrity sha512-KGYZkNF6HG+hOUZgakwP0dyJGfh6Kzt9dqLWOWH6u3JaZs+vwvA7XX86fk1h5CufnmXxLp7tqxHZH2/QIuQ8/A==
   dependencies:
-    "@tldraw/state" "2.0.0-canary.c4564dc2bea2"
-    "@tldraw/store" "2.0.0-canary.c4564dc2bea2"
-    "@tldraw/utils" "2.0.0-canary.c4564dc2bea2"
-    "@tldraw/validate" "2.0.0-canary.c4564dc2bea2"
+    "@tldraw/state" "2.0.0-canary.81f6fae070ad"
+    "@tldraw/store" "2.0.0-canary.81f6fae070ad"
+    "@tldraw/utils" "2.0.0-canary.81f6fae070ad"
+    "@tldraw/validate" "2.0.0-canary.81f6fae070ad"
     nanoid "4.0.2"
 
-"@tldraw/utils@2.0.0-canary.c4564dc2bea2":
-  version "2.0.0-canary.c4564dc2bea2"
-  resolved "https://registry.yarnpkg.com/@tldraw/utils/-/utils-2.0.0-canary.c4564dc2bea2.tgz#8690364a895e0d4b78961c77808832e3dc568916"
-  integrity sha512-R07UqJ+tTDD418Z6W7OGy4t8EIx1REbtnNQHJwNoZYvhau+3HNhGchGf9miFU7+88AXP4OSx3K82SfRUkXET6g==
+"@tldraw/utils@2.0.0-canary.81f6fae070ad":
+  version "2.0.0-canary.81f6fae070ad"
+  resolved "https://registry.yarnpkg.com/@tldraw/utils/-/utils-2.0.0-canary.81f6fae070ad.tgz#5d7c03594b8c6005d610b14f85fca4fc18c29812"
+  integrity sha512-JFd/wRZTYPLsiqK7kh9I6rRikWRxGwD0WH7trAa+1Xm2XsPV0QYklmq64U0CXNlspV9CAZ1cKyyQbFQ334oPbQ==
 
-"@tldraw/validate@2.0.0-canary.c4564dc2bea2":
-  version "2.0.0-canary.c4564dc2bea2"
-  resolved "https://registry.yarnpkg.com/@tldraw/validate/-/validate-2.0.0-canary.c4564dc2bea2.tgz#3f176dc091e82fca0425d0453fef3f1c88061fef"
-  integrity sha512-mVyUtavp1OSCmChXXVDeGHjGBz2j4NDb/mwTcY2APui7AGgPm6vmo8saKbWakBNc8r1OBWNvL6sShgpqMvumHQ==
+"@tldraw/validate@2.0.0-canary.81f6fae070ad":
+  version "2.0.0-canary.81f6fae070ad"
+  resolved "https://registry.yarnpkg.com/@tldraw/validate/-/validate-2.0.0-canary.81f6fae070ad.tgz#f65de62eb8d3409b52992c66f4da3788fbe8af7d"
+  integrity sha512-7kQhDiVKyiEeuoG/oyBbGbfzYWM690FpM7zOzqkAcxY4j7VVcThNBnyrtRdY2LlAK5KRGeYNISAuVJ79bf9qhg==
   dependencies:
-    "@tldraw/utils" "2.0.0-canary.c4564dc2bea2"
+    "@tldraw/utils" "2.0.0-canary.81f6fae070ad"
 
 "@types/canvas-size@^1.2.1":
   version "1.2.2"

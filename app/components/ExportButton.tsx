@@ -1,13 +1,11 @@
-import { blobToBase64 } from '@/lib/blobToBase64'
-import { getSvgAsImage } from '@/lib/getSvgAsImage'
-import { useEditor, useExportAs } from '@tldraw/tldraw'
+import { useEditor, getSvgAsImage } from '@tldraw/tldraw'
 import { useState } from 'react'
-import { PreviewShape, PreviewShape } from '../PreviewShape/PreviewShape'
+import { PreviewShape } from '../PreviewShape/PreviewShape'
 
 export function ExportButton() {
 	const editor = useEditor()
 	const [loading, setLoading] = useState(false)
-	const exportAs = useExportAs()
+
 	// A tailwind styled button that is pinned to the bottom right of the screen
 	return (
 		<button
@@ -49,12 +47,22 @@ export function ExportButton() {
 						return
 					}
 
-					const png = await getSvgAsImage(svg, {
+					const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(
+						navigator.userAgent
+					)
+
+					const blob = await getSvgAsImage(svg, IS_SAFARI, {
 						type: 'png',
 						quality: 1,
 						scale: 1,
 					})
-					const dataUrl = await blobToBase64(png!)
+
+					const dataUrl = await new Promise((resolve, _) => {
+						const reader = new FileReader()
+						reader.onloadend = () => resolve(reader.result)
+						reader.readAsDataURL(blob!)
+					})
+
 					const resp = await fetch('/api/toHtml', {
 						method: 'POST',
 						headers: {

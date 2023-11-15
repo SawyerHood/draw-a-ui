@@ -7,6 +7,9 @@ import {
 	toDomPrecision,
 	SvgExportContext,
 	TLFrameShape,
+	Icon,
+	useToasts,
+	stopEventPropagation,
 } from '@tldraw/tldraw'
 
 export type PreviewShape = TLBaseShape<
@@ -35,6 +38,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 
 	override component(shape: PreviewShape) {
 		const isEditing = useIsEditing(shape.id)
+		const toast = useToasts()
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
 				<iframe
@@ -48,21 +52,37 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						pointerEvents: isEditing ? 'auto' : 'none',
 					}}
 				/>
+				<div
+					style={{
+						position: 'absolute',
+						top: 0,
+						right: -40,
+						height: 40,
+						width: 40,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						cursor: 'pointer',
+						pointerEvents: 'all',
+					}}
+					onClick={() => {
+						if (navigator && navigator.clipboard) {
+							navigator.clipboard.writeText(shape.props.html)
+							toast.addToast({
+								icon: 'duplicate',
+								title: 'Copied to clipboard',
+							})
+						}
+					}}
+					onPointerDown={stopEventPropagation}
+				>
+					<Icon icon="duplicate" />
+				</div>
 			</HTMLContainer>
 		)
 	}
 
 	indicator(shape: PreviewShape) {
 		return <rect width={shape.props.w} height={shape.props.h} />
-	}
-
-	override toSvg(shape: TLFrameShape): SVGElement | Promise<SVGElement> {
-		const image = document.createElementNS(
-			'http://www.w3.org/2000/svg',
-			'image'
-		)
-		image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '')
-		image.id = `preview_${shape.id}`
-		return image
 	}
 }
