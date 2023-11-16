@@ -74,7 +74,7 @@ export async function getHtmlFromOpenAI({
 		console.log(e)
 	}
 
-	console.log(json)
+	
 
 	return json
 }
