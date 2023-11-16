@@ -5,15 +5,12 @@ import { getHtmlFromOpenAI } from '../lib/getHtmlFromOpenAI'
 
 export function ExportButton() {
 	const editor = useEditor()
-	const [loading, setLoading] = useState(false)
 	const toast = useToasts()
 
 	// A tailwind styled button that is pinned to the bottom right of the screen
 	return (
 		<button
 			onClick={async (e) => {
-				setLoading(true)
-
 				const newShapeId = createShapeId()
 
 				try {
@@ -122,20 +119,12 @@ export function ExportButton() {
 						description: `Something went wrong: ${e.message.slice(0, 100)}`,
 					})
 					editor.deleteShape(newShapeId)
-				} finally {
-					setLoading(false)
 				}
 			}}
 			className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-2"
 			style={{ cursor: 'pointer', zIndex: 100000, pointerEvents: 'all' }}
 		>
-			{loading ? (
-				<div className="flex justify-center items-center ">
-					<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-				</div>
-			) : (
-				'Make Real'
-			)}
+			Make Real
 		</button>
 	)
 }
