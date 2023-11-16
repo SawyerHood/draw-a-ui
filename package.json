@@ -12,14 +12,11 @@
     "@tldraw/tldraw": "^2.0.0-canary.81f6fae070ad",
     "@vercel/analytics": "^1.1.1",
     "canvas-size": "^1.2.6",
-    "html2canvas": "^1.4.1",
     "next": "14.0.1",
-    "prismjs": "^1.29.0",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
-    "@types/canvas-size": "^1.2.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

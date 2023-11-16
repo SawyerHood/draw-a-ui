@@ -50,6 +50,7 @@
 .your-own-api-key__mobile input {
 	bottom: 108px;
 	font-size: 16px !important;
+	pointer-events: all;
 }
 
 .your-own-api-key input {
@@ -62,7 +63,6 @@
 
 .input__wrapper {
 	position: relative;
-	pointer-events: none;
 }
 
 .input__wrapper:not(:focus-within)::after {
@@ -75,6 +75,9 @@
 	background-color: none;
 	font-size: 12px;
 	font-family: Inter, sans-serif;
+}
+
+.input__wrapper::after {
 	pointer-events: none;
 }
 
