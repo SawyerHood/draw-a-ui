@@ -27,6 +27,7 @@
 	justify-content: center;
 	z-index: 9999999;
 	color: var(--color-text-0);
+	pointer-events: none;
 }
 
 .your-own-api-key__inner {
@@ -40,6 +41,7 @@
 	background-color: var(--color-low);
 	border-radius: 8px;
 	padding: 8px;
+	pointer-events: all;
 }
 
 .your-own-api-key__mobile {
@@ -60,6 +62,7 @@
 
 .input__wrapper {
 	position: relative;
+	pointer-events: none;
 }
 
 .input__wrapper:not(:focus-within)::after {
