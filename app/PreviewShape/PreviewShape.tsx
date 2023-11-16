@@ -5,8 +5,6 @@ import {
 	useIsEditing,
 	HTMLContainer,
 	toDomPrecision,
-	SvgExportContext,
-	TLFrameShape,
 	Icon,
 	useToasts,
 	stopEventPropagation,

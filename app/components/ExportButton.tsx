@@ -1,9 +1,4 @@
-import {
-	useEditor,
-	getSvgAsImage,
-	useToasts,
-	createShapeId,
-} from '@tldraw/tldraw'
+import { useEditor, getSvgAsImage, useToasts, createShapeId } from '@tldraw/tldraw'
 import { useState } from 'react'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 
@@ -21,6 +16,16 @@ export function ExportButton() {
 					e.preventDefault()
 
 					const selectedShapes = editor.getSelectedShapes()
+
+					if (selectedShapes.length === 0) {
+						toast.addToast({
+							title: 'Nothing selected',
+							description: 'First select something to make real.',
+							id: 'nothing_selected: First select something to make real.',
+						})
+						return
+					}
+
 					const previewPosition = selectedShapes.reduce(
 						(acc, shape) => {
 							const bounds = editor.getShapePageBounds(shape)
@@ -39,9 +44,13 @@ export function ExportButton() {
 					}) as PreviewShape[]
 
 					if (previousPreviews.length > 1) {
-						throw new Error(
-							'You can only give the developer one previous design to work with.'
-						)
+						toast.addToast({
+							title: 'Too many previous designs',
+							description:
+								'Currently, you can only give the developer one previous design to work with.',
+							id: 'too_many_previous_designs',
+						})
+						return
 					}
 
 					const previousHtml =
@@ -54,9 +63,7 @@ export function ExportButton() {
 						return
 					}
 
-					const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(
-						navigator.userAgent
-					)
+					const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 
 					const blob = await getSvgAsImage(svg, IS_SAFARI, {
 						type: 'png',
@@ -84,11 +91,8 @@ export function ExportButton() {
 							image: dataUrl,
 							html: previousHtml,
 							apiKey:
-								(
-									document.getElementById(
-										'openai_key_risky_but_cool'
-									) as HTMLInputElement
-								)?.value ?? null,
+								(document.getElementById('openai_key_risky_but_cool') as HTMLInputElement)?.value ??
+								null,
 						}),
 					})
 
