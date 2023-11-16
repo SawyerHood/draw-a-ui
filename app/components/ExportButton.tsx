@@ -77,7 +77,7 @@ export function ExportButton() {
 					editor.createShape<PreviewShape>({
 						id,
 						type: 'preview',
-						x: previewPosition.x,
+						x: previewPosition.x + 60,
 						y: previewPosition.y,
 						props: { html: '', source: dataUrl as string },
 					})
