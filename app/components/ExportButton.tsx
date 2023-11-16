@@ -1,6 +1,7 @@
 import { useEditor, getSvgAsImage, useToasts, createShapeId } from '@tldraw/tldraw'
 import { useState } from 'react'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
+import { getHtmlFromOpenAI } from '../lib/getHtmlFromOpenAI'
 
 export function ExportButton() {
 	const editor = useEditor()
@@ -12,6 +13,9 @@ export function ExportButton() {
 		<button
 			onClick={async (e) => {
 				setLoading(true)
+
+				const newShapeId = createShapeId()
+
 				try {
 					e.preventDefault()
 
@@ -73,30 +77,21 @@ export function ExportButton() {
 
 					const dataUrl = await blobToBase64(blob!)
 
-					const id = createShapeId()
 					editor.createShape<PreviewShape>({
-						id,
+						id: newShapeId,
 						type: 'preview',
 						x: previewPosition.x + 60,
 						y: previewPosition.y,
 						props: { html: '', source: dataUrl as string },
 					})
 
-					const resp = await fetch('/api/toHtml', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({
-							image: dataUrl,
-							html: previousHtml,
-							apiKey:
-								(document.getElementById('openai_key_risky_but_cool') as HTMLInputElement)?.value ??
-								null,
-						}),
+					const json = await getHtmlFromOpenAI({
+						image: dataUrl,
+						html: previousHtml,
+						apiKey:
+							(document.getElementById('openai_key_risky_but_cool') as HTMLInputElement)?.value ??
+							null,
 					})
-
-					const json = await resp.json()
 
 					if (json.error) {
 						console.error(json)
@@ -105,7 +100,7 @@ export function ExportButton() {
 							title: 'OpenAI API Error',
 							description: `${json.error.message?.slice(0, 100)}...`,
 						})
-						editor.deleteShape(id)
+						editor.deleteShape(newShapeId)
 						return
 					}
 
@@ -115,7 +110,7 @@ export function ExportButton() {
 					const html = message.slice(start, end + '</html>'.length)
 
 					editor.updateShape<PreviewShape>({
-						id,
+						id: newShapeId,
 						type: 'preview',
 						props: { html, source: dataUrl as string },
 					})
@@ -126,6 +121,7 @@ export function ExportButton() {
 						title: 'Error',
 						description: `Something went wrong: ${e.message.slice(0, 100)}`,
 					})
+					editor.deleteShape(newShapeId)
 				} finally {
 					setLoading(false)
 				}
@@ -144,10 +140,10 @@ export function ExportButton() {
 	)
 }
 
-export function blobToBase64(blob: Blob) {
+export function blobToBase64(blob: Blob): Promise<string> {
 	return new Promise((resolve, _) => {
 		const reader = new FileReader()
-		reader.onloadend = () => resolve(reader.result)
+		reader.onloadend = () => resolve(reader.result as string)
 		reader.readAsDataURL(blob)
 	})
 }

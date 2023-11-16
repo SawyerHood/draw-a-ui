@@ -13,8 +13,15 @@ Use JavaScript modules and unkpkg to import any necessary dependencies.
 
 Respond ONLY with the contents of the html file.`
 
-export async function POST(request: Request) {
-	const { image, html, apiKey } = await request.json()
+export async function getHtmlFromOpenAI({
+	image,
+	html,
+	apiKey,
+}: {
+	image: string
+	html: string
+	apiKey: string
+}) {
 	const body: GPT4VCompletionRequest = {
 		model: 'gpt-4-vision-preview',
 		max_tokens: 4096,
@@ -49,24 +56,27 @@ export async function POST(request: Request) {
 
 	let json = null
 	try {
+		if (!apiKey) {
+			throw Error('You need to provide an API key (sorry)')
+		}
+
 		const resp = await fetch('https://api.openai.com/v1/chat/completions', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`,
+				Authorization: `Bearer ${apiKey}`,
 			},
 			body: JSON.stringify(body),
 		})
+		console.log(resp)
 		json = await resp.json()
 	} catch (e) {
 		console.log(e)
 	}
 
-	return new Response(JSON.stringify(json), {
-		headers: {
-			'content-type': 'application/json; charset=UTF-8',
-		},
-	})
+	
+
+	return json
 }
 
 type MessageContent =
