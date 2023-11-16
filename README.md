@@ -1,6 +1,6 @@
 **Try it out at [makereal.tldraw.com](https://makereal.tldraw.com/).**
 
-\*\*To use your own API key, you need to have access to usage tier 1. Check out your current tier, and how to increase it [in the OpenAI settings](http://platform.openai.com/account/limits).
+**To use your own API key, you need to have access to usage tier 1. Check out your current tier, and how to increase it [in the OpenAI settings](http://platform.openai.com/account/limits).**
 
 > This is an experimental fork of Sawyer Hood's [draw a ui](https://github.com/SawyerHood/draw-a-ui).
 > Hopefully some of these changes can make it upstream!
