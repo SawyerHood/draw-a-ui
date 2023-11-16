@@ -1,6 +1,7 @@
 import { useEditor, getSvgAsImage, useToasts, createShapeId } from '@tldraw/tldraw'
 import { useState } from 'react'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
+import { makeReal } from '../lib/makeReal'
 
 export function ExportButton() {
 	const editor = useEditor()
@@ -82,18 +83,12 @@ export function ExportButton() {
 						props: { html: '', source: dataUrl as string },
 					})
 
-					const resp = await fetch('/api/toHtml', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({
-							image: dataUrl,
-							html: previousHtml,
-							apiKey:
-								(document.getElementById('openai_key_risky_but_cool') as HTMLInputElement)?.value ??
-								null,
-						}),
+					const resp = await makeReal({
+						image: dataUrl,
+						html: previousHtml,
+						apiKey:
+							(document.getElementById('openai_key_risky_but_cool') as HTMLInputElement)?.value ??
+							null,
 					})
 
 					const json = await resp.json()
@@ -144,10 +139,10 @@ export function ExportButton() {
 	)
 }
 
-export function blobToBase64(blob: Blob) {
+export function blobToBase64(blob: Blob): Promise<string> {
 	return new Promise((resolve, _) => {
 		const reader = new FileReader()
-		reader.onloadend = () => resolve(reader.result)
+		reader.onloadend = () => resolve(reader.result as string)
 		reader.readAsDataURL(blob)
 	})
 }
