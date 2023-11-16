@@ -55,11 +55,10 @@ export async function getHtmlFromOpenAI({
 	}
 
 	let json = null
+	if (!apiKey) {
+		throw Error('You need to provide an API key (sorry)')
+	}
 	try {
-		if (!apiKey) {
-			throw Error('You need to provide an API key (sorry)')
-		}
-
 		const resp = await fetch('https://api.openai.com/v1/chat/completions', {
 			method: 'POST',
 			headers: {
@@ -73,8 +72,6 @@ export async function getHtmlFromOpenAI({
 	} catch (e) {
 		console.log(e)
 	}
-
-	
 
 	return json
 }
