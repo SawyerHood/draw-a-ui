@@ -13,7 +13,7 @@ Use JavaScript modules and unkpkg to import any necessary dependencies.
 
 Respond ONLY with the contents of the html file.`
 
-export async function makeReal({
+export async function getHtmlFromOpenAI({
 	image,
 	html,
 	apiKey,
@@ -56,29 +56,25 @@ export async function makeReal({
 
 	let json = null
 	try {
-		let apiKeyToUse: string | undefined
-		if (apiKey) {
-			apiKeyToUse = apiKey
-		} else if (process.env.NODE_ENV === 'development') {
-			apiKeyToUse = process.env.OPENAI_API_KEY as string
-		}
-
-		if (!apiKeyToUse) {
-			throw Error("You must provide an API key to use OpenAI's API")
+		if (!apiKey) {
+			throw Error('You need to provide an API key (sorry)')
 		}
 
 		const resp = await fetch('https://api.openai.com/v1/chat/completions', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${apiKeyToUse}`,
+				Authorization: `Bearer ${apiKey}`,
 			},
 			body: JSON.stringify(body),
 		})
+		console.log(resp)
 		json = await resp.json()
 	} catch (e) {
 		console.log(e)
 	}
+
+	console.log(json)
 
 	return json
 }
