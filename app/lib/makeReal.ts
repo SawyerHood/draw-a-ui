@@ -58,17 +58,7 @@ export async function makeReal(editor: Editor, apiKey: string) {
 		props: { html: '', source: dataUrl as string },
 	})
 
-	const textFromShapes = selectedShapes
-		.map((shape) => {
-			if (shape.type === 'text' || shape.type === 'geo' || shape.type === 'arrow') {
-				// @ts-expect-error
-				return shape.props.text
-			}
-			return null
-		})
-		.filter((v) => v)
-		.join('\n')
-
+	const textFromShapes = getSelectionAsText(editor)
 	try {
 		const json = await getHtmlFromOpenAI({
 			image: dataUrl,
@@ -103,4 +93,28 @@ export function blobToBase64(blob: Blob): Promise<string> {
 		reader.onloadend = () => resolve(reader.result as string)
 		reader.readAsDataURL(blob)
 	})
+}
+
+function getSelectionAsText(editor: Editor) {
+	const selectedShapeIds = editor.getSelectedShapeIds()
+	const selectedShapeDescendantIds = editor.getShapeAndDescendantIds(selectedShapeIds)
+
+	const texts = Array.from(selectedShapeDescendantIds)
+		.map((id) => {
+			const shape = editor.getShape(id)
+			if (!shape) return null
+			if (
+				shape.type === 'text' ||
+				shape.type === 'geo' ||
+				shape.type === 'arrow' ||
+				shape.type === 'note'
+			) {
+				// @ts-expect-error
+				return shape.props.text
+			}
+			return null
+		})
+		.filter((v) => v !== null && v !== '')
+
+	return texts.join('\n')
 }
