@@ -1,6 +1,7 @@
 import { Editor, createShapeId, getSvgAsImage } from '@tldraw/tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
+import { text } from 'stream/consumers'
 
 export async function makeReal(editor: Editor, apiKey: string) {
 	const newShapeId = createShapeId()
@@ -57,11 +58,23 @@ export async function makeReal(editor: Editor, apiKey: string) {
 		props: { html: '', source: dataUrl as string },
 	})
 
+	const textFromShapes = selectedShapes
+		.map((shape) => {
+			if (shape.type === 'text' || shape.type === 'geo' || shape.type === 'arrow') {
+				// @ts-expect-error
+				return shape.props.text
+			}
+			return null
+		})
+		.filter((v) => v)
+		.join('\n')
+
 	try {
 		const json = await getHtmlFromOpenAI({
 			image: dataUrl,
 			html: previousHtml,
 			apiKey,
+			text: textFromShapes,
 		})
 
 		if (json.error) {
