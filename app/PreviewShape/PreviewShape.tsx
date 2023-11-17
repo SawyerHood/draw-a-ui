@@ -36,6 +36,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 	override isAspectRatioLocked = (_shape: PreviewShape) => false
 	override canResize = (_shape: PreviewShape) => true
 	override canBind = (_shape: PreviewShape) => false
+	override canUnmount = () => false
 
 	override component(shape: PreviewShape) {
 		const isEditing = useIsEditing(shape.id)
