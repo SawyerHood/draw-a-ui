@@ -9,9 +9,10 @@ const TWITTER_HANDLE = '@tldraw'
 const TWITTER_CARD = 'social-twitter.png'
 const FACEBOOK_CARD = 'social-og.png'
 const THEME_COLOR = '#FFFFFF'
+const SITE_URL = 'https://makereal.tldraw.com'
 
 export const metadata: Metadata = {
-	metadataBase: new URL('https://www.tldraw.dev'),
+	metadataBase: new URL(SITE_URL),
 	title: {
 		default: TITLE,
 		template: `%s • ${TITLE}`,
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 		description: DESCRIPTION,
 		siteName: TITLE,
 		type: 'website',
-		url: 'https://tldraw.dev',
+		url: SITE_URL,
 		images: FACEBOOK_CARD,
 	},
 	twitter: {
