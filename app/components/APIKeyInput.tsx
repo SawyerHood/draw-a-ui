@@ -31,6 +31,8 @@ export function APIKeyInput() {
 						defaultValue={localStorage.getItem('makeitreal_key') ?? ''}
 						onChange={handleChange}
 						onKeyDown={handleKeyDown}
+						spellCheck={false}
+						autoCapitalize="off"
 					/>
 				</div>
 				<button
