@@ -87,14 +87,43 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						if (navigator && navigator.clipboard) {
 							navigator.clipboard.writeText(shape.props.html)
 							toast.addToast({
-								icon: 'duplicate',
+								icon: 'code',
 								title: 'Copied to clipboard',
 							})
 						}
 					}}
 					onPointerDown={stopEventPropagation}
+					title="Copy code to clipboard"
 				>
-					<Icon icon="duplicate" />
+					<Icon icon="code" />
+				</div>
+				<div
+					style={{
+						textAlign: 'center',
+						position: 'absolute',
+						bottom: 0,
+						padding: 4,
+						fontFamily: 'inherit',
+						fontSize: 12,
+						left: 0,
+						width: '100%',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						pointerEvents: 'none',
+					}}
+				>
+					{isEditing ? null : (
+						<span
+							style={{
+								background: 'var(--color-background)',
+								padding: '4px 12px',
+								borderRadius: 99,
+							}}
+						>
+							Double click to interact
+						</span>
+					)}
 				</div>
 			</HTMLContainer>
 		)
