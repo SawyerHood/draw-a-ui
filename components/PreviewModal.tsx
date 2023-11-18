@@ -1,9 +1,7 @@
 "use client";
-
 import { use, useEffect, useState } from "react";
 import Prism from "prismjs";
 import "prismjs/components/prism-cshtml";
-
 import "prismjs/themes/prism-tomorrow.css";
 
 export function PreviewModal({
@@ -25,6 +23,16 @@ export function PreviewModal({
   if (!html) {
     return null;
   }
+
+  const downloadHtml = () => {
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'index.html';
+    link.click();
+  };
 
   return (
     <div
@@ -55,9 +63,30 @@ export function PreviewModal({
           >
             Code
           </TabButton>
+		  
+			<button
+			  className="p-2 rounded-md hover:bg-gray-200 focus:outline-none focus:ring"
+			  onClick={downloadHtml}
+			>
+			  <svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				className="w-6 h-6 text-gray-600"
+			  >
+				<path
+				  strokeLinecap="round"
+				  strokeLinejoin="round"
+				  strokeWidth={2}
+				  d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+				/>
+			  </svg>
+			</button>
+		  
         </div>
-
-        <button
+		
+		        <button
           className="p-2 rounded-md hover:bg-gray-200 focus:outline-none focus:ring"
           onClick={() => {
             setHtml(null);
@@ -79,12 +108,13 @@ export function PreviewModal({
             ></path>
           </svg>
         </button>
+		
       </div>
 
       {activeTab === "preview" ? (
         <iframe className="w-full h-full" srcDoc={html} />
       ) : (
-        <pre className="overflow-auto p-4">
+        <pre className="overflow-auto p-4" style={{ userSelect: 'text' }}>
           <code className="language-markup">{html}</code>
         </pre>
       )}
