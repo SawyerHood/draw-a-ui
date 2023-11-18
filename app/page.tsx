@@ -34,7 +34,7 @@ function LockupLink() {
 	return (
 		<a
 			className={`lockup__link ${breakpoint < 5 ? 'lockup__link__mobile' : ''}`}
-			href="https://www.tldraw.dev"
+			href="https://twitter.com/tldraw"
 		>
 			<img
 				alt="tldraw logo"
