@@ -1,13 +1,24 @@
 import { Icon, useBreakpoint } from '@tldraw/tldraw'
-import { ChangeEvent, useCallback } from 'react'
+import { ChangeEvent, useCallback, useState } from 'react'
 
 export function APIKeyInput() {
 	const breakpoint = useBreakpoint()
+	const [cool, setCool] = useState(false)
 
 	// Store the API key locally, but ONLY in development mode
 	const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
 		if (process.env.NODE_ENV === 'development') {
 			localStorage.setItem('makeitreal_key', e.target.value)
+		}
+	}, [])
+
+	const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			e.preventDefault()
+			e.stopPropagation()
+			e.currentTarget.blur()
+			setCool(true) // its cool
+			setTimeout(() => setCool(false), 1200)
 		}
 	}, [])
 
@@ -19,6 +30,7 @@ export function APIKeyInput() {
 						id="openai_key_risky_but_cool"
 						defaultValue={localStorage.getItem('makeitreal_key') ?? ''}
 						onChange={handleChange}
+						onKeyDown={handleKeyDown}
 					/>
 				</div>
 				<button
@@ -29,7 +41,7 @@ export function APIKeyInput() {
 						)
 					}
 				>
-					<Icon icon="question" />
+					<Icon icon={cool ? 'check' : 'question'} />
 				</button>
 			</div>
 		</div>
