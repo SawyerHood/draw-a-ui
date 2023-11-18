@@ -12,6 +12,7 @@ export function PreviewModal({
   setHtml: (html: string | null) => void;
 }) {
   const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     const highlight = async () => {
@@ -33,8 +34,6 @@ export function PreviewModal({
     link.download = 'index.html';
     link.click();
   };
-
-const [copySuccess, setCopySuccess] = useState(false);
 
 const copyToClipboard = () => {
   navigator.clipboard.writeText(html || '').then(() => {
