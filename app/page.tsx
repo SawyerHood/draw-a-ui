@@ -9,6 +9,7 @@ import { PreviewShapeUtil } from './PreviewShape/PreviewShape'
 import { ExportButton } from './components/ExportButton'
 import { useBreakpoint } from '@tldraw/tldraw'
 import { APIKeyInput } from './components/APIKeyInput'
+import { track } from '@vercel/analytics/react'
 
 const Tldraw = dynamic(async () => (await import('@tldraw/tldraw')).Tldraw, {
 	ssr: false,
@@ -35,6 +36,7 @@ function LockupLink() {
 		<a
 			className={`lockup__link ${breakpoint < 5 ? 'lockup__link__mobile' : ''}`}
 			href="https://twitter.com/tldraw"
+			onClick={() => track('lockup_clicked', { timestamp: Date.now() })}
 		>
 			<img
 				alt="tldraw logo"
