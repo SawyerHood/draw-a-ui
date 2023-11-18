@@ -34,6 +34,18 @@ export function PreviewModal({
     link.click();
   };
 
+const [copySuccess, setCopySuccess] = useState(false);
+
+const copyToClipboard = () => {
+  navigator.clipboard.writeText(html || '').then(() => {
+    setCopySuccess(true);
+    setTimeout(() => {
+      setCopySuccess(false);
+    }, 2000);
+  });
+};
+
+
   return (
     <div
       onClick={(e) => {
@@ -114,9 +126,32 @@ export function PreviewModal({
       {activeTab === "preview" ? (
         <iframe className="w-full h-full" srcDoc={html} />
       ) : (
-        <pre className="overflow-auto p-4" style={{ userSelect: 'text' }}>
-          <code className="language-markup">{html}</code>
-        </pre>
+        <div className="relative">
+          <pre className="overflow-auto p-4" style={{ userSelect: 'text' }}>
+            <code className="language-markup">{html}</code>
+          </pre>
+			<button
+			  className="absolute top-1 right-0 m-2 p-2 rounded-md bg-gray-900 hover:bg-gray-700 focus:outline-none focus:ring flex items-center"
+			  onClick={copyToClipboard}
+			  title="Copy to Clipboard"
+			>
+			  <svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="white"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				className="w-5 h-5 text-gray-300"
+			  >
+				<path
+				  strokeLinecap="round"
+				  strokeLinejoin="round"
+				  strokeWidth={1}
+				  d="M2 4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-4H4a2 2 0 0 1-2-2V4zm8 12v4h10V10h-4v4a2 2 0 0 1-2 2h-4zm4-2V4H4v10h10z"
+				/>
+			  </svg>
+			  {copySuccess && <span className="text-white ml-2">Copied!</span>}
+			</button>
+        </div>
       )}
     </div>
   );
