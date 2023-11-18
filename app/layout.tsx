@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
-const TITLE = 'make real'
+const TITLE = 'make real • tldraw'
 const DESCRIPTION = 'Draw a ui and make it real with tldraw.'
 const TWITTER_HANDLE = '@tldraw'
 const TWITTER_CARD = 'social-twitter.png'
