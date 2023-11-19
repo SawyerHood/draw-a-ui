@@ -111,7 +111,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 					style={{
 						textAlign: 'center',
 						position: 'absolute',
-						bottom: 0,
+						bottom: isEditing ? -40 : 0,
 						padding: 4,
 						fontFamily: 'inherit',
 						fontSize: 12,
@@ -123,17 +123,15 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						pointerEvents: 'none',
 					}}
 				>
-					{isEditing ? null : (
-						<span
-							style={{
-								background: 'var(--color-background)',
-								padding: '4px 12px',
-								borderRadius: 99,
-							}}
-						>
-							Double click to interact
-						</span>
-					)}
+					<span
+						style={{
+							background: 'var(--color-background)',
+							padding: '4px 12px',
+							borderRadius: 99,
+						}}
+					>
+						{isEditing ? 'Click the canvas to exit' : 'Double click to interact'}
+					</span>
 				</div>
 			</HTMLContainer>
 		)
