@@ -19,14 +19,12 @@ const shapeUtils = [PreviewShapeUtil]
 
 export default function Home() {
 	return (
-		<>
-			<div className={'tldraw__editor'}>
-				<Tldraw persistenceKey="tldraw" shapeUtils={shapeUtils} shareZone={<ExportButton />}>
-					<APIKeyInput />
-					<LockupLink />
-				</Tldraw>
-			</div>
-		</>
+		<div className="tldraw__editor">
+			<Tldraw persistenceKey="tldraw" shapeUtils={shapeUtils} shareZone={<ExportButton />}>
+				<APIKeyInput />
+				<LockupLink />
+			</Tldraw>
+		</div>
 	)
 }
 
