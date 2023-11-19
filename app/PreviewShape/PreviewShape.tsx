@@ -60,7 +60,6 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
 				{htmlToUse ? (
 					<iframe
-						className="tl-embed"
 						srcDoc={htmlToUse}
 						width={toDomPrecision(shape.props.w)}
 						height={toDomPrecision(shape.props.h)}
@@ -68,6 +67,8 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						style={{
 							pointerEvents: isEditing ? 'auto' : 'none',
 							boxShadow,
+							border: '1px solid var(--color-panel-contrast)',
+							borderRadius: 'var(--radius-2)',
 						}}
 					/>
 				) : (
@@ -80,6 +81,8 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 							alignItems: 'center',
 							justifyContent: 'center',
 							boxShadow,
+							border: '1px solid var(--color-panel-contrast)',
+							borderRadius: 'var(--radius-2)',
 						}}
 					>
 						<DefaultSpinner />
@@ -158,14 +161,14 @@ const ROTATING_BOX_SHADOWS = [
 		offsetX: 0,
 		offsetY: 2,
 		blur: 4,
-		spread: 0,
-		color: '#00000029',
+		spread: -1,
+		color: '#0000003a',
 	},
 	{
 		offsetX: 0,
 		offsetY: 3,
-		blur: 6,
-		spread: 0,
+		blur: 12,
+		spread: -2,
 		color: '#0000001f',
 	},
 ]
