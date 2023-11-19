@@ -60,7 +60,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						style={{
 							width: '100%',
 							height: '100%',
-							backgroundColor: 'var(--color-muted-2)',
+							backgroundColor: 'var(--color-culled)',
 							display: 'flex',
 							alignItems: 'center',
 							justifyContent: 'center',

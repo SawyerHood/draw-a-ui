@@ -12,18 +12,7 @@ export async function makeReal(editor: Editor, apiKey: string) {
 		throw Error('First select something to make real.')
 	}
 
-	const previewPosition = selectedShapes.reduce(
-		(acc, shape) => {
-			const bounds = editor.getShapePageBounds(shape)
-			const right = bounds?.maxX ?? 0
-			const top = bounds?.minY ?? 0
-			return {
-				x: Math.max(acc.x, right),
-				y: Math.min(acc.y, top),
-			}
-		},
-		{ x: 0, y: Infinity }
-	)
+	const { maxX, midY } = editor.getSelectionPageBounds()
 
 	const previousPreviews = selectedShapes.filter((shape) => {
 		return shape.type === 'preview'
@@ -54,8 +43,8 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	editor.createShape<PreviewShape>({
 		id: newShapeId,
 		type: 'preview',
-		x: previewPosition.x + 60,
-		y: previewPosition.y,
+		x: maxX + 60, // to the right of the selection
+		y: midY - (540 * 2) / 3 / 2, // half the height of the preview's initial shape
 		props: { html: '', source: dataUrl as string },
 	})
 
@@ -70,6 +59,8 @@ export async function makeReal(editor: Editor, apiKey: string) {
 			html: previousHtml,
 			apiKey,
 			text: textFromShapes,
+			includesPreviousDesign: previousPreviews.length > 0,
+			theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 		})
 
 		if (json.error) {
