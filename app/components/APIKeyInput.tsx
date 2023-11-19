@@ -1,9 +1,13 @@
-import { Icon, useBreakpoint } from '@tldraw/tldraw'
+import { Icon, useBreakpoint, useEditor, useValue } from '@tldraw/tldraw'
 import { ChangeEvent, useCallback, useState } from 'react'
 
 export function APIKeyInput() {
 	const breakpoint = useBreakpoint()
 	const [cool, setCool] = useState(false)
+	const editor = useEditor()
+	const isFocusMode = useValue('is focus mode', () => editor.getInstanceState().isFocusMode, [
+		editor,
+	])
 
 	// Store the API key locally, but ONLY in development mode
 	const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +25,8 @@ export function APIKeyInput() {
 			setTimeout(() => setCool(false), 1200)
 		}
 	}, [])
+
+	if (isFocusMode) return null
 
 	return (
 		<div className={`your-own-api-key ${breakpoint < 6 ? 'your-own-api-key__mobile' : ''}`}>
