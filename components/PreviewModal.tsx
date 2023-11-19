@@ -125,8 +125,8 @@ const copyToClipboard = () => {
       {activeTab === "preview" ? (
         <iframe className="w-full h-full" srcDoc={html} />
       ) : (
-        <div className="relative">
-          <pre className="overflow-auto p-4" style={{ userSelect: 'text' }}>
+        <div className="overflow-auto relative">
+          <pre className="p-4" style={{ userSelect: 'text' }}>
             <code className="language-markup">{html}</code>
           </pre>
 			<button
