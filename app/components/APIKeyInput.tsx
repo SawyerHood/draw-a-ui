@@ -4,6 +4,7 @@ import { ChangeEvent, useCallback, useState } from 'react'
 export function APIKeyInput() {
 	const breakpoint = useBreakpoint()
 	const [cool, setCool] = useState(false)
+
 	const editor = useEditor()
 	const isFocusMode = useValue('is focus mode', () => editor.getInstanceState().isFocusMode, [
 		editor,
@@ -26,6 +27,11 @@ export function APIKeyInput() {
 		}
 	}, [])
 
+	const handleQuestionClick = useCallback(() => {
+		const message = `Sorry, this is weird. The OpenAI APIs that we use are very new. If you have an OpenAI developer key, you can put it in this input and we'll use it. We don't save / store / upload these.\n\nSee https://platform.openai.com/api-keys to get a key.\n\nThis app's source code: https://github.com/tldraw/draw-a-ui`
+		window.alert(message)
+	}, [])
+
 	if (isFocusMode) return null
 
 	return (
@@ -41,14 +47,7 @@ export function APIKeyInput() {
 						autoCapitalize="off"
 					/>
 				</div>
-				<button
-					className="question__button"
-					onClick={() =>
-						window.alert(
-							`Sorry, this is weird. The OpenAI APIs that we use are very new. If you have an OpenAI developer key, you can put it in this input and we'll use it. We don't save / store / upload these.\n\nSee https://platform.openai.com/api-keys to get a key.\n\nThis app's source code: https://github.com/tldraw/draw-a-ui`
-						)
-					}
-				>
+				<button className="question__button" onClick={handleQuestionClick}>
 					<Icon icon={cool ? 'check' : 'question'} />
 				</button>
 			</div>

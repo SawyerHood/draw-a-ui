@@ -36,12 +36,7 @@ function LockupLink() {
 			href="https://twitter.com/tldraw"
 			onClick={() => track('lockup_clicked', { timestamp: Date.now() })}
 		>
-			<img
-				alt="tldraw logo"
-				className="lockup"
-				src="/lockup.svg"
-				style={{ padding: 8, height: 40 }}
-			/>
+			<img alt="tldraw logo" className="lockup" src="/lockup.svg" />
 		</a>
 	)
 }
