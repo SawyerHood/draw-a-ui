@@ -7,8 +7,8 @@ import {
 	toDomPrecision,
 	Icon,
 	useToasts,
-	stopEventPropagation,
 	DefaultSpinner,
+	stopEventPropagation,
 } from '@tldraw/tldraw'
 
 export type PreviewShape = TLBaseShape<
@@ -41,12 +41,22 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 	override component(shape: PreviewShape) {
 		const isEditing = useIsEditing(shape.id)
 		const toast = useToasts()
+
+		// Kind of a hack—we're preventing user's from pinching-zooming into the iframe
+		const htmlToUse = shape.props.html
+			? shape.props.html.replace(
+					`</body>`,
+					`<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+</body>`
+			  )
+			: null
+
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
-				{shape.props.html ? (
+				{htmlToUse ? (
 					<iframe
 						className="tl-embed"
-						srcDoc={shape.props.html}
+						srcDoc={htmlToUse}
 						width={toDomPrecision(shape.props.w)}
 						height={toDomPrecision(shape.props.h)}
 						draggable={false}
