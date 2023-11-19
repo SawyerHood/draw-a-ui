@@ -4,7 +4,6 @@
 
 import dynamic from 'next/dynamic'
 import '@tldraw/tldraw/tldraw.css'
-import React from 'react'
 import { PreviewShapeUtil } from './PreviewShape/PreviewShape'
 import { ExportButton } from './components/ExportButton'
 import { useBreakpoint } from '@tldraw/tldraw'

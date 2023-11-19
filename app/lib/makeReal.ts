@@ -1,7 +1,6 @@
 import { Editor, createShapeId, getSvgAsImage } from '@tldraw/tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
-import { text } from 'stream/consumers'
 import { track } from '@vercel/analytics/react'
 
 export async function makeReal(editor: Editor, apiKey: string) {
