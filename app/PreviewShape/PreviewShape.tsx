@@ -88,34 +88,36 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						<DefaultSpinner />
 					</div>
 				)}
-				<button
-					style={{
-						all: 'unset',
-						position: 'absolute',
-						top: 0,
-						right: -40,
-						height: 40,
-						width: 40,
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						cursor: 'pointer',
-						pointerEvents: 'all',
-					}}
-					onClick={() => {
-						if (navigator && navigator.clipboard) {
-							navigator.clipboard.writeText(shape.props.html)
-							toast.addToast({
-								icon: 'code',
-								title: 'Copied to clipboard',
-							})
-						}
-					}}
-					onPointerDown={stopEventPropagation}
-					title="Copy code to clipboard"
-				>
-					<Icon icon="code" />
-				</button>
+				{htmlToUse && (
+					<button
+						style={{
+							all: 'unset',
+							position: 'absolute',
+							top: 0,
+							right: -40,
+							height: 40,
+							width: 40,
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							cursor: 'pointer',
+							pointerEvents: 'all',
+						}}
+						onClick={() => {
+							if (navigator && navigator.clipboard) {
+								navigator.clipboard.writeText(shape.props.html)
+								toast.addToast({
+									icon: 'code',
+									title: 'Copied to clipboard',
+								})
+							}
+						}}
+						onPointerDown={stopEventPropagation}
+						title="Copy code to clipboard"
+					>
+						<Icon icon="code" />
+					</button>
+				)}
 				{htmlToUse && (
 					<div
 						style={{

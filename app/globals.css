@@ -25,7 +25,7 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	z-index: 9999999;
+	z-index: var(--layer-panels);
 	color: var(--color-text-0);
 	pointer-events: none;
 }
@@ -92,7 +92,7 @@
 
 .lockup__link {
 	position: absolute;
-	z-index: 9999999;
+	z-index: var(--layer-panels);
 	bottom: 0px;
 	right: 0px;
 }
