@@ -12,6 +12,7 @@ import {
 	Vec2d,
 	useValue,
 } from '@tldraw/tldraw'
+import { UrlLinkButton } from '../components/UrlLinkButton'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
@@ -127,42 +128,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						<Icon icon="code" />
 					</button>
 				)}
-				{htmlToUse && (
-					<button
-						style={{
-							all: 'unset',
-							position: 'absolute',
-							top: 40,
-							right: -40,
-							height: 40,
-							width: 40,
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							cursor: 'pointer',
-							pointerEvents: 'all',
-						}}
-						onClick={() => {
-							if (navigator && navigator.clipboard) {
-								navigator.clipboard.writeText(
-									`${
-										process.env.NODE_ENV === 'development'
-											? 'localhost:3000'
-											: process.env.NEXT_PUBLIC_SITE_URL
-									}/link/${shape.id.split(':')[1]}`
-								)
-								toast.addToast({
-									icon: 'code',
-									title: 'Copied url to clipboard',
-								})
-							}
-						}}
-						onPointerDown={stopEventPropagation}
-						title="Copy url to clipboard"
-					>
-						<Icon icon="link" />
-					</button>
-				)}
+				{htmlToUse && <UrlLinkButton shape={shape} />}
 				{htmlToUse && (
 					<div
 						style={{
