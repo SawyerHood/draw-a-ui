@@ -146,7 +146,9 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 							if (navigator && navigator.clipboard) {
 								navigator.clipboard.writeText(
 									`${
-										process.env.NODE_ENV === 'development' ? 'localhost:3000' : `https://tldraw.dev`
+										process.env.NODE_ENV === 'development'
+											? 'localhost:3000'
+											: `https://makereal.tldraw.com`
 									}/link/${shape.id.split(':')[1]}`
 								)
 								toast.addToast({
