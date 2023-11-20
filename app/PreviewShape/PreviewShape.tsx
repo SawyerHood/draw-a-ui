@@ -10,7 +10,9 @@ import {
 	DefaultSpinner,
 	stopEventPropagation,
 	Vec2d,
+	useValue,
 } from '@tldraw/tldraw'
+import { UrlLinkButton } from '../components/UrlLinkButton'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
@@ -44,12 +46,20 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		const isEditing = useIsEditing(shape.id)
 		const toast = useToasts()
 
-		const pageRotation = this.editor.getShapePageTransform(shape)!.rotation()
-		const boxShadow = getRotatedBoxShadow(pageRotation)
+		const boxShadow = useValue(
+			'box shadow',
+			() => {
+				const rotation = this.editor.getShapePageTransform(shape)!.rotation()
+				return getRotatedBoxShadow(rotation)
+			},
+			[this.editor]
+		)
+
+		const { html } = shape.props
 
 		// Kind of a hack—we're preventing user's from pinching-zooming into the iframe
-		const htmlToUse = shape.props.html
-			? shape.props.html.replace(
+		const htmlToUse = html
+			? html.replace(
 					`</body>`,
 					`<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
 </body>`
@@ -108,7 +118,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 								navigator.clipboard.writeText(shape.props.html)
 								toast.addToast({
 									icon: 'code',
-									title: 'Copied to clipboard',
+									title: 'Copied html to clipboard',
 								})
 							}
 						}}
@@ -118,6 +128,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						<Icon icon="code" />
 					</button>
 				)}
+				{htmlToUse && <UrlLinkButton shape={shape} />}
 				{htmlToUse && (
 					<div
 						style={{
