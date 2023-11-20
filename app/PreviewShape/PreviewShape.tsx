@@ -10,6 +10,7 @@ import {
 	DefaultSpinner,
 	stopEventPropagation,
 	Vec2d,
+	useValue,
 } from '@tldraw/tldraw'
 
 export type PreviewShape = TLBaseShape<
@@ -44,12 +45,20 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		const isEditing = useIsEditing(shape.id)
 		const toast = useToasts()
 
-		const pageRotation = this.editor.getShapePageTransform(shape)!.rotation()
-		const boxShadow = getRotatedBoxShadow(pageRotation)
+		const boxShadow = useValue(
+			'box shadow',
+			() => {
+				const rotation = this.editor.getShapePageTransform(shape)!.rotation()
+				return getRotatedBoxShadow(rotation)
+			},
+			[this.editor]
+		)
+
+		const { html } = shape.props
 
 		// Kind of a hack—we're preventing user's from pinching-zooming into the iframe
-		const htmlToUse = shape.props.html
-			? shape.props.html.replace(
+		const htmlToUse = html
+			? html.replace(
 					`</body>`,
 					`<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
 </body>`
@@ -108,7 +117,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 								navigator.clipboard.writeText(shape.props.html)
 								toast.addToast({
 									icon: 'code',
-									title: 'Copied to clipboard',
+									title: 'Copied html to clipboard',
 								})
 							}
 						}}
@@ -116,6 +125,40 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						title="Copy code to clipboard"
 					>
 						<Icon icon="code" />
+					</button>
+				)}
+				{htmlToUse && (
+					<button
+						style={{
+							all: 'unset',
+							position: 'absolute',
+							top: 40,
+							right: -40,
+							height: 40,
+							width: 40,
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							cursor: 'pointer',
+							pointerEvents: 'all',
+						}}
+						onClick={() => {
+							if (navigator && navigator.clipboard) {
+								navigator.clipboard.writeText(
+									`${
+										process.env.NODE_ENV === 'development' ? 'localhost:3000' : `https://tldraw.dev`
+									}/link/${shape.id.split(':')[1]}`
+								)
+								toast.addToast({
+									icon: 'code',
+									title: 'Copied url to clipboard',
+								})
+							}
+						}}
+						onPointerDown={stopEventPropagation}
+						title="Copy url to clipboard"
+					>
+						<Icon icon="link" />
 					</button>
 				)}
 				{htmlToUse && (

@@ -1,7 +1,8 @@
-import { Editor, createShapeId, getSvgAsImage } from '@tldraw/tldraw'
+import { Editor, createShapeId, getSvgAsImage, uniqueId } from '@tldraw/tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
 import { track } from '@vercel/analytics/react'
+import { kv } from '@vercel/kv'
 
 export async function makeReal(editor: Editor, apiKey: string) {
 	const newShapeId = createShapeId()
@@ -70,6 +71,16 @@ export async function makeReal(editor: Editor, apiKey: string) {
 		const start = message.indexOf('<!DOCTYPE html>')
 		const end = message.indexOf('</html>')
 		const html = message.slice(start, end + '</html>'.length)
+
+		if (html.length < 100) {
+			console.warn(message)
+			throw Error('Could not generate a design from those wireframes.')
+		}
+
+		await fetch(`/api/links/upload?id=${newShapeId}`, {
+			method: 'POST',
+			body: JSON.stringify({ html }),
+		})
 
 		editor.updateShape<PreviewShape>({
 			id: newShapeId,
