@@ -148,7 +148,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 									`${
 										process.env.NODE_ENV === 'development'
 											? 'localhost:3000'
-											: `https://makereal.tldraw.com`
+											: process.env.NEXT_PUBLIC_SITE_URL
 									}/link/${shape.id.split(':')[1]}`
 								)
 								toast.addToast({
