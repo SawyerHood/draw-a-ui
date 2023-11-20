@@ -1,4 +1,6 @@
 import { sql } from '@vercel/postgres'
+import { track } from '@vercel/analytics'
+import { LinkLockupLink } from '../../components/LinkLockupLink'
 
 export default async function LinkPage({ params }: { params: { id: string } }) {
 	const { id } = params
@@ -6,7 +8,6 @@ export default async function LinkPage({ params }: { params: { id: string } }) {
 
 	return (
 		<div>
-			{JSON.stringify(row)}
 			<iframe
 				srcDoc={row.rows[0].html}
 				width={'100%'}
@@ -14,6 +15,7 @@ export default async function LinkPage({ params }: { params: { id: string } }) {
 				draggable={false}
 				style={{ position: 'fixed', inset: 0 }}
 			/>
+			<LinkLockupLink />
 		</div>
 	)
 }
