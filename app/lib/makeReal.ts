@@ -89,7 +89,7 @@ export async function makeReal(editor: Editor, apiKey: string) {
 				html,
 				source: dataUrl as string,
 				linkUploadVersion: 1,
-				uploadId: newShapeId,
+				uploadedShapeId: newShapeId,
 			},
 		})
 	} catch (e) {
