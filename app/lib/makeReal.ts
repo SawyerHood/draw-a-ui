@@ -85,7 +85,12 @@ export async function makeReal(editor: Editor, apiKey: string) {
 		editor.updateShape<PreviewShape>({
 			id: newShapeId,
 			type: 'preview',
-			props: { html, source: dataUrl as string, linkUploadVersion: 1 },
+			props: {
+				html,
+				source: dataUrl as string,
+				linkUploadVersion: 1,
+				uploadId: newShapeId,
+			},
 		})
 	} catch (e) {
 		editor.deleteShape(newShapeId)

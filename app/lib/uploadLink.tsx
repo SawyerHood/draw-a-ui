@@ -1,7 +1,6 @@
 'use server'
 
 import { sql } from '@vercel/postgres'
-import { NextResponse } from 'next/server'
 
 export async function uploadLink(shapeId: string, html: string) {
 	if (typeof shapeId !== 'string' || !shapeId.startsWith('shape:')) {
@@ -12,5 +11,6 @@ export async function uploadLink(shapeId: string, html: string) {
 	}
 
 	shapeId = shapeId.replace(/^shape:/, '')
+	console.log('Uploading', shapeId)
 	await sql`INSERT INTO links (shape_id, html) VALUES (${shapeId}, ${html})`
 }

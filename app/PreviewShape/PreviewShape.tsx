@@ -26,6 +26,7 @@ export type PreviewShape = TLBaseShape<
 		w: number
 		h: number
 		linkUploadVersion?: number
+		uploadedShapeId?: string
 	}
 >
 
@@ -60,20 +61,22 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			[this.editor]
 		)
 
-		const { html, linkUploadVersion } = shape.props
+		const { html, linkUploadVersion, uploadedShapeId } = shape.props
 
 		// upload the html if we haven't already:
 		useEffect(() => {
 			let isCancelled = false
-			if (html && linkUploadVersion === undefined) {
+			if (html && (linkUploadVersion === undefined || uploadedShapeId !== shape.id)) {
 				;(async () => {
 					await uploadLink(shape.id, html)
 					if (isCancelled) return
+
 					this.editor.updateShape<PreviewShape>({
 						id: shape.id,
 						type: 'preview',
 						props: {
 							linkUploadVersion: 1,
+							uploadedShapeId: shape.id,
 						},
 					})
 				})()
@@ -81,9 +84,10 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			return () => {
 				isCancelled = true
 			}
-		}, [shape.id, html, linkUploadVersion])
+		}, [shape.id, html, linkUploadVersion, uploadedShapeId])
 
-		const isLoading = linkUploadVersion === undefined
+		console.log(shape, uploadedShapeId)
+		const isLoading = linkUploadVersion === undefined || uploadedShapeId !== shape.id
 
 		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
 

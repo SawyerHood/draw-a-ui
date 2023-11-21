@@ -2,6 +2,8 @@ import { sql } from '@vercel/postgres'
 import { notFound } from 'next/navigation'
 import { LinkLockupLink } from '../../components/LinkLockupLink'
 
+export const dynamic = 'force-dynamic'
+
 const SCRIPT_TO_INJECT_FOR_PREVIEW = `
     // prevent the user from pinch-zooming into the iframe
     document.body.addEventListener('wheel', e => {
