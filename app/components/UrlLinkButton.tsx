@@ -1,10 +1,8 @@
 'use client'
 
 import { Icon, stopEventPropagation, useToasts } from '@tldraw/tldraw'
-import { usePathname } from 'next/navigation'
-import { PreviewShape } from '../PreviewShape/PreviewShape'
 
-export function UrlLinkButton({ shape }: { shape: PreviewShape }) {
+export function UrlLinkButton({ uploadUrl }: { uploadUrl: string }) {
 	const toast = useToasts()
 
 	return (
@@ -24,7 +22,7 @@ export function UrlLinkButton({ shape }: { shape: PreviewShape }) {
 			}}
 			onClick={() => {
 				if (navigator && navigator.clipboard) {
-					navigator.clipboard.writeText(`${window.location.origin}/link/${shape.id.split(':')[1]}`)
+					navigator.clipboard.writeText(uploadUrl)
 					toast.addToast({
 						icon: 'code',
 						title: 'Copied url to clipboard',

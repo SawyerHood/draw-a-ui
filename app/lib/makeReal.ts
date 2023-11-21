@@ -3,6 +3,9 @@ import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
 import { track } from '@vercel/analytics/react'
 import { kv } from '@vercel/kv'
+import { sql } from '@vercel/postgres'
+import { nanoid } from 'nanoid'
+import { uploadLink } from './uploadLink'
 
 export async function makeReal(editor: Editor, apiKey: string) {
 	const newShapeId = createShapeId()
@@ -77,15 +80,12 @@ export async function makeReal(editor: Editor, apiKey: string) {
 			throw Error('Could not generate a design from those wireframes.')
 		}
 
-		await fetch(`/api/links/upload?id=${newShapeId}`, {
-			method: 'POST',
-			body: JSON.stringify({ html }),
-		})
+		await uploadLink(newShapeId, html)
 
 		editor.updateShape<PreviewShape>({
 			id: newShapeId,
 			type: 'preview',
-			props: { html, source: dataUrl as string },
+			props: { html, source: dataUrl as string, linkUploadVersion: 1 },
 		})
 	} catch (e) {
 		editor.deleteShape(newShapeId)
