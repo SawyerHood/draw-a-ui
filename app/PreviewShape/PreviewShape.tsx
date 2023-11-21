@@ -13,6 +13,10 @@ import {
 	useValue,
 } from '@tldraw/tldraw'
 import { UrlLinkButton } from '../components/UrlLinkButton'
+import { LINK_HOST, PROTOCOL } from '../lib/hosts'
+import { useEffect } from 'react'
+import { uploadLink } from '../lib/uploadLink'
+import style from 'styled-jsx/style'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
@@ -21,6 +25,7 @@ export type PreviewShape = TLBaseShape<
 		source: string
 		w: number
 		h: number
+		linkUploadVersion?: number
 	}
 >
 
@@ -55,33 +60,36 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			[this.editor]
 		)
 
-		const { html } = shape.props
+		const { html, linkUploadVersion } = shape.props
 
-		// Kind of a hack—we're preventing user's from pinching-zooming into the iframe
-		const htmlToUse = html
-			? html.replace(
-					`</body>`,
-					`<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
-</body>`
-			  )
-			: null
+		// upload the html if we haven't already:
+		useEffect(() => {
+			let isCancelled = false
+			if (html && linkUploadVersion === undefined) {
+				;(async () => {
+					await uploadLink(shape.id, html)
+					if (isCancelled) return
+					this.editor.updateShape<PreviewShape>({
+						id: shape.id,
+						type: 'preview',
+						props: {
+							linkUploadVersion: 1,
+						},
+					})
+				})()
+			}
+			return () => {
+				isCancelled = true
+			}
+		}, [shape.id, html, linkUploadVersion])
+
+		const isLoading = linkUploadVersion === undefined
+
+		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
 
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
-				{htmlToUse ? (
-					<iframe
-						srcDoc={htmlToUse}
-						width={toDomPrecision(shape.props.w)}
-						height={toDomPrecision(shape.props.h)}
-						draggable={false}
-						style={{
-							pointerEvents: isEditing ? 'auto' : 'none',
-							boxShadow,
-							border: '1px solid var(--color-panel-contrast)',
-							borderRadius: 'var(--radius-2)',
-						}}
-					/>
-				) : (
+				{isLoading ? (
 					<div
 						style={{
 							width: '100%',
@@ -97,66 +105,77 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 					>
 						<DefaultSpinner />
 					</div>
-				)}
-				{htmlToUse && (
-					<button
-						style={{
-							all: 'unset',
-							position: 'absolute',
-							top: 0,
-							right: -40,
-							height: 40,
-							width: 40,
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							cursor: 'pointer',
-							pointerEvents: 'all',
-						}}
-						onClick={() => {
-							if (navigator && navigator.clipboard) {
-								navigator.clipboard.writeText(shape.props.html)
-								toast.addToast({
-									icon: 'code',
-									title: 'Copied html to clipboard',
-								})
-							}
-						}}
-						onPointerDown={stopEventPropagation}
-						title="Copy code to clipboard"
-					>
-						<Icon icon="code" />
-					</button>
-				)}
-				{htmlToUse && <UrlLinkButton shape={shape} />}
-				{htmlToUse && (
-					<div
-						style={{
-							textAlign: 'center',
-							position: 'absolute',
-							bottom: isEditing ? -40 : 0,
-							padding: 4,
-							fontFamily: 'inherit',
-							fontSize: 12,
-							left: 0,
-							width: '100%',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							pointerEvents: 'none',
-						}}
-					>
-						<span
+				) : (
+					<>
+						<iframe
+							src={`${uploadUrl}?preview=1&v=${linkUploadVersion}`}
+							width={toDomPrecision(shape.props.w)}
+							height={toDomPrecision(shape.props.h)}
+							draggable={false}
 							style={{
-								background: 'var(--color-panel)',
-								padding: '4px 12px',
-								borderRadius: 99,
-								border: '1px solid var(--color-muted-1)',
+								pointerEvents: isEditing ? 'auto' : 'none',
+								boxShadow,
+								border: '1px solid var(--color-panel-contrast)',
+								borderRadius: 'var(--radius-2)',
+							}}
+						/>
+						<button
+							style={{
+								all: 'unset',
+								position: 'absolute',
+								top: 0,
+								right: -40,
+								height: 40,
+								width: 40,
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								cursor: 'pointer',
+								pointerEvents: 'all',
+							}}
+							onClick={() => {
+								if (navigator && navigator.clipboard) {
+									navigator.clipboard.writeText(shape.props.html)
+									toast.addToast({
+										icon: 'code',
+										title: 'Copied html to clipboard',
+									})
+								}
+							}}
+							onPointerDown={stopEventPropagation}
+							title="Copy code to clipboard"
+						>
+							<Icon icon="code" />
+						</button>
+						<UrlLinkButton uploadUrl={uploadUrl} />
+						<div
+							style={{
+								textAlign: 'center',
+								position: 'absolute',
+								bottom: isEditing ? -40 : 0,
+								padding: 4,
+								fontFamily: 'inherit',
+								fontSize: 12,
+								left: 0,
+								width: '100%',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								pointerEvents: 'none',
 							}}
 						>
-							{isEditing ? 'Click the canvas to exit' : 'Double click to interact'}
-						</span>
-					</div>
+							<span
+								style={{
+									background: 'var(--color-panel)',
+									padding: '4px 12px',
+									borderRadius: 99,
+									border: '1px solid var(--color-muted-1)',
+								}}
+							>
+								{isEditing ? 'Click the canvas to exit' : 'Double click to interact'}
+							</span>
+						</div>
+					</>
 				)}
 			</HTMLContainer>
 		)
