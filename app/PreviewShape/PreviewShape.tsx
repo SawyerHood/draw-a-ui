@@ -11,12 +11,12 @@ import {
 	stopEventPropagation,
 	Vec2d,
 	useValue,
+	uniqueId,
 } from '@tldraw/tldraw'
 import { UrlLinkButton } from '../components/UrlLinkButton'
 import { LINK_HOST, PROTOCOL } from '../lib/hosts'
 import { useEffect } from 'react'
 import { uploadLink } from '../lib/uploadLink'
-import style from 'styled-jsx/style'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
@@ -25,6 +25,7 @@ export type PreviewShape = TLBaseShape<
 		source: string
 		w: number
 		h: number
+		linkId?: string
 		linkUploadVersion?: number
 	}
 >
@@ -62,12 +63,16 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 
 		const { html, linkUploadVersion } = shape.props
 
+		const isUploadingHtmlForLink = linkUploadVersion === undefined || !shape.props.linkId
+
 		// upload the html if we haven't already:
 		useEffect(() => {
 			let isCancelled = false
-			if (html && linkUploadVersion === undefined) {
+			if (html && isUploadingHtmlForLink) {
 				;(async () => {
-					await uploadLink(shape.id, html)
+					// todo: delete the shape on error?
+					const linkId = uniqueId()
+					await uploadLink(linkId, html)
 					if (isCancelled) return
 					this.editor.updateShape<PreviewShape>({
 						id: shape.id,
@@ -81,15 +86,18 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			return () => {
 				isCancelled = true
 			}
-		}, [shape.id, html, linkUploadVersion])
+		}, [shape.id, html, linkUploadVersion, isUploadingHtmlForLink])
 
-		const isLoading = linkUploadVersion === undefined
-
-		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
+		const uploadUrl = [
+			PROTOCOL,
+			LINK_HOST,
+			'/',
+			shape.props.linkId ?? shape.id.replace(/^shape:/, ''),
+		].join('')
 
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
-				{isLoading ? (
+				{isUploadingHtmlForLink ? (
 					<div
 						style={{
 							width: '100%',
