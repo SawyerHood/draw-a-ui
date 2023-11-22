@@ -4,14 +4,6 @@ import { LinkLockupLink } from '../../components/LinkLockupLink'
 
 export const dynamic = 'force-dynamic'
 
-const SCRIPT_TO_INJECT_FOR_PREVIEW = `
-    // prevent the user from pinch-zooming into the iframe
-    document.body.addEventListener('wheel', e => {
-        if (!e.ctrlKey) return;
-        e.preventDefault();
-    }, { passive: false })
-`
-
 export default async function LinkPage({
 	params,
 	searchParams,
@@ -27,9 +19,24 @@ export default async function LinkPage({
 
 	let html: string = result.rows[0].html
 
+	const SCRIPT_TO_INJECT_FOR_PREVIEW = `
+    // send the screenshot to the parent window
+	// and prevent the user from pinch-zooming into the iframe
+	html2canvas(document.body).then(function(canvas) {
+		 const data = canvas.toDataURL('image/png');  window.parent.parent.postMessage({screenshot: data, shapeid:"shape:${linkId}"}, "*");
+  });
+    document.body.addEventListener('wheel', e => {
+        if (!e.ctrlKey) return;
+        e.preventDefault();
+    }, { passive: false })
+`
+
 	if (isPreview) {
 		html = html.includes('</body>')
-			? html.replace('</body>', `<script>${SCRIPT_TO_INJECT_FOR_PREVIEW}</script></body>`)
+			? html.replace(
+					'</body>',
+					`<script src="https://unpkg.com/html2canvas"></script><script>${SCRIPT_TO_INJECT_FOR_PREVIEW}</script></body>`
+			  )
 			: html + `<script>${SCRIPT_TO_INJECT_FOR_PREVIEW}</script>`
 	}
 

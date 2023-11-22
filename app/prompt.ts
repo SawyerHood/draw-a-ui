@@ -14,7 +14,7 @@ Use your best judgement to determine whether what you see should be part of the 
 Use what you know about applications and user experience to fill in any implicit business logic in the wireframes. Flesh it out, make it real!
 
 The user may also provide you with the html of a previous design that they want you to iterate from.
-In the wireframe, the previous design's html will appear as a white rectangle.
+In the wireframe, the previous design will appear with some notes.
 Use their notes, together with the previous design, to inform your next result.
 
 Sometimes it's hard for you to read the writing in the wireframes.

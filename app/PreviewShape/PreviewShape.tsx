@@ -11,18 +11,19 @@ import {
 	stopEventPropagation,
 	Vec2d,
 	useValue,
+	SvgExportContext,
 } from '@tldraw/tldraw'
 import { UrlLinkButton } from '../components/UrlLinkButton'
 import { LINK_HOST, PROTOCOL } from '../lib/hosts'
 import { useEffect } from 'react'
 import { uploadLink } from '../lib/uploadLink'
-import style from 'styled-jsx/style'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
 	{
 		html: string
 		source: string
+		screenshot: string
 		w: number
 		h: number
 		linkUploadVersion?: number
@@ -37,6 +38,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		return {
 			html: '',
 			source: '',
+			screenshot: '',
 			w: (960 * 2) / 3,
 			h: (540 * 2) / 3,
 		}
@@ -86,7 +88,26 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			}
 		}, [shape.id, html, linkUploadVersion, uploadedShapeId])
 
-		console.log(shape, uploadedShapeId)
+		useEffect(() => {
+			//listen for screenshot messages
+			if (typeof window !== 'undefined') {
+				const handleEvent = (event: { data: any }) => {
+					if (event.data.shapeid) {
+						this.editor.updateShape({
+							props: { ...shape.props, screenshot: event.data.screenshot },
+							id: shape.id,
+							type: 'preview',
+						})
+					}
+				}
+				window.addEventListener('message', handleEvent)
+
+				return () => {
+					window.removeEventListener('message', handleEvent)
+				}
+			}
+		}, [shape.id, shape.props])
+
 		const isLoading = linkUploadVersion === undefined || uploadedShapeId !== shape.id
 
 		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
@@ -183,6 +204,19 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 				)}
 			</HTMLContainer>
 		)
+	}
+
+	override toSvg(shape: PreviewShape, ctx: SvgExportContext): SVGElement | Promise<SVGElement> {
+		const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+
+		const image = document.createElementNS('http://www.w3.org/2000/svg', 'image')
+		image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', shape.props.screenshot)
+
+		image.setAttribute('width', shape.props.w.toString())
+		image.setAttribute('height', shape.props.h.toString())
+		g.appendChild(image)
+
+		return g
 	}
 
 	indicator(shape: PreviewShape) {
