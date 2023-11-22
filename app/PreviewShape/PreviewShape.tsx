@@ -86,7 +86,6 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			}
 		}, [shape.id, html, linkUploadVersion, uploadedShapeId])
 
-		console.log(shape, uploadedShapeId)
 		const isLoading = linkUploadVersion === undefined || uploadedShapeId !== shape.id
 
 		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
