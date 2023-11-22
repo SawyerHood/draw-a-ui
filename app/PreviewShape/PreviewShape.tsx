@@ -92,7 +92,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			//listen for screenshot messages
 			if (typeof window !== 'undefined') {
 				const handleEvent = (event: { data: any }) => {
-					if (event.data.shapeid) {
+					if (event.data.shapeid === shape.id) {
 						this.editor.updateShape({
 							props: { ...shape.props, screenshot: event.data.screenshot },
 							id: shape.id,
