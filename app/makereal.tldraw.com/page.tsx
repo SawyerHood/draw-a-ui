@@ -2,13 +2,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import dynamic from 'next/dynamic'
 import '@tldraw/tldraw/tldraw.css'
+import dynamic from 'next/dynamic'
 import { PreviewShapeUtil } from '../PreviewShape/PreviewShape'
-import { ExportButton } from '../components/ExportButton'
-import { useBreakpoint } from '@tldraw/tldraw'
 import { APIKeyInput } from '../components/APIKeyInput'
-import { track } from '@vercel/analytics/react'
+import { ExportButton } from '../components/ExportButton'
 import { LockupLink } from '../components/LockupLink'
 
 const Tldraw = dynamic(async () => (await import('@tldraw/tldraw')).Tldraw, {

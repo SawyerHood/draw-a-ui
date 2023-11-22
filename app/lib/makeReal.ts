@@ -1,10 +1,7 @@
-import { Editor, createShapeId, getSvgAsImage, uniqueId } from '@tldraw/tldraw'
+import { Editor, createShapeId, getSvgAsImage } from '@tldraw/tldraw'
+import { track } from '@vercel/analytics/react'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
-import { track } from '@vercel/analytics/react'
-import { kv } from '@vercel/kv'
-import { sql } from '@vercel/postgres'
-import { nanoid } from 'nanoid'
 import { uploadLink } from './uploadLink'
 
 export async function makeReal(editor: Editor, apiKey: string) {
