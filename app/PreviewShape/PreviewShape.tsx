@@ -91,19 +91,24 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		useEffect(() => {
 			//listen for screenshot messages
 			if (typeof window !== 'undefined') {
-				const handleEvent = (event: { data: any }) => {
-					if (event.data.shapeid === shape.id) {
+				const windowListener = (event: MessageEvent) => {
+					if (event.data.screenshot && event.data?.shapeid === shape.id) {
 						this.editor.updateShape({
 							props: { ...shape.props, screenshot: event.data.screenshot },
 							id: shape.id,
 							type: 'preview',
 						})
+						;(window as any).screenshot = {
+							shapeid: event.data.shapeid,
+							screenshot: event.data.screenshot,
+						}
+						console.log('useEffect', (window as any).screenshot.screenshot)
 					}
 				}
-				window.addEventListener('message', handleEvent)
+				window.addEventListener('message', windowListener)
 
 				return () => {
-					window.removeEventListener('message', handleEvent)
+					window.removeEventListener('message', windowListener)
 				}
 			}
 		}, [shape.id, shape.props])
@@ -133,6 +138,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 				) : (
 					<>
 						<iframe
+							id={`iframe-1-${shape.id}`}
 							src={`${uploadUrl}?preview=1&v=${linkUploadVersion}`}
 							width={toDomPrecision(shape.props.w)}
 							height={toDomPrecision(shape.props.h)}
@@ -207,11 +213,31 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 	}
 
 	override toSvg(shape: PreviewShape, ctx: SvgExportContext): SVGElement | Promise<SVGElement> {
+		//request new screenshot
+		const firstLevelIframe = document.getElementById(`iframe-1-${shape.id}`) as HTMLIFrameElement
+		if (firstLevelIframe) {
+			firstLevelIframe.contentWindow.postMessage(
+				{ action: 'take-screenshot', shapeid: shape.id },
+				'*'
+			)
+		} else {
+			console.log('first level iframe not found or not accessible')
+		}
 		const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
 
 		const image = document.createElementNS('http://www.w3.org/2000/svg', 'image')
-		image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', shape.props.screenshot)
 
+		// while screenshot is the same as the old one, keep waiting for a new one
+		console.log((window as any).screenshot.screenshot)
+		setTimeout(() => {
+			console.log('settiimeout')
+			image.setAttributeNS(
+				'http://www.w3.org/1999/xlink',
+				'href',
+				(window as any).screenshot.screenshot
+			)
+			console.log((window as any).screenshot.screenshot)
+		}, 1000)
 		image.setAttribute('width', shape.props.w.toString())
 		image.setAttribute('height', shape.props.h.toString())
 		g.appendChild(image)
