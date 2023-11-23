@@ -191,6 +191,9 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
 		// while screenshot is the same as the old one, keep waiting for a new one
 		return new Promise((resolve, _) => {
+			const timeOut = setTimeout(() => {
+				resolve(g)
+			}, 2000)
 			if (typeof window !== 'undefined') {
 				const windowListener = (event: MessageEvent) => {
 					if (event.data.screenshot && event.data?.shapeid === shape.id) {
@@ -200,6 +203,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						image.setAttribute('height', shape.props.h.toString())
 						g.appendChild(image)
 						window.removeEventListener('message', windowListener)
+						clearTimeout(timeOut)
 						resolve(g)
 					}
 				}
@@ -217,6 +221,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 					console.log('first level iframe not found or not accessible')
 				}
 			} else {
+				clearTimeout(timeOut)
 				resolve(g)
 			}
 		})
