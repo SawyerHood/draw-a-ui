@@ -25,7 +25,6 @@ export default async function LinkPage({
     if (event.data.action === 'take-screenshot' && event.data.shapeid === "shape:${linkId}") {
       html2canvas(document.body, {useCors : true}).then(function(canvas) {
         const data = canvas.toDataURL('image/png');
-		console.log('html2canvas', data)
         window.parent.parent.postMessage({screenshot: data, shapeid: "shape:${linkId}"}, "*");
       });
     }
