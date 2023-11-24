@@ -23,7 +23,6 @@ export type PreviewShape = TLBaseShape<
 	{
 		html: string
 		source: string
-		screenshot: string
 		w: number
 		h: number
 		linkUploadVersion?: number
@@ -38,7 +37,6 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		return {
 			html: '',
 			source: '',
-			screenshot: '',
 			w: (960 * 2) / 3,
 			h: (540 * 2) / 3,
 		}
