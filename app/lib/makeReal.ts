@@ -43,8 +43,6 @@ export async function makeReal(editor: Editor, apiKey: string) {
 
 	const dataUrl = await blobToBase64(blob!)
 
-	console.log({ dataUrl })
-
 	editor.createShape<PreviewShape>({
 		id: newShapeId,
 		type: 'preview',
