@@ -70,7 +70,6 @@ export async function getHtmlFromOpenAI({
 			},
 			body: JSON.stringify(body),
 		})
-		console.log(resp)
 		json = await resp.json()
 	} catch (e) {
 		console.log(e)

@@ -70,6 +70,8 @@ export async function makeReal(editor: Editor, apiKey: string) {
 			throw Error(`${json.error.message?.slice(0, 100)}...`)
 		}
 
+		console.log(`Response: ${json.choices[0].message.content}`)
+
 		const message = json.choices[0].message.content
 		const start = message.indexOf('<!DOCTYPE html>')
 		const end = message.indexOf('</html>')

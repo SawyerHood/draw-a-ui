@@ -20,9 +20,18 @@ export function useMakeReal() {
 
 			console.error(e)
 			toast.addToast({
-				icon: 'cross-2',
 				title: 'Something went wrong',
 				description: `${e.message.slice(0, 100)}`,
+				actions: [
+					{
+						type: 'primary',
+						label: 'Learn more',
+						onClick: () => {
+							// open a new tab with the url...
+							window.open('https://discord.gg/QHqp9f7ejq', '_blank')
+						},
+					},
+				],
 			})
 		}
 	}, [editor, toast])
