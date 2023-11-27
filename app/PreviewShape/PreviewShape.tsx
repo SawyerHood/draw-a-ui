@@ -27,6 +27,7 @@ export type PreviewShape = TLBaseShape<
 		h: number
 		linkUploadVersion?: number
 		uploadedShapeId?: string
+		dateCreated?: number
 	}
 >
 
@@ -39,6 +40,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			source: '',
 			w: (960 * 2) / 3,
 			h: (540 * 2) / 3,
+			dateCreated: Date.now(),
 		}
 	}
 

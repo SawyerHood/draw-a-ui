@@ -1,10 +1,7 @@
-import { Editor, createShapeId, getSvgAsImage, uniqueId } from '@tldraw/tldraw'
+import { Editor, Vec2d, createShapeId, getSvgAsImage, uniqueId } from '@tldraw/tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
 import { track } from '@vercel/analytics/react'
-import { kv } from '@vercel/kv'
-import { sql } from '@vercel/postgres'
-import { nanoid } from 'nanoid'
 import { uploadLink } from './uploadLink'
 
 export async function makeReal(editor: Editor, apiKey: string) {
@@ -21,27 +18,24 @@ export async function makeReal(editor: Editor, apiKey: string) {
 		return shape.type === 'preview'
 	}) as PreviewShape[]
 
-	if (previousPreviews.length > 1) {
-		throw Error(`You can only have one previous design selected.`)
-	}
+	const svg = await editor.getSvg(selectedShapes, {
+		scale: 1,
+		background: true,
+	})
 
-	const previousHtml =
-		previousPreviews.length === 1
-			? previousPreviews[0].props.html
-			: 'No previous design has been provided this time.'
-
-	const svg = await editor.getSvg(selectedShapes)
 	if (!svg) throw Error(`Could not get the SVG.`)
 
 	const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 
 	const blob = await getSvgAsImage(svg, IS_SAFARI, {
 		type: 'png',
-		quality: 1,
+		quality: 0.8,
 		scale: 1,
 	})
 
 	const dataUrl = await blobToBase64(blob!)
+
+	downloadDataURLAsFile(dataUrl, 'tldraw.png')
 
 	editor.createShape<PreviewShape>({
 		id: newShapeId,
@@ -56,13 +50,13 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	}
 
 	const textFromShapes = getSelectionAsText(editor)
+
 	try {
 		const json = await getHtmlFromOpenAI({
 			image: dataUrl,
-			html: previousHtml,
 			apiKey,
 			text: textFromShapes,
-			includesPreviousDesign: previousPreviews.length > 0,
+			previousPreviews,
 			theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 		})
 
@@ -114,20 +108,43 @@ function getSelectionAsText(editor: Editor) {
 
 	const texts = Array.from(selectedShapeDescendantIds)
 		.map((id) => {
-			const shape = editor.getShape(id)
-			if (!shape) return null
-			if (
+			const shape = editor.getShape(id)!
+			return shape
+		})
+		.filter((shape) => {
+			return (
 				shape.type === 'text' ||
 				shape.type === 'geo' ||
 				shape.type === 'arrow' ||
 				shape.type === 'note'
-			) {
-				// @ts-expect-error
-				return shape.props.text
-			}
-			return null
+			)
 		})
-		.filter((v) => v !== null && v !== '')
+		.sort((a, b) => {
+			// top first, then left, based on page position
+			const pageBoundsA = editor.getShapePageBounds(a)
+			const pageBoundsB = editor.getShapePageBounds(b)
+
+			return pageBoundsA.y === pageBoundsB.y
+				? pageBoundsA.x < pageBoundsB.x
+					? -1
+					: 1
+				: pageBoundsA.y < pageBoundsB.y
+				? -1
+				: 1
+		})
+		.map((shape) => {
+			if (!shape) return null
+			// @ts-expect-error
+			return shape.props.text ?? null
+		})
+		.filter((v) => !!v)
 
 	return texts.join('\n')
+}
+
+function downloadDataURLAsFile(dataUrl: string, filename: string) {
+	const link = document.createElement('a')
+	link.href = dataUrl
+	link.download = filename
+	link.click()
 }
