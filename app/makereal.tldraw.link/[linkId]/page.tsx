@@ -23,7 +23,7 @@ export default async function LinkPage({
     // send the screenshot to the parent window
   window.addEventListener('message', function(event) {
     if (event.data.action === 'take-screenshot' && event.data.shapeid === "shape:${linkId}") {
-      html2canvas(document.body, {useCors : true}).then(function(canvas) {
+      html2canvas(document.body, {useCors : true, foreignObjectRendering: true, allowTaint: true }).then(function(canvas) {
         const data = canvas.toDataURL('image/png');
         window.parent.parent.postMessage({screenshot: data, shapeid: "shape:${linkId}"}, "*");
       });
