@@ -35,7 +35,8 @@ export async function makeReal(editor: Editor, apiKey: string) {
 
 	const dataUrl = await blobToBase64(blob!)
 
-	downloadDataURLAsFile(dataUrl, 'tldraw.png')
+	//// For testing, let's see the image
+	// downloadDataURLAsFile(dataUrl, 'tldraw.png')
 
 	editor.createShape<PreviewShape>({
 		id: newShapeId,

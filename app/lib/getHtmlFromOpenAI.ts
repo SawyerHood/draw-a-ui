@@ -68,7 +68,7 @@ export async function getHtmlFromOpenAI({
 		userContent.push(
 			{
 				type: 'text',
-				text: `The designs also included this previous result. Here's the image that led to this result (the result's source image).`,
+				text: `The designs also included one of your previous result. Here's the image that you used as its source:`,
 			},
 			{
 				type: 'image_url',
@@ -79,7 +79,7 @@ export async function getHtmlFromOpenAI({
 			},
 			{
 				type: 'text',
-				text: `...and here's the HTML you came up with for it: ${preview.props.html}`,
+				text: `And here's the HTML you came up with for it: ${preview.props.html}`,
 			}
 		)
 	}
