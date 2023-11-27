@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         content: [
           {
             type: "image_url",
-            image_url: image,
+            image_url: { url: image, detail: "high" },
           },
           "Turn this into a single html file using tailwind.",
         ],
@@ -50,7 +50,13 @@ export async function POST(request: Request) {
 
 type MessageContent =
   | string
-  | (string | { type: "image_url"; image_url: string })[];
+  | (
+      | string
+      | {
+          type: "image_url";
+          image_url: string | { url: string; detail: "low" | "high" | "auto" };
+        }
+    )[];
 
 export type GPT4VCompletionRequest = {
   model: "gpt-4-vision-preview";
