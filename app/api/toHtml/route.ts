@@ -28,7 +28,8 @@ export async function POST(request: Request) {
 
   let json = null;
   try {
-    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+    const url = process.env.OPENAI_PROXY ? `${process.env.OPENAI_PROXY}/chat/completions` : "https://api.openai.com/v1/chat/completions";
+    const resp = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
