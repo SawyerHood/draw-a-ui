@@ -12,6 +12,7 @@
     "@tldraw/tldraw": "2.0.0-alpha.17",
     "canvas-size": "^1.2.6",
     "next": "14.0.1",
+    "next-auth": "^4.24.5",
     "prismjs": "^1.29.0",
     "react": "^18",
     "react-dom": "^18"
