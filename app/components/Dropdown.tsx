@@ -36,7 +36,7 @@ export function Dropdown({
 		}
 	}, [uploadUrl, toast])
 
-	const openInCodeSandBox = useCallback(() => {
+	const openInCodeSandbox = useCallback(() => {
 		window.open(getCodeSandboxUrl(html))
 	}, [html])
 
@@ -64,7 +64,7 @@ export function Dropdown({
 							}}
 						></div>
 						<Item action={() => window.open(uploadUrl)}>Open in new tab</Item>
-						<Item action={openInCodeSandBox}>Open in CodeSandbox</Item>
+						<Item action={openInCodeSandbox}>Open in CodeSandbox</Item>
 						<Item action={openInStackBlitz}>Open in StackBlitz</Item>
 					</div>
 				</DropdownMenu.Content>
