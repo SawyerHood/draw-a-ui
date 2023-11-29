@@ -17,7 +17,6 @@ export function Dropdown({
 }) {
 	const toast = useToasts()
 	const copyHtml = useCallback(() => {
-		console.log('copy link')
 		if (navigator && navigator.clipboard) {
 			navigator.clipboard.writeText(html)
 			toast.addToast({
