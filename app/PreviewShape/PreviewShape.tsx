@@ -142,9 +142,9 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 							}}
 						>
 							<Dropdown boxShadow={boxShadow} html={shape.props.html} uploadUrl={uploadUrl}>
-								<div className="bg-white rounded p-2" style={{ boxShadow }}>
+								<button className="bg-white rounded p-2" style={{ boxShadow }}>
 									<Icon icon="dots-vertical" />
-								</div>
+								</button>
 							</Dropdown>
 						</div>
 						<div
