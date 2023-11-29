@@ -50,7 +50,7 @@ export function Dropdown({
 			<DropdownMenu.Portal>
 				<DropdownMenu.Content side="right" sideOffset={10} align="start">
 					<div
-						style={{ boxShadow, pointerEvents: 'all' }}
+						style={{ boxShadow, pointerEvents: 'all', background: '#fdfdfd' }}
 						className="flex items-start flex-col text-xs bg-white rounded-[9px] w-full p-1"
 					>
 						<Item action={copyLink}>Copy link</Item>
