@@ -79,6 +79,7 @@ function Item({ action, children }: { action: () => void; children: React.ReactN
 			<button
 				onPointerDown={stopEventPropagation}
 				onClick={action}
+				onTouchEnd={action}
 				className=" hover:bg-gray-100 outline-none h-9 px-3 text-left w-full rounded-md box-border"
 				style={{
 					textShadow: '1px 1px #fff',
