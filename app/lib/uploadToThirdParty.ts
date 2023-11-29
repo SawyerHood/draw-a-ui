@@ -11,6 +11,23 @@ export function createStackBlitzProject(html: string) {
 	return stacklitzProject
 }
 
+function createCodePenProject(html: string) {
+	const codePenProject = {
+		title: 'Make real from tldraw',
+		description: 'Your AI generated example made at https://makereal.tldraw.com/',
+		html,
+	}
+	return codePenProject
+}
+
+export function getCodePenUrl(html: string) {
+	const project = createCodePenProject(html)
+	const url = new URL('https://codepen.io/pen/define')
+	const params = new URLSearchParams()
+	params.set('data', JSON.stringify(project))
+	return `${url}?${params.toString()}`
+}
+
 export function getCodeSandboxUrl(html: string) {
 	const project = createCodeSandboxProject(html)
 	return `https://codesandbox.io/api/v1/sandboxes/define?parameters=${project}`

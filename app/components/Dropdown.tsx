@@ -1,7 +1,11 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { stopEventPropagation, useToasts } from '@tldraw/tldraw'
 import { useCallback } from 'react'
-import { createStackBlitzProject, getCodeSandboxUrl } from '../lib/uploadToThirdParty'
+import {
+	createStackBlitzProject,
+	getCodePenUrl,
+	getCodeSandboxUrl,
+} from '../lib/uploadToThirdParty'
 import sdk from '@stackblitz/sdk'
 
 export function Dropdown({
@@ -44,6 +48,10 @@ export function Dropdown({
 		sdk.openProject(createStackBlitzProject(html), { openFile: 'index.html' })
 	}, [html])
 
+	const openInCodePen = useCallback(async () => {
+		window.open(getCodePenUrl(html))
+	}, [html])
+
 	return (
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>{children}</DropdownMenu.Trigger>
@@ -66,6 +74,7 @@ export function Dropdown({
 						<Item action={() => window.open(uploadUrl)}>Open in new tab</Item>
 						<Item action={openInCodeSandbox}>Open in CodeSandbox</Item>
 						<Item action={openInStackBlitz}>Open in StackBlitz</Item>
+						<Item action={openInCodePen}>Open in CodePen</Item>
 					</div>
 				</DropdownMenu.Content>
 			</DropdownMenu.Portal>
