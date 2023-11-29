@@ -1,17 +1,8 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { stopEventPropagation, useToasts } from '@tldraw/tldraw'
 import { useCallback } from 'react'
-import sdk, { Project } from '@stackblitz/sdk'
-
-function createStackBlitzProject(html: string) {
-	const stacklitzProject: Project = {
-		title: 'Make real from tldraw',
-		description: 'Your AI generated example made at https://makereal.tldraw.com/',
-		template: 'html',
-		files: { 'index.html': html },
-	}
-	return stacklitzProject
-}
+import { createStackBlitzProject, getCodeSandboxUrl } from '../lib/uploadToThirdParty'
+import sdk from '@stackblitz/sdk'
 
 export function Dropdown({
 	boxShadow,
@@ -47,13 +38,11 @@ export function Dropdown({
 	}, [uploadUrl, toast])
 
 	const openInCodeSandBox = useCallback(() => {
-		console.log('codesandbox', html)
+		window.open(getCodeSandboxUrl(html))
 	}, [html])
 
 	const openInStackBlitz = useCallback(() => {
-		console.log('oepning')
-		const project = createStackBlitzProject(html)
-		sdk.openProject(project, { openFile: 'index.html' })
+		sdk.openProject(createStackBlitzProject(html), { openFile: 'index.html' })
 	}, [html])
 
 	return (
@@ -63,11 +52,10 @@ export function Dropdown({
 				<DropdownMenu.Content side="right" sideOffset={10} align="start">
 					<div
 						style={{ boxShadow, pointerEvents: 'all' }}
-						className="flex items-start flex-col text-xs bg-white rounded-[9px] w-full p-0.5"
+						className="flex items-start flex-col text-xs bg-white rounded-[9px] w-full p-1"
 					>
-						<Item action={copyHtml}>Copy HTML</Item>
 						<Item action={copyLink}>Copy link</Item>
-						<Item action={() => window.open(uploadUrl)}>Open in new tab</Item>
+						<Item action={copyHtml}>Copy HTML</Item>
 						<div
 							style={{
 								height: '1px',
@@ -76,6 +64,7 @@ export function Dropdown({
 								background: '#e8e8e8',
 							}}
 						></div>
+						<Item action={() => window.open(uploadUrl)}>Open in new tab</Item>
 						<Item action={openInCodeSandBox}>Open in CodeSandbox</Item>
 						<Item action={openInStackBlitz}>Open in StackBlitz</Item>
 					</div>
@@ -88,15 +77,16 @@ export function Dropdown({
 function Item({ action, children }: { action: () => void; children: React.ReactNode }) {
 	return (
 		<DropdownMenu.Item asChild>
-			<div
-				className="flex items-center w-full px-1 h-10 group cursor-pointer"
+			<button
 				onPointerDown={stopEventPropagation}
 				onClick={action}
+				className=" hover:bg-gray-100 outline-none h-9 px-3 text-left w-full rounded-md box-border"
+				style={{
+					textShadow: '1px 1px #fff',
+				}}
 			>
-				<button className="p-2 group-hover:bg-gray-100 text-left h-8 w-full rounded-md">
-					{children}
-				</button>
-			</div>
+				{children}
+			</button>
 		</DropdownMenu.Item>
 	)
 }
