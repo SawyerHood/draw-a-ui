@@ -8,12 +8,10 @@ import {
 	Icon,
 	useToasts,
 	DefaultSpinner,
-	stopEventPropagation,
 	Vec2d,
 	useValue,
 	SvgExportContext,
 } from '@tldraw/tldraw'
-import { UrlLinkButton } from '../components/UrlLinkButton'
 import { LINK_HOST, PROTOCOL } from '../lib/hosts'
 import { useEffect } from 'react'
 import { uploadLink } from '../lib/uploadLink'
