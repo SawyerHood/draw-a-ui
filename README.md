@@ -1,3 +1,5 @@
+> If you want to make your own version of Make Real, check out our [starter repo](https://github.com/tldraw/make-real-starter).
+
 ## make real
 
 Try it out at [makereal.tldraw.com](https://makereal.tldraw.com/)
