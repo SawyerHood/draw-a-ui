@@ -30,6 +30,7 @@ function FAQLink({ breakpoint }: { breakpoint: number }) {
 		<a
 			className={`help__button ${breakpoint < 6 ? 'help__button__mobile' : ''}`}
 			href="https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e?pvs=4"
+			target="_blank"
 		>
 			<div className="bg-[rgb(244 244 244)]  border border-[rgb(221 221 221)]  shadow-sm hover: font-bold p-1 rounded-full">
 				<QuestionMarkIcon />
