@@ -6,10 +6,9 @@ import dynamic from 'next/dynamic'
 import '@tldraw/tldraw/tldraw.css'
 import { PreviewShapeUtil } from '../PreviewShape/PreviewShape'
 import { ExportButton } from '../components/ExportButton'
-import { useBreakpoint } from '@tldraw/tldraw'
 import { APIKeyInput } from '../components/APIKeyInput'
-import { track } from '@vercel/analytics/react'
-import { LockupLink } from '../components/LockupLink'
+
+import { LinkArea } from '../components/LinkArea'
 
 const Tldraw = dynamic(async () => (await import('@tldraw/tldraw')).Tldraw, {
 	ssr: false,
@@ -22,7 +21,7 @@ export default function Home() {
 		<div className="tldraw__editor">
 			<Tldraw persistenceKey="tldraw" shapeUtils={shapeUtils} shareZone={<ExportButton />}>
 				<APIKeyInput />
-				<LockupLink />
+				<LinkArea />
 			</Tldraw>
 		</div>
 	)
