@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+	overscroll-behavior-x: none;
+}
+
 .tlui-help-menu {
 	display: none !important;
 }
