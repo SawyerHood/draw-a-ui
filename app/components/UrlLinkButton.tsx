@@ -25,12 +25,12 @@ export function UrlLinkButton({ uploadUrl }: { uploadUrl: string }) {
 					navigator.clipboard.writeText(uploadUrl)
 					toast.addToast({
 						icon: 'code',
-						title: 'Copied url to clipboard',
+						title: 'Copied link to clipboard',
 					})
 				}
 			}}
 			onPointerDown={stopEventPropagation}
-			title="Copy url to clipboard"
+			title="Copy link to clipboard"
 		>
 			<Icon icon="link" />
 		</button>
