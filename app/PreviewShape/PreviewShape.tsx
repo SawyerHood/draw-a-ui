@@ -4,6 +4,7 @@ import {
 	DefaultSpinner,
 	HTMLContainer,
 	Icon,
+	SvgExportContext,
 	TLBaseShape,
 	Vec2d,
 	stopEventPropagation,
@@ -11,7 +12,6 @@ import {
 	useIsEditing,
 	useToasts,
 	useValue,
-	SvgExportContext,
 } from '@tldraw/tldraw'
 import { useEffect } from 'react'
 import { UrlLinkButton } from '../components/UrlLinkButton'
