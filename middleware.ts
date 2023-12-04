@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { APP_HOST, LINK_HOST } from './app/lib/hosts'
+import { LINK_HOST } from './app/lib/hosts'
 
 export const config = {
 	matcher: [
@@ -27,8 +27,6 @@ export function middleware(req: NextRequest) {
 		// rewrite everything else to the main site:
 		rewrittenUrl.pathname = `/makereal.tldraw.com${rewrittenUrl.pathname}`
 	}
-
-	console.log(`rewriting ${url} to ${rewrittenUrl}`)
 
 	return NextResponse.rewrite(rewrittenUrl)
 }

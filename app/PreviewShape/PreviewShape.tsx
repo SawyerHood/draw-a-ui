@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
-	TLBaseShape,
 	BaseBoxShapeUtil,
-	useIsEditing,
-	HTMLContainer,
-	toDomPrecision,
-	Icon,
-	useToasts,
 	DefaultSpinner,
-	Vec2d,
-	useValue,
+	HTMLContainer,
+	Icon,
 	SvgExportContext,
+	TLBaseShape,
+	Vec2d,
+	toDomPrecision,
+	useIsEditing,
+	useToasts,
+	useValue,
 } from '@tldraw/tldraw'
-import { LINK_HOST, PROTOCOL } from '../lib/hosts'
 import { useEffect } from 'react'
-import { uploadLink } from '../lib/uploadLink'
 import { Dropdown } from '../components/Dropdown'
+import { LINK_HOST, PROTOCOL } from '../lib/hosts'
+import { uploadLink } from '../lib/uploadLink'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
