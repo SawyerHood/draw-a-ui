@@ -20,6 +20,17 @@ export function Dropdown({
 	uploadUrl: string
 }) {
 	const toast = useToasts()
+
+	const copyLink = useCallback(() => {
+		if (navigator && navigator.clipboard) {
+			navigator.clipboard.writeText(uploadUrl)
+			toast.addToast({
+				icon: 'link',
+				title: 'Copied link to clipboard',
+			})
+		}
+	}, [uploadUrl, toast])
+
 	const copyHtml = useCallback(() => {
 		if (navigator && navigator.clipboard) {
 			navigator.clipboard.writeText(html)
@@ -30,16 +41,6 @@ export function Dropdown({
 		}
 	}, [html, toast])
 
-	const copyLink = useCallback(() => {
-		if (navigator && navigator.clipboard) {
-			navigator.clipboard.writeText(uploadUrl)
-			toast.addToast({
-				icon: 'code',
-				title: 'Copied url to clipboard',
-			})
-		}
-	}, [uploadUrl, toast])
-
 	const openInCodeSandbox = useCallback(() => {
 		window.open(getCodeSandboxUrl(html))
 	}, [html])
@@ -48,9 +49,9 @@ export function Dropdown({
 		sdk.openProject(createStackBlitzProject(html), { openFile: 'index.html' })
 	}, [html])
 
-	const openInCodePen = useCallback(async () => {
-		window.open(getCodePenUrl(html))
-	}, [html])
+	// const openInCodePen = useCallback(async () => {
+	// 	window.open(getCodePenUrl(html))
+	// }, [html])
 
 	return (
 		<DropdownMenu.Root>
@@ -66,7 +67,7 @@ export function Dropdown({
 						<div
 							style={{
 								height: '1px',
-								margin: '0 -4px',
+								margin: '4px -4px',
 								width: 'calc(100% + 8px)',
 								background: '#e8e8e8',
 							}}
@@ -74,7 +75,7 @@ export function Dropdown({
 						<Item action={() => window.open(uploadUrl)}>Open in new tab</Item>
 						<Item action={openInCodeSandbox}>Open in CodeSandbox</Item>
 						<Item action={openInStackBlitz}>Open in StackBlitz</Item>
-						<Item action={openInCodePen}>Open in CodePen</Item>
+						{/* <Item action={openInCodePen}>Open in CodePen</Item> */}
 					</div>
 				</DropdownMenu.Content>
 			</DropdownMenu.Portal>
