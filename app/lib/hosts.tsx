@@ -2,8 +2,8 @@ const env =
 	process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
 		? 'production'
 		: process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-		  ? 'preview'
-		  : 'development'
+		? 'preview'
+		: 'development'
 
 export const LINK_HOST = {
 	production: 'makereal.tldraw.link',
