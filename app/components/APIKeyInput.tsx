@@ -27,11 +27,6 @@ export function APIKeyInput() {
 		}
 	}, [])
 
-	const handleQuestionClick = useCallback(() => {
-		const message = `Sorry, this is weird. The OpenAI APIs that we use are very new. If you have an OpenAI developer key, you can put it in this input and we'll use it. We don't save / store / upload these.\n\nSee https://platform.openai.com/api-keys to get a key.\n\nThis app's source code: https://github.com/tldraw/draw-a-ui`
-		window.alert(message)
-	}, [])
-
 	if (isFocusMode) return null
 
 	return (
@@ -47,9 +42,13 @@ export function APIKeyInput() {
 						autoCapitalize="off"
 					/>
 				</div>
-				<button className="question__button" onClick={handleQuestionClick}>
+				<a
+					className="question__button"
+					target="_blank"
+					href="https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e?pvs=4"
+				>
 					<Icon icon={cool ? 'check' : 'question'} />
-				</button>
+				</a>
 			</div>
 		</div>
 	)

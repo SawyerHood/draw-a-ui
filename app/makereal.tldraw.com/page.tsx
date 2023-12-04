@@ -2,12 +2,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import '@tldraw/tldraw/tldraw.css'
 import dynamic from 'next/dynamic'
+import '@tldraw/tldraw/tldraw.css'
 import { PreviewShapeUtil } from '../PreviewShape/PreviewShape'
-import { APIKeyInput } from '../components/APIKeyInput'
 import { ExportButton } from '../components/ExportButton'
-import { LockupLink } from '../components/LockupLink'
+import { APIKeyInput } from '../components/APIKeyInput'
+
+import { LinkArea } from '../components/LinkArea'
 
 const Tldraw = dynamic(async () => (await import('@tldraw/tldraw')).Tldraw, {
 	ssr: false,
@@ -20,7 +21,7 @@ export default function Home() {
 		<div className="tldraw__editor">
 			<Tldraw persistenceKey="tldraw" shapeUtils={shapeUtils} shareZone={<ExportButton />}>
 				<APIKeyInput />
-				<LockupLink />
+				<LinkArea />
 			</Tldraw>
 		</div>
 	)

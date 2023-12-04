@@ -3,7 +3,6 @@ import { useMakeReal } from '../hooks/useMakeReal'
 export function ExportButton() {
 	const makeReal = useMakeReal()
 
-	// A tailwind styled button that is pinned to the bottom right of the screen
 	return (
 		<button
 			onClick={makeReal}

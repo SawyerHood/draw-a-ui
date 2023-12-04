@@ -21,14 +21,17 @@ export function useMakeReal() {
 			console.error(e)
 			toast.addToast({
 				title: 'Something went wrong',
-				description: `${e.message.slice(0, 100)}`,
+				description: `${e.message.slice(0, 200)}`,
 				actions: [
 					{
 						type: 'primary',
-						label: 'Learn more',
+						label: 'Read the guide',
 						onClick: () => {
 							// open a new tab with the url...
-							window.open('https://discord.gg/QHqp9f7ejq', '_blank')
+							window.open(
+								'https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e',
+								'_blank'
+							)
 						},
 					},
 				],
