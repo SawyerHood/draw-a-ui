@@ -10,12 +10,15 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@radix-ui/react-dropdown-menu": "^2.0.6",
+		"@stackblitz/sdk": "^1.9.0",
 		"@tldraw/tldraw": "^2.0.0-canary.ba4091c59418",
 		"@vercel/analytics": "^1.1.1",
 		"@vercel/blob": "^0.15.1",
 		"@vercel/kv": "^1.0.0",
 		"@vercel/postgres": "^0.5.1",
 		"canvas-size": "^1.2.6",
+		"lz-string": "^1.5.0",
 		"nanoid": "^5.0.3",
 		"next": "14.0.1",
 		"prettier": "^3.1.0",

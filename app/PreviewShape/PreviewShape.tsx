@@ -7,14 +7,13 @@ import {
 	SvgExportContext,
 	TLBaseShape,
 	Vec2d,
-	stopEventPropagation,
 	toDomPrecision,
 	useIsEditing,
 	useToasts,
 	useValue,
 } from '@tldraw/tldraw'
 import { useEffect } from 'react'
-import { UrlLinkButton } from '../components/UrlLinkButton'
+import { Dropdown } from '../components/Dropdown'
 import { LINK_HOST, PROTOCOL } from '../lib/hosts'
 import { uploadLink } from '../lib/uploadLink'
 
@@ -125,12 +124,12 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 								borderRadius: 'var(--radius-2)',
 							}}
 						/>
-						<button
+						<div
 							style={{
 								all: 'unset',
 								position: 'absolute',
-								top: 0,
-								right: -40,
+								top: -3,
+								right: -45,
 								height: 40,
 								width: 40,
 								display: 'flex',
@@ -139,21 +138,13 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 								cursor: 'pointer',
 								pointerEvents: 'all',
 							}}
-							onClick={() => {
-								if (navigator && navigator.clipboard) {
-									navigator.clipboard.writeText(shape.props.html)
-									toast.addToast({
-										icon: 'code',
-										title: 'Copied html to clipboard',
-									})
-								}
-							}}
-							onPointerDown={stopEventPropagation}
-							title="Copy code to clipboard"
 						>
-							<Icon icon="code" />
-						</button>
-						<UrlLinkButton uploadUrl={uploadUrl} />
+							<Dropdown boxShadow={boxShadow} html={shape.props.html} uploadUrl={uploadUrl}>
+								<button className="bg-white rounded p-2" style={{ boxShadow }}>
+									<Icon icon="dots-vertical" />
+								</button>
+							</Dropdown>
+						</div>
 						<div
 							style={{
 								textAlign: 'center',
