@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tldraw/tldraw": "2.0.0-alpha.17",
+    "axios": "^1.6.2",
     "canvas-size": "^1.2.6",
     "next": "14.0.1",
     "prismjs": "^1.29.0",

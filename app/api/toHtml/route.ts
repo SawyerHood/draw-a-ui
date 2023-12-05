@@ -1,10 +1,25 @@
+import axios from 'axios';
+
 const systemPrompt = `You are an expert tailwind developer. A user will provide you with a
  low-fidelity wireframe of an application and you will return 
  a single html file that uses tailwind to create the website. Use creative license to make the application more fleshed out.
 if you need to insert an image, use placehold.co to create a placeholder image. Respond only with the html file.`;
 
+
+async function encodeImageFromUrl(imageUrl: string): Promise<string> {
+  const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+  if (response.status !== 200) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const base64 = Buffer.from(response.data, 'binary').toString('base64');
+  return base64;
+}
+
+
 export async function POST(request: Request) {
   const { image } = await request.json();
+  const imageBase64 = await encodeImageFromUrl(image);
+  console.log(imageBase64);
   const body: GPT4VCompletionRequest = {
     model: "gpt-4-vision-preview",
     max_tokens: 4096,
@@ -18,9 +33,13 @@ export async function POST(request: Request) {
         content: [
           {
             type: "image_url",
-            image_url: { url: image, detail: "high" },
+            image_url: { url: 'data:image/jpeg;base64,'+imageBase64, detail: "high" },
           },
-          "Turn this into a single html file using tailwind.",
+          {
+            type: "text",
+            text: "Turn this into a single html file using tailwind.",
+          },
+          
         ],
       },
     ],
@@ -28,7 +47,7 @@ export async function POST(request: Request) {
 
   let json = null;
   try {
-    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+    const resp = await fetch(process.env.OPENAI_BASE_URL+"/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
