@@ -1,6 +1,30 @@
 import { Project } from '@stackblitz/sdk'
 import * as LZString from 'lz-string'
 
+export async function createReplitProject(
+	html: string
+): Promise<{ error: true; url: undefined } | { error: undefined; url: string }> {
+	console.log('fetching from replit')
+
+	try {
+		const response = await fetch('/api/replit', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				html,
+			}),
+		}).then(async (r) => r.json())
+
+		if (response.success) {
+			return { error: undefined, url: response.link }
+		}
+	} catch (e) {
+		console.error(e.message)
+	}
+
+	return { error: true, url: undefined }
+}
+
 export function createStackBlitzProject(html: string) {
 	const stacklitzProject: Project = {
 		title: 'Make real from tldraw',
