@@ -1,5 +1,6 @@
 import { Icon, useBreakpoint, useEditor, useValue } from '@tldraw/tldraw'
 import { ChangeEvent, useCallback, useState } from 'react'
+import { setTimeout } from 'timers'
 
 export function APIKeyInput() {
 	const breakpoint = useBreakpoint()
@@ -10,11 +11,9 @@ export function APIKeyInput() {
 		editor,
 	])
 
-	// Store the API key locally, but ONLY in development mode
+	// Store the API key locally
 	const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-		if (process.env.NODE_ENV === 'development') {
-			localStorage.setItem('makeitreal_key', e.target.value)
-		}
+		localStorage.setItem('makeitreal_key', e.target.value)
 	}, [])
 
 	const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
