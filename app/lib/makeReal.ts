@@ -25,6 +25,59 @@ export async function makeReal(editor: Editor, apiKey: string) {
 
 	if (!svg) throw Error(`Could not get the SVG.`)
 
+	{
+		const [x, y, w, h] = svg
+			.getAttribute('viewBox')!
+			.split(' ')
+			.map((v) => +v)
+
+		const steps = Math.ceil(Math.max(h, w) / 100)
+
+		const grid = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+		grid.setAttribute('transform', `translate(${x}, ${y})`)
+		grid.setAttribute('id', 'grid')
+		grid.setAttribute('stroke', '#0F0')
+		grid.setAttribute('stroke-width', '1')
+		grid.setAttribute('font', '10px/10px normal Serif')
+		grid.setAttribute('fill', '#0F0')
+		grid.setAttribute('text-anchor', 'middle')
+
+		for (let i = 0; i < steps; i++) {
+			if (i > 0) {
+				const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+				verticalLine.setAttribute('x1', `${i * 100}`)
+				verticalLine.setAttribute('y1', '0')
+				verticalLine.setAttribute('x2', `${i * 100}`)
+				verticalLine.setAttribute('y2', `${h}`)
+
+				const horizontalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+				horizontalLine.setAttribute('x1', '0')
+				horizontalLine.setAttribute('y1', `${i * 100}`)
+				horizontalLine.setAttribute('x2', `${w}`)
+				horizontalLine.setAttribute('y2', `${i * 100}`)
+				grid.appendChild(verticalLine)
+				grid.appendChild(horizontalLine)
+			}
+
+			// abcdefg etc
+			const colLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+			colLabel.setAttribute('x', `${i * 100 + 50}`)
+			colLabel.setAttribute('y', '16')
+			colLabel.textContent = String.fromCharCode(97 + i).toUpperCase()
+
+			// abcdefg etc
+			const rowLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+			rowLabel.setAttribute('x', '12')
+			rowLabel.setAttribute('y', `${i * 100 + 50}`)
+			rowLabel.textContent = `${i}`
+
+			grid.appendChild(colLabel)
+			grid.appendChild(rowLabel)
+		}
+
+		svg.appendChild(grid)
+	}
+
 	const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 
 	const blob = await getSvgAsImage(svg, IS_SAFARI, {
@@ -35,8 +88,11 @@ export async function makeReal(editor: Editor, apiKey: string) {
 
 	const dataUrl = await blobToBase64(blob!)
 
-	//// For testing, let's see the image
-	// downloadDataURLAsFile(dataUrl, 'tldraw.png')
+	// {
+	// 	// For testing, let's see the image
+	downloadDataURLAsFile(dataUrl, 'tldraw.png')
+	// 	return
+	// }
 
 	editor.createShape<PreviewShape>({
 		id: newShapeId,
@@ -130,8 +186,8 @@ function getSelectionAsText(editor: Editor) {
 					? -1
 					: 1
 				: pageBoundsA.y < pageBoundsB.y
-				  ? -1
-				  : 1
+					? -1
+					: 1
 		})
 		.map((shape) => {
 			if (!shape) return null
