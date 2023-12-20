@@ -11,9 +11,17 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	// Get the selected shapes (we need at least one)
 	const selectedShapes = editor.getSelectedShapes()
 
-	if (selectedShapes.length === 0) {
-		throw Error('First select something to make real.')
-	}
+	// Create the preview shape
+	const { maxX, midY } = editor.getSelectionPageBounds()
+	if (selectedShapes.length === 0) throw Error('First select something to make real.')
+	const newShapeId = createShapeId()
+	editor.createShape<PreviewShape>({
+		id: newShapeId,
+		type: 'preview',
+		x: maxX + 60, // to the right of the selection
+		y: midY - (540 * 2) / 3 / 2, // half the height of the preview's initial shape
+		props: { html: '', source: '' },
+	})
 
 	// Get an SVG based on the selected shapes
 	const svg = await editor.getSvg(selectedShapes, {
@@ -35,17 +43,6 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	})
 	const dataUrl = await blobToBase64(blob!)
 	// downloadDataURLAsFile(dataUrl, 'tldraw.png')
-
-	// Create the preview shape
-	const { maxX, midY } = editor.getSelectionPageBounds()
-	const newShapeId = createShapeId()
-	editor.createShape<PreviewShape>({
-		id: newShapeId,
-		type: 'preview',
-		x: maxX + 60, // to the right of the selection
-		y: midY - (540 * 2) / 3 / 2, // half the height of the preview's initial shape
-		props: { html: '', source: dataUrl as string },
-	})
 
 	// Get any previous previews among the selected shapes
 	const previousPreviews = selectedShapes.filter((shape) => {
