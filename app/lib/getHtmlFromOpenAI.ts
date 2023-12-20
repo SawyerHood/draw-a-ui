@@ -33,21 +33,21 @@ export async function getHtmlFromOpenAI({
 
 	const userContent = messages[1].content as Exclude<MessageContent, string>
 
+	// Add the prompt into
+	userContent.push({
+		type: 'text',
+		text:
+			previousPreviews.length > 0 ? OPENAI_USER_PROMPT_WITH_PREVIOUS_DESIGN : OPENAI_USER_PROMPT,
+	})
+
 	// Add the image
-	userContent.push(
-		{
-			type: 'text',
-			text:
-				previousPreviews.length > 0 ? OPENAI_USER_PROMPT_WITH_PREVIOUS_DESIGN : OPENAI_USER_PROMPT,
+	userContent.push({
+		type: 'image_url',
+		image_url: {
+			url: image,
+			detail: 'high',
 		},
-		{
-			type: 'image_url',
-			image_url: {
-				url: image,
-				detail: 'high',
-			},
-		}
-	)
+	})
 
 	// Add the strings of text
 	if (text) {

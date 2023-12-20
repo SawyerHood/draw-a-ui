@@ -1,4 +1,4 @@
-import { Editor, createShapeId, getSvgAsImage } from '@tldraw/tldraw'
+import { Editor, TLGeoShape, TLTextShape, createShapeId, getSvgAsImage } from '@tldraw/tldraw'
 import { track } from '@vercel/analytics/react'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
@@ -25,58 +25,56 @@ export async function makeReal(editor: Editor, apiKey: string) {
 
 	if (!svg) throw Error(`Could not get the SVG.`)
 
-	{
-		const [x, y, w, h] = svg
-			.getAttribute('viewBox')!
-			.split(' ')
-			.map((v) => +v)
+	// {
+	// 	const [x, y, w, h] = svg
+	// 		.getAttribute('viewBox')!
+	// 		.split(' ')
+	// 		.map((v) => +v)
 
-		const steps = Math.ceil(Math.max(h, w) / 100)
+	// 	const steps = Math.ceil(Math.max(h, w) / 100)
 
-		const grid = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-		grid.setAttribute('transform', `translate(${x}, ${y})`)
-		grid.setAttribute('id', 'grid')
-		grid.setAttribute('stroke', '#F00')
-		grid.setAttribute('stroke-width', '1')
-		// grid.setAttribute('font', '10px/10px normal Serif')
-		// grid.setAttribute('fill', '#F00')
-		// grid.setAttribute('text-anchor', 'middle')
+	// 	const grid = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+	// 	grid.setAttribute('transform', `translate(${x}, ${y})`)
+	// 	grid.setAttribute('id', 'grid')
+	// 	grid.setAttribute('stroke', '#00F')
+	// 	grid.setAttribute('stroke-width', '1')
+	// 	grid.setAttribute('font', '10px/10px normal Serif')
+	// 	grid.setAttribute('fill', '#00F')
+	// 	grid.setAttribute('text-anchor', 'middle')
 
-		for (let i = 0; i < steps; i++) {
-			if (i > 0) {
-				const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-				verticalLine.setAttribute('x1', `${i * 100}`)
-				verticalLine.setAttribute('y1', '0')
-				verticalLine.setAttribute('x2', `${i * 100}`)
-				verticalLine.setAttribute('y2', `${h}`)
+	// 	for (let i = 0; i < steps; i++) {
+	// 		if (i > 0) {
+	// 			const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+	// 			verticalLine.setAttribute('x1', `${i * 100}`)
+	// 			verticalLine.setAttribute('y1', '0')
+	// 			verticalLine.setAttribute('x2', `${i * 100}`)
+	// 			verticalLine.setAttribute('y2', `${h}`)
 
-				const horizontalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-				horizontalLine.setAttribute('x1', '0')
-				horizontalLine.setAttribute('y1', `${i * 100}`)
-				horizontalLine.setAttribute('x2', `${w}`)
-				horizontalLine.setAttribute('y2', `${i * 100}`)
-				grid.appendChild(verticalLine)
-				grid.appendChild(horizontalLine)
-			}
+	// 			const horizontalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+	// 			horizontalLine.setAttribute('x1', '0')
+	// 			horizontalLine.setAttribute('y1', `${i * 100}`)
+	// 			horizontalLine.setAttribute('x2', `${w}`)
+	// 			horizontalLine.setAttribute('y2', `${i * 100}`)
+	// 			grid.appendChild(verticalLine)
+	// 			grid.appendChild(horizontalLine)
+	// 		}
 
-			// // abcdefg etc
-			// const colLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-			// colLabel.setAttribute('x', `${i * 100 + 50}`)
-			// colLabel.setAttribute('y', '16')
-			// colLabel.textContent = String.fromCharCode(97 + i).toUpperCase()
+	// 		const colLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+	// 		colLabel.setAttribute('x', `${i * 100 + 50}`)
+	// 		colLabel.setAttribute('y', '16')
+	// 		colLabel.textContent = String.fromCharCode(97 + i).toUpperCase()
 
-			// // abcdefg etc
-			// const rowLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-			// rowLabel.setAttribute('x', '12')
-			// rowLabel.setAttribute('y', `${i * 100 + 50}`)
-			// rowLabel.textContent = `${i}`
+	// 		const rowLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+	// 		rowLabel.setAttribute('x', '12')
+	// 		rowLabel.setAttribute('y', `${i * 100 + 50}`)
+	// 		rowLabel.textContent = `${i}`
 
-			// grid.appendChild(colLabel)
-			// grid.appendChild(rowLabel)
-		}
+	// 		grid.appendChild(colLabel)
+	// 		grid.appendChild(rowLabel)
+	// 	}
 
-		svg.appendChild(grid)
-	}
+	// 	svg.appendChild(grid)
+	// }
 
 	const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 
@@ -124,6 +122,7 @@ export async function makeReal(editor: Editor, apiKey: string) {
 		console.log(`Response: ${json.choices[0].message.content}`)
 
 		const message = json.choices[0].message.content
+
 		const start = message.indexOf('<!DOCTYPE html>')
 		const end = message.indexOf('</html>')
 		const html = message.slice(start, end + '</html>'.length)
@@ -189,19 +188,15 @@ function getSelectionAsText(editor: Editor) {
 					? -1
 					: 1
 		})
-		.map((shape) => {
+		.map((shape: TLTextShape | TLGeoShape) => {
 			if (!shape) return null
-			// @ts-expect-error
-			return shape.props.text ?? null
+			const text = shape.props.text ?? null
+			if (shape.props.color === 'red') {
+				return `Annotation: ${text}`
+			}
+			return text
 		})
 		.filter((v) => !!v)
 
 	return texts.join('\n')
-}
-
-function downloadDataURLAsFile(dataUrl: string, filename: string) {
-	const link = document.createElement('a')
-	link.href = dataUrl
-	link.download = filename
-	link.click()
 }
