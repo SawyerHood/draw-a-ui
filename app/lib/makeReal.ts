@@ -30,7 +30,8 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	})
 
 	// Add the grid lines to the SVG
-	addGridToSvg(svg, { color: '#F00', size: 100, labels: true })
+	const grid = { color: 'red', size: 100, labels: true }
+	addGridToSvg(svg, grid)
 
 	if (!svg) throw Error(`Could not get the SVG.`)
 
@@ -60,6 +61,7 @@ export async function makeReal(editor: Editor, apiKey: string) {
 			apiKey,
 			text: getSelectionAsText(editor),
 			previousPreviews,
+			grid,
 			theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 		})
 
