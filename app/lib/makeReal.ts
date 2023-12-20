@@ -186,8 +186,8 @@ function getSelectionAsText(editor: Editor) {
 					? -1
 					: 1
 				: pageBoundsA.y < pageBoundsB.y
-					? -1
-					: 1
+				  ? -1
+				  : 1
 		})
 		.map((shape) => {
 			if (!shape) return null

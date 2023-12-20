@@ -5,21 +5,19 @@ import {
 	OPEN_AI_SYSTEM_PROMPT,
 } from '../prompt'
 
-export async function getHtmlFromOpenAI(
-	{
-		image,
-		apiKey,
-		text,
-		theme = 'light',
-		previousPreviews,
-	}: {
-		image: string
-		apiKey: string
-		text: string
-		theme?: string
-		previousPreviews?: PreviewShape[]
-	}
-) {
+export async function getHtmlFromOpenAI({
+	image,
+	apiKey,
+	text,
+	theme = 'light',
+	previousPreviews,
+}: {
+	image: string
+	apiKey: string
+	text: string
+	theme?: string
+	previousPreviews?: PreviewShape[]
+}) {
 	if (!apiKey) throw Error('You need to provide an API key (sorry)')
 
 	const messages: GPT4VCompletionRequest['messages'] = [
@@ -97,6 +95,8 @@ export async function getHtmlFromOpenAI(
 		max_tokens: 4096,
 		temperature: 0,
 		messages,
+		seed: 42,
+		n: 1,
 	}
 
 	let json = null
@@ -154,6 +154,7 @@ export type GPT4VCompletionRequest = {
 	best_of?: number | undefined
 	frequency_penalty?: number | undefined
 	presence_penalty?: number | undefined
+	seed?: number | undefined
 	logit_bias?:
 		| {
 				[x: string]: number

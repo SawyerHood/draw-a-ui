@@ -4,9 +4,13 @@ import { LinkComponent } from '../../components/LinkComponent'
 
 export const dynamic = 'force-dynamic'
 
-export default async function LinkPage(
-	{ params, searchParams }: { params: { linkId: string }; searchParams: { preview?: string } }
-) {
+export default async function LinkPage({
+	params,
+	searchParams,
+}: {
+	params: { linkId: string }
+	searchParams: { preview?: string }
+}) {
 	const { linkId } = params
 	const isPreview = !!searchParams.preview
 
