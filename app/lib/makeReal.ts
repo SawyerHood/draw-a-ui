@@ -1,84 +1,90 @@
 import { Editor, createShapeId, getSvgAsImage } from '@tldraw/tldraw'
 import { track } from '@vercel/analytics/react'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
+import { addGridToSvg } from './addGridToSvg'
+import { blobToBase64 } from './blobToBase64'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
+import { getSelectionAsText } from './getSelectionAsText'
 import { uploadLink } from './uploadLink'
 
 export async function makeReal(editor: Editor, apiKey: string) {
-	const newShapeId = createShapeId()
+	// Get the selected shapes (we need at least one)
 	const selectedShapes = editor.getSelectedShapes()
 
-	if (selectedShapes.length === 0) {
-		throw Error('First select something to make real.')
-	}
-
+	// Create the preview shape
 	const { maxX, midY } = editor.getSelectionPageBounds()
-
-	const previousPreviews = selectedShapes.filter((shape) => {
-		return shape.type === 'preview'
-	}) as PreviewShape[]
-
-	const svg = await editor.getSvg(selectedShapes, {
-		scale: 1,
-		background: true,
-	})
-
-	if (!svg) throw Error(`Could not get the SVG.`)
-
-	const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-
-	const blob = await getSvgAsImage(svg, IS_SAFARI, {
-		type: 'png',
-		quality: 0.8,
-		scale: 1,
-	})
-
-	const dataUrl = await blobToBase64(blob!)
-
-	//// For testing, let's see the image
-	// downloadDataURLAsFile(dataUrl, 'tldraw.png')
-
+	if (selectedShapes.length === 0) throw Error('First select something to make real.')
+	const newShapeId = createShapeId()
 	editor.createShape<PreviewShape>({
 		id: newShapeId,
 		type: 'preview',
 		x: maxX + 60, // to the right of the selection
 		y: midY - (540 * 2) / 3 / 2, // half the height of the preview's initial shape
-		props: { html: '', source: dataUrl as string },
+		props: { html: '', source: '' },
 	})
+
+	// Get an SVG based on the selected shapes
+	const svg = await editor.getSvg(selectedShapes, {
+		scale: 1,
+		background: true,
+	})
+
+	// Add the grid lines to the SVG
+	const grid = { color: 'red', size: 100, labels: true }
+	addGridToSvg(svg, grid)
+
+	if (!svg) throw Error(`Could not get the SVG.`)
+
+	// Turn the SVG into a DataUrl
+	const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+	const blob = await getSvgAsImage(svg, IS_SAFARI, {
+		type: 'png',
+		quality: 0.8,
+		scale: 1,
+	})
+	const dataUrl = await blobToBase64(blob!)
+	// downloadDataURLAsFile(dataUrl, 'tldraw.png')
+
+	// Get any previous previews among the selected shapes
+	const previousPreviews = selectedShapes.filter((shape) => {
+		return shape.type === 'preview'
+	}) as PreviewShape[]
 
 	if (previousPreviews.length > 0) {
 		track('repeat_make_real', { timestamp: Date.now() })
 	}
 
-	const textFromShapes = getSelectionAsText(editor)
-
+	// Send everything to OpenAI and get some HTML back
 	try {
 		const json = await getHtmlFromOpenAI({
 			image: dataUrl,
 			apiKey,
-			text: textFromShapes,
+			text: getSelectionAsText(editor),
 			previousPreviews,
+			grid,
 			theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 		})
 
 		if (json.error) {
-			throw Error(`${json.error.message?.slice(0, 100)}...`)
+			throw Error(`${json.error.message?.slice(0, 128)}...`)
 		}
 
-		console.log(`Response: ${json.choices[0].message.content}`)
-
+		// Extract the HTML from the response
 		const message = json.choices[0].message.content
 		const start = message.indexOf('<!DOCTYPE html>')
 		const end = message.indexOf('</html>')
 		const html = message.slice(start, end + '</html>'.length)
 
+		// No HTML? Something went wrong
 		if (html.length < 100) {
 			console.warn(message)
 			throw Error('Could not generate a design from those wireframes.')
 		}
 
+		// Upload the HTML / link for the shape
 		await uploadLink(newShapeId, html)
 
+		// Update the shape with the new props
 		editor.updateShape<PreviewShape>({
 			id: newShapeId,
 			type: 'preview',
@@ -89,63 +95,11 @@ export async function makeReal(editor: Editor, apiKey: string) {
 				uploadedShapeId: newShapeId,
 			},
 		})
+
+		console.log(`Response: ${message}`)
 	} catch (e) {
+		// If anything went wrong, delete the shape.
 		editor.deleteShape(newShapeId)
 		throw e
 	}
-}
-
-export function blobToBase64(blob: Blob): Promise<string> {
-	return new Promise((resolve, _) => {
-		const reader = new FileReader()
-		reader.onloadend = () => resolve(reader.result as string)
-		reader.readAsDataURL(blob)
-	})
-}
-
-function getSelectionAsText(editor: Editor) {
-	const selectedShapeIds = editor.getSelectedShapeIds()
-	const selectedShapeDescendantIds = editor.getShapeAndDescendantIds(selectedShapeIds)
-
-	const texts = Array.from(selectedShapeDescendantIds)
-		.map((id) => {
-			const shape = editor.getShape(id)!
-			return shape
-		})
-		.filter((shape) => {
-			return (
-				shape.type === 'text' ||
-				shape.type === 'geo' ||
-				shape.type === 'arrow' ||
-				shape.type === 'note'
-			)
-		})
-		.sort((a, b) => {
-			// top first, then left, based on page position
-			const pageBoundsA = editor.getShapePageBounds(a)
-			const pageBoundsB = editor.getShapePageBounds(b)
-
-			return pageBoundsA.y === pageBoundsB.y
-				? pageBoundsA.x < pageBoundsB.x
-					? -1
-					: 1
-				: pageBoundsA.y < pageBoundsB.y
-				  ? -1
-				  : 1
-		})
-		.map((shape) => {
-			if (!shape) return null
-			// @ts-expect-error
-			return shape.props.text ?? null
-		})
-		.filter((v) => !!v)
-
-	return texts.join('\n')
-}
-
-function downloadDataURLAsFile(dataUrl: string, filename: string) {
-	const link = document.createElement('a')
-	link.href = dataUrl
-	link.download = filename
-	link.click()
 }

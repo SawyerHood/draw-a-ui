@@ -5,21 +5,25 @@ import {
 	OPEN_AI_SYSTEM_PROMPT,
 } from '../prompt'
 
-export async function getHtmlFromOpenAI(
-	{
-		image,
-		apiKey,
-		text,
-		theme = 'light',
-		previousPreviews,
-	}: {
-		image: string
-		apiKey: string
-		text: string
-		theme?: string
-		previousPreviews?: PreviewShape[]
+export async function getHtmlFromOpenAI({
+	image,
+	apiKey,
+	text,
+	grid,
+	theme = 'light',
+	previousPreviews,
+}: {
+	image: string
+	apiKey: string
+	text: string
+	theme?: string
+	grid?: {
+		color: string
+		size: number
+		labels: boolean
 	}
-) {
+	previousPreviews?: PreviewShape[]
+}) {
 	if (!apiKey) throw Error('You need to provide an API key (sorry)')
 
 	const messages: GPT4VCompletionRequest['messages'] = [
@@ -35,21 +39,21 @@ export async function getHtmlFromOpenAI(
 
 	const userContent = messages[1].content as Exclude<MessageContent, string>
 
+	// Add the prompt into
+	userContent.push({
+		type: 'text',
+		text:
+			previousPreviews.length > 0 ? OPENAI_USER_PROMPT_WITH_PREVIOUS_DESIGN : OPENAI_USER_PROMPT,
+	})
+
 	// Add the image
-	userContent.push(
-		{
-			type: 'text',
-			text:
-				previousPreviews.length > 0 ? OPENAI_USER_PROMPT_WITH_PREVIOUS_DESIGN : OPENAI_USER_PROMPT,
+	userContent.push({
+		type: 'image_url',
+		image_url: {
+			url: image,
+			detail: 'high',
 		},
-		{
-			type: 'image_url',
-			image_url: {
-				url: image,
-				detail: 'high',
-			},
-		}
-	)
+	})
 
 	// Add the strings of text
 	if (text) {
@@ -57,10 +61,12 @@ export async function getHtmlFromOpenAI(
 			type: 'text',
 			text: `Here's a list of text that we found in the design:\n${text}`,
 		})
-	} else {
+	}
+
+	if (grid) {
 		userContent.push({
 			type: 'text',
-			text: `There wasn't any text in this design. You'll have to work from just the images.`,
+			text: `The designs have a ${grid.color} grid overlaid on top. Each cell of the grid is ${grid.size}x${grid.size}px.`,
 		})
 	}
 
@@ -97,6 +103,8 @@ export async function getHtmlFromOpenAI(
 		max_tokens: 4096,
 		temperature: 0,
 		messages,
+		seed: 42,
+		n: 1,
 	}
 
 	let json = null
@@ -154,6 +162,7 @@ export type GPT4VCompletionRequest = {
 	best_of?: number | undefined
 	frequency_penalty?: number | undefined
 	presence_penalty?: number | undefined
+	seed?: number | undefined
 	logit_bias?:
 		| {
 				[x: string]: number
