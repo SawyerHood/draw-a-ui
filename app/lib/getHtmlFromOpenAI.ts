@@ -61,11 +61,6 @@ export async function getHtmlFromOpenAI({
 			type: 'text',
 			text: `Here's a list of text that we found in the design:\n${text}`,
 		})
-	} else {
-		userContent.push({
-			type: 'text',
-			text: `There wasn't any text in this design. You'll have to work from just the images.`,
-		})
 	}
 
 	if (grid) {
