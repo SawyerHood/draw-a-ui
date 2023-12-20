@@ -36,11 +36,11 @@ export async function makeReal(editor: Editor, apiKey: string) {
 		const grid = document.createElementNS('http://www.w3.org/2000/svg', 'g')
 		grid.setAttribute('transform', `translate(${x}, ${y})`)
 		grid.setAttribute('id', 'grid')
-		grid.setAttribute('stroke', '#0F0')
+		grid.setAttribute('stroke', '#F00')
 		grid.setAttribute('stroke-width', '1')
-		grid.setAttribute('font', '10px/10px normal Serif')
-		grid.setAttribute('fill', '#0F0')
-		grid.setAttribute('text-anchor', 'middle')
+		// grid.setAttribute('font', '10px/10px normal Serif')
+		// grid.setAttribute('fill', '#F00')
+		// grid.setAttribute('text-anchor', 'middle')
 
 		for (let i = 0; i < steps; i++) {
 			if (i > 0) {
@@ -59,20 +59,20 @@ export async function makeReal(editor: Editor, apiKey: string) {
 				grid.appendChild(horizontalLine)
 			}
 
-			// abcdefg etc
-			const colLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-			colLabel.setAttribute('x', `${i * 100 + 50}`)
-			colLabel.setAttribute('y', '16')
-			colLabel.textContent = String.fromCharCode(97 + i).toUpperCase()
+			// // abcdefg etc
+			// const colLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+			// colLabel.setAttribute('x', `${i * 100 + 50}`)
+			// colLabel.setAttribute('y', '16')
+			// colLabel.textContent = String.fromCharCode(97 + i).toUpperCase()
 
-			// abcdefg etc
-			const rowLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-			rowLabel.setAttribute('x', '12')
-			rowLabel.setAttribute('y', `${i * 100 + 50}`)
-			rowLabel.textContent = `${i}`
+			// // abcdefg etc
+			// const rowLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+			// rowLabel.setAttribute('x', '12')
+			// rowLabel.setAttribute('y', `${i * 100 + 50}`)
+			// rowLabel.textContent = `${i}`
 
-			grid.appendChild(colLabel)
-			grid.appendChild(rowLabel)
+			// grid.appendChild(colLabel)
+			// grid.appendChild(rowLabel)
 		}
 
 		svg.appendChild(grid)
@@ -91,7 +91,7 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	// {
 	// 	// For testing, let's see the image
 	// downloadDataURLAsFile(dataUrl, 'tldraw.png')
-	// 	return
+	// return
 	// }
 
 	editor.createShape<PreviewShape>({
@@ -186,8 +186,8 @@ function getSelectionAsText(editor: Editor) {
 					? -1
 					: 1
 				: pageBoundsA.y < pageBoundsB.y
-				  ? -1
-				  : 1
+					? -1
+					: 1
 		})
 		.map((shape) => {
 			if (!shape) return null
