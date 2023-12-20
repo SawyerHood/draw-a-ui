@@ -6,6 +6,8 @@ The designs you receive may include wireframes, flow charts, diagrams, labels, a
 
 You NEVER include red elements or any other annotations in your final result.
 
+The designs have a red grid overlaid on top. Each cell of the grid is 100x100px.
+
 You may also be provided with text for the design. This text is provided as a list of strings, separated by newlines. You use the provided list of text from the wireframes as a reference if any text is hard to read.
 
 # Building your prototype
