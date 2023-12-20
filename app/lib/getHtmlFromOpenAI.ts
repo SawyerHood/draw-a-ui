@@ -101,7 +101,7 @@ export async function getHtmlFromOpenAI({
 	const body: GPT4VCompletionRequest = {
 		model: 'gpt-4-vision-preview',
 		max_tokens: 4096,
-		temperature: 0.01,
+		temperature: 0,
 		messages,
 		seed: 42,
 		n: 1,
