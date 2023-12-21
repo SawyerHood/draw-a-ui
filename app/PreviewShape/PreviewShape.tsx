@@ -3,7 +3,6 @@ import {
 	BaseBoxShapeUtil,
 	DefaultSpinner,
 	HTMLContainer,
-	Icon,
 	SvgExportContext,
 	TLBaseShape,
 	Vec2d,
@@ -12,10 +11,6 @@ import {
 	useToasts,
 	useValue,
 } from '@tldraw/tldraw'
-import { useEffect } from 'react'
-import { Dropdown } from '../components/Dropdown'
-import { LINK_HOST, PROTOCOL } from '../lib/hosts'
-import { uploadLink } from '../lib/uploadLink'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
@@ -65,31 +60,31 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		const { html, linkUploadVersion, uploadedShapeId } = shape.props
 
 		// upload the html if we haven't already:
-		useEffect(() => {
-			let isCancelled = false
-			if (html && (linkUploadVersion === undefined || uploadedShapeId !== shape.id)) {
-				;(async () => {
-					await uploadLink(shape.id, html)
-					if (isCancelled) return
+		// useEffect(() => {
+		// 	let isCancelled = false
+		// 	if (html && (linkUploadVersion === undefined || uploadedShapeId !== shape.id)) {
+		// 		;(async () => {
+		// 			await uploadLink(shape.id, html)
+		// 			if (isCancelled) return
 
-					this.editor.updateShape<PreviewShape>({
-						id: shape.id,
-						type: 'preview',
-						props: {
-							linkUploadVersion: 1,
-							uploadedShapeId: shape.id,
-						},
-					})
-				})()
-			}
-			return () => {
-				isCancelled = true
-			}
-		}, [shape.id, html, linkUploadVersion, uploadedShapeId])
+		// 			this.editor.updateShape<PreviewShape>({
+		// 				id: shape.id,
+		// 				type: 'preview',
+		// 				props: {
+		// 					linkUploadVersion: 1,
+		// 					uploadedShapeId: shape.id,
+		// 				},
+		// 			})
+		// 		})()
+		// 	}
+		// 	return () => {
+		// 		isCancelled = true
+		// 	}
+		// }, [shape.id, html, linkUploadVersion, uploadedShapeId])
 
 		const isLoading = linkUploadVersion === undefined || uploadedShapeId !== shape.id
 
-		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
+		// const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
 
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
@@ -110,69 +105,19 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						<DefaultSpinner />
 					</div>
 				) : (
-					<>
-						<iframe
-							id={`iframe-1-${shape.id}`}
-							src={`${uploadUrl}?preview=1&v=${linkUploadVersion}`}
-							width={toDomPrecision(shape.props.w)}
-							height={toDomPrecision(shape.props.h)}
-							draggable={false}
-							style={{
-								pointerEvents: isEditing ? 'auto' : 'none',
-								boxShadow,
-								border: '1px solid var(--color-panel-contrast)',
-								borderRadius: 'var(--radius-2)',
-							}}
-						/>
-						<div
-							style={{
-								all: 'unset',
-								position: 'absolute',
-								top: -3,
-								right: -45,
-								height: 40,
-								width: 40,
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-								cursor: 'pointer',
-								pointerEvents: 'all',
-							}}
-						>
-							<Dropdown boxShadow={boxShadow} html={shape.props.html} uploadUrl={uploadUrl}>
-								<button className="bg-white rounded p-2" style={{ boxShadow }}>
-									<Icon icon="dots-vertical" />
-								</button>
-							</Dropdown>
-						</div>
-						<div
-							style={{
-								textAlign: 'center',
-								position: 'absolute',
-								bottom: isEditing ? -40 : 0,
-								padding: 4,
-								fontFamily: 'inherit',
-								fontSize: 12,
-								left: 0,
-								width: '100%',
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-								pointerEvents: 'none',
-							}}
-						>
-							<span
-								style={{
-									background: 'var(--color-panel)',
-									padding: '4px 12px',
-									borderRadius: 99,
-									border: '1px solid var(--color-muted-1)',
-								}}
-							>
-								{isEditing ? 'Click the canvas to exit' : 'Double click to interact'}
-							</span>
-						</div>
-					</>
+					<iframe
+						id={`iframe-1-${shape.id}`}
+						// src={`${uploadUrl}?preview=1&v=${linkUploadVersion}`}
+						width={toDomPrecision(shape.props.w)}
+						height={toDomPrecision(shape.props.h)}
+						draggable={false}
+						style={{
+							pointerEvents: isEditing ? 'auto' : 'none',
+							boxShadow,
+							border: '1px solid var(--color-panel-contrast)',
+							borderRadius: 'var(--radius-2)',
+						}}
+					/>
 				)}
 			</HTMLContainer>
 		)
