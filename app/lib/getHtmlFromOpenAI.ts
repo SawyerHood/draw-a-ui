@@ -120,7 +120,7 @@ export async function getHtmlFromOpenAI({
 		})
 		json = await resp.json()
 	} catch (e) {
-		console.log(e)
+		throw Error(`Could not contact OpenAI: ${e.message}`)
 	}
 
 	return json

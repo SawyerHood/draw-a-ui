@@ -19,6 +19,7 @@ export function useMakeReal() {
 			track('no_luck', { timestamp: Date.now() })
 
 			console.error(e)
+
 			toast.addToast({
 				title: 'Something went wrong',
 				description: `${e.message.slice(0, 200)}`,

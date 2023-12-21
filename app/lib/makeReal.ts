@@ -65,7 +65,11 @@ export async function makeReal(editor: Editor, apiKey: string) {
 			theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 		})
 
-		if (json.error) {
+		if (!json) {
+			throw Error('Could not contact OpenAI.')
+		}
+
+		if (json?.error) {
 			throw Error(`${json.error.message?.slice(0, 128)}...`)
 		}
 
