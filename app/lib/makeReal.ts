@@ -11,9 +11,10 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	// Get the selected shapes (we need at least one)
 	const selectedShapes = editor.getSelectedShapes()
 
+	if (selectedShapes.length === 0) throw Error('First select something to make real.')
+
 	// Create the preview shape
 	const { maxX, midY } = editor.getSelectionPageBounds()
-	if (selectedShapes.length === 0) throw Error('First select something to make real.')
 	const newShapeId = createShapeId()
 	editor.createShape<PreviewShape>({
 		id: newShapeId,
