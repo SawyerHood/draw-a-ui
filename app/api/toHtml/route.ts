@@ -50,8 +50,12 @@ type MessageContent =
   | (
       | string
       | {
-          type: "image_url";
-          image_url: string | { url: string; detail: "low" | "high" | "auto" };
+          type: "text" | "image_url";
+          text?: string;
+          image_url?: {
+            url: string;
+            detail?: "low" | "high" | "auto";
+          };
         }
     )[];
 
