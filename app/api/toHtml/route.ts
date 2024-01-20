@@ -10,25 +10,22 @@ export async function POST(request: Request) {
     max_tokens: 4096,
     messages: [
       {
-        role: "system",
-        content: systemPrompt,
-      },
-      {
-        role: "user",
-        content: [
+        "role": "user",
+        "content": [
+          {"type": "text", "text": systemPrompt},
           {
-            type: "image_url",
+            "type": "image_url",
             image_url: { url: image, detail: "high" },
           },
-          "Turn this into a single html file using tailwind.",
+          {"type": "text", "text":  "Turn this into a single html file using tailwind."},
         ],
-      },
+      }
     ],
   };
 
   let json = null;
   try {
-    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+    const resp = await fetch(`${process.env.OPENAI_BASE_URL}/v1/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
