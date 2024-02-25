@@ -3,9 +3,9 @@ import {
 	BaseBoxShapeUtil,
 	DefaultSpinner,
 	HTMLContainer,
-	Icon,
 	SvgExportContext,
 	TLBaseShape,
+	TldrawUiIcon,
 	Vec,
 	toDomPrecision,
 	useIsEditing,
@@ -118,6 +118,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 							height={toDomPrecision(shape.props.h)}
 							draggable={false}
 							style={{
+								backgroundColor: 'var(--color-panel)',
 								pointerEvents: isEditing ? 'auto' : 'none',
 								boxShadow,
 								border: '1px solid var(--color-panel-contrast)',
@@ -141,7 +142,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 						>
 							<Dropdown boxShadow={boxShadow} html={shape.props.html} uploadUrl={uploadUrl}>
 								<button className="bg-white rounded p-2" style={{ boxShadow }}>
-									<Icon icon="dots-vertical" />
+									<TldrawUiIcon icon="dots-vertical" />
 								</button>
 							</Dropdown>
 						</div>

@@ -19,7 +19,11 @@ const shapeUtils = [PreviewShapeUtil]
 export default function Home() {
 	return (
 		<div className="tldraw__editor">
-			<Tldraw persistenceKey="tldraw" shapeUtils={shapeUtils} shareZone={<ExportButton />}>
+			<Tldraw
+				persistenceKey="tldraw"
+				shapeUtils={shapeUtils}
+				components={{ SharePanel: () => <ExportButton /> }}
+			>
 				<APIKeyInput />
 				<LinkArea />
 			</Tldraw>

@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@radix-ui/react-dropdown-menu": "^2.0.6",
 		"@stackblitz/sdk": "^1.9.0",
-		"@tldraw/tldraw": "^2.0.0-canary.4dda5c4c46e9",
+		"@tldraw/tldraw": "^2.0.0-canary.2211ca0063d6",
 		"@vercel/analytics": "^1.1.1",
 		"@vercel/blob": "^0.15.1",
 		"@vercel/kv": "^1.0.0",
