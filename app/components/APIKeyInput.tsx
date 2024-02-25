@@ -1,4 +1,4 @@
-import { Icon, useBreakpoint, useEditor, useValue } from '@tldraw/tldraw'
+import { TldrawUiIcon, useBreakpoint, useEditor, useValue } from '@tldraw/tldraw'
 import { ChangeEvent, useCallback, useState } from 'react'
 import { setTimeout } from 'timers'
 
@@ -46,7 +46,7 @@ export function APIKeyInput() {
 					target="_blank"
 					href="https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e?pvs=4"
 				>
-					<Icon icon={cool ? 'check' : 'question'} />
+					<TldrawUiIcon icon={cool ? 'check' : 'question'} />
 				</a>
 			</div>
 		</div>

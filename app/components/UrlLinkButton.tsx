@@ -1,6 +1,6 @@
 'use client'
 
-import { Icon, stopEventPropagation, useToasts } from '@tldraw/tldraw'
+import { TldrawUiIcon, stopEventPropagation, useToasts } from '@tldraw/tldraw'
 
 export function UrlLinkButton({ uploadUrl }: { uploadUrl: string }) {
 	const toast = useToasts()
@@ -32,7 +32,7 @@ export function UrlLinkButton({ uploadUrl }: { uploadUrl: string }) {
 			onPointerDown={stopEventPropagation}
 			title="Copy link to clipboard"
 		>
-			<Icon icon="link" />
+			<TldrawUiIcon icon="link" />
 		</button>
 	)
 }
