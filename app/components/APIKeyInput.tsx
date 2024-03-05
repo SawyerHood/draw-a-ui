@@ -1,4 +1,4 @@
-import { TldrawUiIcon, useBreakpoint, useEditor, useValue } from '@tldraw/tldraw'
+import { TldrawUiIcon, useBreakpoint, useEditor, useValue } from 'tldraw'
 import { ChangeEvent, useCallback, useState } from 'react'
 import { setTimeout } from 'timers'
 

@@ -11,7 +11,7 @@ import {
 	useIsEditing,
 	useToasts,
 	useValue,
-} from '@tldraw/tldraw'
+} from 'tldraw'
 import { useEffect } from 'react'
 import { Dropdown } from '../components/Dropdown'
 import { LINK_HOST, PROTOCOL } from '../lib/hosts'

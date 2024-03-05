@@ -1,4 +1,4 @@
-import { Editor, TLGeoShape, TLTextShape } from '@tldraw/tldraw'
+import { Editor, TLGeoShape, TLTextShape } from 'tldraw'
 
 export function getSelectionAsText(editor: Editor) {
 	const selectedShapeIds = editor.getSelectedShapeIds()

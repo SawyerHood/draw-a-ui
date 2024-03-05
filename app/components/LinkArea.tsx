@@ -1,4 +1,4 @@
-import { useBreakpoint, useEditor, useValue } from '@tldraw/tldraw'
+import { useBreakpoint, useEditor, useValue } from 'tldraw'
 import { track } from '@vercel/analytics/react'
 
 export function LinkArea() {

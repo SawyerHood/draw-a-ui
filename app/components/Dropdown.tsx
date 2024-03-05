@@ -1,6 +1,6 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import sdk from '@stackblitz/sdk'
-import { stopEventPropagation, useToasts } from '@tldraw/tldraw'
+import { stopEventPropagation, useToasts } from 'tldraw'
 import { useCallback } from 'react'
 import {
 	createReplitProject,
