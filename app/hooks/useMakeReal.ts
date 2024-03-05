@@ -1,4 +1,4 @@
-import { useEditor, useToasts } from '@tldraw/tldraw'
+import { useEditor, useToasts } from 'tldraw'
 import { track } from '@vercel/analytics/react'
 import { useCallback } from 'react'
 import { makeReal } from '../lib/makeReal'

@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import '@tldraw/tldraw/tldraw.css'
+import 'tldraw/tldraw.css'
 import dynamic from 'next/dynamic'
 import { PreviewShapeUtil } from '../PreviewShape/PreviewShape'
 import { APIKeyInput } from '../components/APIKeyInput'
@@ -10,7 +10,7 @@ import { ExportButton } from '../components/ExportButton'
 
 import { LinkArea } from '../components/LinkArea'
 
-const Tldraw = dynamic(async () => (await import('@tldraw/tldraw')).Tldraw, {
+const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
 	ssr: false,
 })
 

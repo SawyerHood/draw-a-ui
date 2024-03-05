@@ -1,4 +1,4 @@
-import { Editor, createShapeId, getSvgAsImage } from '@tldraw/tldraw'
+import { Editor, createShapeId, getSvgAsImage } from 'tldraw'
 import { track } from '@vercel/analytics/react'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { addGridToSvg } from './addGridToSvg'

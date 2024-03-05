@@ -1,6 +1,6 @@
 'use client'
 
-import { TldrawUiIcon, stopEventPropagation, useToasts } from '@tldraw/tldraw'
+import { TldrawUiIcon, stopEventPropagation, useToasts } from 'tldraw'
 
 export function UrlLinkButton({ uploadUrl }: { uploadUrl: string }) {
 	const toast = useToasts()
