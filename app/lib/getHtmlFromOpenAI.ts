@@ -59,7 +59,7 @@ export async function getHtmlFromOpenAI({
 	if (text) {
 		userContent.push({
 			type: 'text',
-			text: `Here's a list of text that we found in the design:\n${text}`,
+			text: `Here's a list of all the text that we found in the design. Use it as a reference if anything is hard to read in the screenshot(s):\n${text}`,
 		})
 	}
 
