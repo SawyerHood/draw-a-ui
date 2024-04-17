@@ -1,7 +1,7 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import sdk from '@stackblitz/sdk'
-import { stopEventPropagation, useToasts } from 'tldraw'
 import { useCallback } from 'react'
+import { stopEventPropagation, useToasts } from 'tldraw'
 import {
 	createReplitProject,
 	createStackBlitzProject,
@@ -79,7 +79,7 @@ export function Dropdown({
 
 	return (
 		<DropdownMenu.Root>
-			<DropdownMenu.Trigger>{children}</DropdownMenu.Trigger>
+			<DropdownMenu.Trigger asChild>{children}</DropdownMenu.Trigger>
 			<DropdownMenu.Portal>
 				<DropdownMenu.Content side="right" sideOffset={10} align="start">
 					<div
