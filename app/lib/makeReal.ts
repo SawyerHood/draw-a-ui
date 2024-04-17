@@ -1,7 +1,6 @@
-import { Editor, createShapeId, getSvgAsImage } from 'tldraw'
 import { track } from '@vercel/analytics/react'
+import { Editor, createShapeId, getSvgAsImage } from 'tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
-import { addGridToSvg } from './addGridToSvg'
 import { blobToBase64 } from './blobToBase64'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
 import { getSelectionAsText } from './getSelectionAsText'
@@ -71,6 +70,7 @@ export async function makeReal(editor: Editor, apiKey: string) {
 		}
 
 		if (json?.error) {
+			console.error(json.error.message)
 			throw Error(`${json.error.message?.slice(0, 128)}...`)
 		}
 
