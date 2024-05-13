@@ -6,7 +6,7 @@ if you need to insert an image, use placehold.co to create a placeholder image. 
 export async function POST(request: Request) {
   const { image } = await request.json();
   const body: GPT4VCompletionRequest = {
-    model: "gpt-4-vision-preview",
+    model: "gpt-4o",
     max_tokens: 4096,
     messages: [
       {
@@ -59,7 +59,7 @@ type MessageContent =
     )[];
 
 export type GPT4VCompletionRequest = {
-  model: "gpt-4-vision-preview";
+  model: "gpt-4o";
   messages: {
     role: "system" | "user" | "assistant" | "function";
     content: MessageContent;
