@@ -9,7 +9,7 @@ import '../../Slides/slides.css'
 import { APIKeyInput } from '../../components/APIKeyInput'
 import { ExportButton } from '../../components/ExportButton'
 
-import { TLUiOverrides, computed } from 'tldraw'
+import { TLAnyShapeUtilConstructor, TLUiOverrides, computed } from 'tldraw'
 import { SlideShapeTool } from '../../Slides/SlideShapeTool'
 import { SlideShapeUtil } from '../../Slides/SlideShapeUtil'
 import { SlidesPanel } from '../../Slides/SlidesPanel'
@@ -69,13 +69,16 @@ const overrides: TLUiOverrides = {
 	},
 }
 
+const shapeUtils: TLAnyShapeUtilConstructor[] = [PreviewShapeUtil, SlideShapeUtil]
+const tools = [SlideShapeTool]
+
 export default function Home() {
 	return (
 		<div className="tldraw__editor">
 			<Tldraw
 				persistenceKey="tldraw-demo"
-				shapeUtils={[PreviewShapeUtil, SlideShapeUtil]}
-				tools={[SlideShapeTool]}
+				shapeUtils={shapeUtils}
+				tools={tools}
 				overrides={overrides}
 				components={{
 					SharePanel: ExportButton,

@@ -2,6 +2,7 @@ import { track } from '@vercel/analytics/react'
 import { Editor, createShapeId, getSvgAsImage } from 'tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { blobToBase64 } from './blobToBase64'
+import { downloadDataURLAsFile } from './downloadDataUrlAsFile'
 import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
 import { getSelectionAsText } from './getSelectionAsText'
 import { uploadLink } from './uploadLink'
@@ -24,7 +25,7 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	})
 
 	// Get an SVG based on the selected shapes
-	const svg = await editor.getSvg(selectedShapes, {
+	const svgResult = await editor.getSvgString(selectedShapes, {
 		scale: 1,
 		background: true,
 	})
@@ -33,17 +34,19 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	// const grid = { color: 'red', size: 100, labels: true }
 	// addGridToSvg(svg, grid)
 
-	if (!svg) throw Error(`Could not get the SVG.`)
+	if (!svgResult) throw Error(`Could not get the SVG.`)
 
 	// Turn the SVG into a DataUrl
 	const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-	const blob = await getSvgAsImage(svg, IS_SAFARI, {
+	const blob = await getSvgAsImage(svgResult.svg, IS_SAFARI, {
+		height: svgResult.height,
+		width: svgResult.width,
 		type: 'png',
 		quality: 0.8,
 		scale: 1,
 	})
 	const dataUrl = await blobToBase64(blob!)
-	// downloadDataURLAsFile(dataUrl, 'tldraw.png')
+	downloadDataURLAsFile(dataUrl, 'tldraw.png')
 
 	// Get any previous previews among the selected shapes
 	const previousPreviews = selectedShapes.filter((shape) => {
