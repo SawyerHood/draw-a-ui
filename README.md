@@ -12,14 +12,58 @@ This works by just taking the current canvas SVG, converting it to a PNG, and se
 
 ## Getting Started
 
-This is a Next.js app. To get started run the following commands in the root directory of the project. You will need an OpenAI API key with access to the GPT-4 Vision API.
+> You will need an OpenAI API key with access to the GPT-4 Vision API.
+
+### Running Locally
 
 > Note this uses Next.js 14 and requires a version of `node` greater than 18.17. [Read more here](https://nextjs.org/docs/pages/building-your-application/upgrading/version-14).
 
+Before you begin, clone the project repository to your local machine:
 ```bash
-echo "OPENAI_API_KEY=sk-your-key" > .env.local
-npm install
-npm run dev
+git clone https://github.com/SawyerHood/draw-a-ui.git
+cd draw-a-ui
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Set Up Your OpenAI API Key**  
+   Create a `.env.local` file in the root directory with your OpenAI API key:
+   ```bash
+   echo "OPENAI_API_KEY=<YOUR_API_KEY>" > .env.local
+   ```
+
+2. **Install Dependencies**  
+   Install all the necessary dependencies:
+   ```bash
+   npm install
+   ```
+
+3. **Start the Development Server**  
+   Launch your development server:
+   ```bash
+   npm run dev
+   ```
+
+4. **View Your Application**  
+   Access your app by visiting [http://localhost:3000](http://localhost:3000) in your web browser.
+
+### Running with Docker
+
+To run the `draw-a-ui` app with Docker, first clone the project and navigate into the project directory:
+```bash
+git clone https://github.com/SawyerHood/draw-a-ui.git
+cd draw-a-ui
+```
+
+Replace the API key in the docker-compose.yml file:
+```
+environment:
+    - OPENAI_API_KEY="OPENAI_API_KEY"
+```
+
+Then, simply build and start your application with Docker Compose:
+```bash
+docker-compose up -d
+```
+
+After the containers are up, you can access the app by visiting [http://localhost:3000](http://localhost:3000) in your browser.
+
+> Remember to replace `<YOUR_API_KEY>` with your actual OpenAI API key.
