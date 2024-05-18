@@ -11,11 +11,11 @@
   "dependencies": {
     "@tldraw/tldraw": "2.0.0-alpha.17",
     "canvas-size": "^1.2.6",
-    "next": "14.0.1",
+    "next": "^14.2.3",
     "openai": "^4.47.1",
     "prismjs": "^1.29.0",
-    "react": "^18",
-    "react-dom": "^18"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/canvas-size": "^1.2.1",
@@ -25,7 +25,7 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-next": "14.0.1",
+    "eslint-config-next": "^14.2.3",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
