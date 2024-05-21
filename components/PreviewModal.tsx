@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import Prism from "prismjs";
 import "prismjs/components/prism-cshtml";
 
@@ -15,6 +15,7 @@ export function PreviewModal({
 }) {
   const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
 
+  const showcopiedTooltip = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const highlight = async () => {
       await Prism.highlightAll(); // <--- prepare Prism
@@ -25,6 +26,29 @@ export function PreviewModal({
   if (!html) {
     return null;
   }
+
+  const onclickShowCopied = () => {
+    if (showcopiedTooltip.current) {
+      showcopiedTooltip.current.style.display = 'block';
+    }
+    setTimeout(() => {
+      if (showcopiedTooltip.current) {
+        showcopiedTooltip.current.style.display = 'none'
+      }
+    }, 2000)
+
+  }
+
+  async function copyCodeToClipboard({ html }: { html: string | null }) {
+    try {
+      await navigator.clipboard.writeText(html || '');
+      onclickShowCopied()
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  }
+
+
 
   return (
     <div
@@ -84,7 +108,13 @@ export function PreviewModal({
       {activeTab === "preview" ? (
         <iframe className="w-full h-full" srcDoc={html} />
       ) : (
-        <pre className="overflow-auto p-4">
+        <pre className="overflow-auto p-4 ">
+          <div className="text-right">
+            <svg onClick={() => copyCodeToClipboard({ html })} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="cursor-pointer  lucide lucide-copy inline  mr-2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+
+            <span ref={showcopiedTooltip} className={`hidden`}>Copied</span>
+          </div>
+          <br />
           <code className="language-markup">{html}</code>
         </pre>
       )}
