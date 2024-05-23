@@ -29,7 +29,7 @@ export function PreviewModal({
 
   const onclickShowCopied = () => {
     if (showcopiedTooltip.current) {
-      showcopiedTooltip.current.style.display = 'block';
+      showcopiedTooltip.current.style.display = 'inline';
     }
     setTimeout(() => {
       if (showcopiedTooltip.current) {
@@ -109,10 +109,10 @@ export function PreviewModal({
         <iframe className="w-full h-full" srcDoc={html} />
       ) : (
         <pre className="overflow-auto p-4 ">
-          <div className="text-right">
-            <svg onClick={() => copyCodeToClipboard({ html })} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="cursor-pointer  lucide lucide-copy inline  mr-2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
-
-            <span ref={showcopiedTooltip} className={`hidden`}>Copied</span>
+          <div className="mr-5 absolute w-8 right-8 md:right-16">
+            <svg onClick={() => copyCodeToClipboard({ html })} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cursor-pointer  lucide lucide-copy inline  mr-2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+            <br />
+            <span ref={showcopiedTooltip} className={`hidden p-2  mt-4 -right-3 absolute  rounded-lg bg-green-500`}>Copied</span>
           </div>
           <br />
           <code className="language-markup">{html}</code>
