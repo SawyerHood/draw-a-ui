@@ -23,7 +23,7 @@
 		"prettier": "^3.1.0",
 		"react": "^18",
 		"react-dom": "^18",
-		"tldraw": "^2.1.4"
+		"tldraw": "^2.2.1"
 	},
 	"devDependencies": {
 		"@types/node": "^20",
