@@ -24,7 +24,7 @@ export function UrlLinkButton({ uploadUrl }: { uploadUrl: string }) {
 				if (navigator && navigator.clipboard) {
 					navigator.clipboard.writeText(uploadUrl)
 					toast.addToast({
-						icon: 'code',
+						// icon: 'code',
 						title: 'Copied link to clipboard',
 					})
 				}

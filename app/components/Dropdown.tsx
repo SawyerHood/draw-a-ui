@@ -35,7 +35,7 @@ export function Dropdown({
 		if (navigator && navigator.clipboard) {
 			navigator.clipboard.writeText(html)
 			toast.addToast({
-				icon: 'code',
+				// icon: 'code',
 				title: 'Copied html to clipboard',
 			})
 		}
