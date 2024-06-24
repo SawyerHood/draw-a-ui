@@ -1,12 +1,12 @@
 import { CoreUserMessage, UserContent } from 'ai'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { USER_PROMPT, USER_PROMPT_WITH_PREVIOUS_DESIGN } from '../prompt'
-import { makeRealSettings } from './apiKeys'
 
 export function getMessages({
 	image,
 	text,
 	grid,
+	apiKey,
 	theme = 'light',
 	previousPreviews,
 }: {
@@ -18,11 +18,9 @@ export function getMessages({
 		size: number
 		labels: boolean
 	}
+	apiKey: string
 	previousPreviews?: PreviewShape[]
 }) {
-	const settings = makeRealSettings.get()
-	const apiKey = settings.keys[settings.provider]
-
 	if (!apiKey) throw Error('You need to provide an API key (sorry)')
 
 	const messages: CoreUserMessage[] = [

@@ -1,7 +1,6 @@
 import { track } from '@vercel/analytics/react'
 import { useCallback } from 'react'
 import { useEditor, useToasts } from 'tldraw'
-import { makeRealSettings } from '../lib/apiKeys'
 import { makeReal } from '../lib/makeReal'
 
 export function useMakeReal() {
@@ -9,13 +8,10 @@ export function useMakeReal() {
 	const toast = useToasts()
 
 	return useCallback(async () => {
-		const settings = makeRealSettings.get()
-		const apiKey = settings.keys[settings.provider]
-
 		track('make_real', { timestamp: Date.now() })
 
 		try {
-			await makeReal(editor, apiKey)
+			await makeReal(editor)
 		} catch (e: any) {
 			track('no_luck', { timestamp: Date.now() })
 

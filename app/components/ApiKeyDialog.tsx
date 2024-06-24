@@ -47,6 +47,7 @@ export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 					>
 						<option value="openai">OpenAI (gpt-4o)</option>
 						<option value="anthropic">Anthropic (Claude Sonnet 3.5)</option>
+						<option value="all">All</option>
 					</select>
 				</div>
 				<hr style={{ margin: '12px 0px' }} />
