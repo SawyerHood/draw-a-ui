@@ -1,6 +1,7 @@
-import { useEditor, useToasts } from 'tldraw'
 import { track } from '@vercel/analytics/react'
 import { useCallback } from 'react'
+import { useEditor, useToasts } from 'tldraw'
+import { makeRealSettings } from '../lib/apiKeys'
 import { makeReal } from '../lib/makeReal'
 
 export function useMakeReal() {
@@ -8,8 +9,8 @@ export function useMakeReal() {
 	const toast = useToasts()
 
 	return useCallback(async () => {
-		const input = document.getElementById('openai_key_risky_but_cool') as HTMLInputElement
-		const apiKey = input?.value ?? null
+		const settings = makeRealSettings.get()
+		const apiKey = settings.keys[settings.provider]
 
 		track('make_real', { timestamp: Date.now() })
 

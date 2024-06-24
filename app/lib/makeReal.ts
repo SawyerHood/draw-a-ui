@@ -1,12 +1,17 @@
 import { track } from '@vercel/analytics/react'
 import { Editor, createShapeId, getSvgAsImage } from 'tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
+import { ResultType, getContentFromOpenAI } from './actions'
+import { makeRealSettings } from './apiKeys'
 import { blobToBase64 } from './blobToBase64'
-import { getHtmlFromOpenAI } from './getHtmlFromOpenAI'
+import { getMessages } from './getMessages'
 import { getSelectionAsText } from './getSelectionAsText'
 import { uploadLink } from './uploadLink'
 
-export async function makeReal(editor: Editor, apiKey: string) {
+export async function makeReal(editor: Editor) {
+	const { keys, provider } = makeRealSettings.get()
+	const apiKey = keys[provider]
+
 	// Get the selected shapes (we need at least one)
 	const selectedShapes = editor.getSelectedShapes()
 
@@ -36,7 +41,6 @@ export async function makeReal(editor: Editor, apiKey: string) {
 	if (!svgResult) throw Error(`Could not get the SVG.`)
 
 	// Turn the SVG into a DataUrl
-	const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 	const blob = await getSvgAsImage(editor, svgResult.svg, {
 		height: svgResult.height,
 		width: svgResult.width,
@@ -58,26 +62,35 @@ export async function makeReal(editor: Editor, apiKey: string) {
 
 	// Send everything to OpenAI and get some HTML back
 	try {
-		const json = await getHtmlFromOpenAI({
+		const messages = getMessages({
 			image: dataUrl,
-			apiKey,
 			text: getSelectionAsText(editor),
 			previousPreviews,
-			// grid,
 			theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 		})
 
-		if (!json) {
+		let result: ResultType
+
+		switch (provider) {
+			case 'openai': {
+				result = await getContentFromOpenAI(apiKey, messages)
+			}
+			case 'anthropic': {
+				result = await getContentFromOpenAI(apiKey, messages)
+			}
+		}
+
+		if (!result) {
 			throw Error('Could not contact OpenAI.')
 		}
 
-		if (json?.error) {
-			console.error(json.error.message)
-			throw Error(`${json.error.message?.slice(0, 128)}...`)
+		if (result?.finishReason === 'error') {
+			console.error(result.finishReason)
+			throw Error(`${result.finishReason?.slice(0, 128)}...`)
 		}
 
 		// Extract the HTML from the response
-		const message = json.choices[0].message.content
+		const message = result.text
 		const start = message.indexOf('<!DOCTYPE html>')
 		const end = message.indexOf('</html>')
 		const html = message.slice(start, end + '</html>'.length)

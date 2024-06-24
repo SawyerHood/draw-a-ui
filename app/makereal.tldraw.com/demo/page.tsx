@@ -6,8 +6,7 @@ import dynamic from 'next/dynamic'
 import 'tldraw/tldraw.css'
 import { PreviewShapeUtil } from '../../PreviewShape/PreviewShape'
 import '../../Slides/slides.css'
-import { APIKeyInput } from '../../components/APIKeyInput'
-import { ExportButton } from '../../components/ExportButton'
+import { MakeRealButton } from '../../components/MakeRealButton'
 
 import { TLAnyShapeUtilConstructor, TLUiOverrides, computed } from 'tldraw'
 import { SlideShapeTool } from '../../Slides/SlideShapeTool'
@@ -81,7 +80,7 @@ export default function Home() {
 				tools={tools}
 				overrides={overrides}
 				components={{
-					SharePanel: ExportButton,
+					SharePanel: MakeRealButton,
 					HelperButtons: SlidesPanel,
 					Minimap: null,
 				}}
@@ -89,7 +88,6 @@ export default function Home() {
 					window['editor'] = editor
 				}}
 			>
-				<APIKeyInput />
 				<LinkArea />
 			</Tldraw>
 		</div>
