@@ -12,6 +12,7 @@ import {
 	useValue,
 } from 'tldraw'
 import { makeRealSettings } from '../lib/settings'
+import { SYSTEM_PROMPT } from '../prompt'
 
 export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 	const settings = useValue('settings', () => makeRealSettings.get(), [])
@@ -104,6 +105,34 @@ export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 						}}
 					/>
 				</div> */}
+				<hr style={{ margin: '12px 0px' }} />
+				<div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+					<div style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
+						<label style={{ flexGrow: 2 }}>System prompt</label>
+						<button
+							style={{ all: 'unset', cursor: 'pointer' }}
+							onClick={() => {
+								const next = {
+									...settings,
+									prompts: { ...settings.prompts, system: SYSTEM_PROMPT },
+								}
+								localStorage.setItem('makereal_settings_2', JSON.stringify(next))
+								makeRealSettings.set(next)
+							}}
+						>
+							Reset
+						</button>
+					</div>
+					<TldrawUiInput
+						className="apikey_input"
+						value={settings.prompts.system}
+						onValueChange={(value) => {
+							const next = { ...settings, prompts: { ...settings.prompts, system: value } }
+							localStorage.setItem('makereal_settings_2', JSON.stringify(next))
+							makeRealSettings.set(next)
+						}}
+					/>
+				</div>
 			</TldrawUiDialogBody>
 			<TldrawUiDialogFooter className="tlui-dialog__footer__actions">
 				<TldrawUiButton
