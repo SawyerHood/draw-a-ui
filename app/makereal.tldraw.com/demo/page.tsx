@@ -9,12 +9,19 @@ import '../../Slides/slides.css'
 import { MakeRealButton } from '../../components/MakeRealButton'
 
 import { useEffect } from 'react'
-import { TLAnyShapeUtilConstructor, TLUiOverrides, computed } from 'tldraw'
+import {
+	DefaultMainMenu,
+	DefaultMainMenuContent,
+	TLAnyShapeUtilConstructor,
+	TLUiOverrides,
+	computed,
+} from 'tldraw'
 import { SlideShapeTool } from '../../Slides/SlideShapeTool'
 import { SlideShapeUtil } from '../../Slides/SlideShapeUtil'
 import { SlidesPanel } from '../../Slides/SlidesPanel'
 import { $currentSlide, getSlides, moveToSlide } from '../../Slides/useSlides'
 import { LinkArea } from '../../components/LinkArea'
+import { Links } from '../../components/Links'
 import { makeRealSettings } from '../../lib/settings'
 
 const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
@@ -76,6 +83,12 @@ const components = {
 	SharePanel: MakeRealButton,
 	HelperButtons: SlidesPanel,
 	Minimap: null,
+	MainMenu: () => (
+		<DefaultMainMenu>
+			<DefaultMainMenuContent />
+			<Links />
+		</DefaultMainMenu>
+	),
 }
 
 export default function Home() {

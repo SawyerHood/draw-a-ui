@@ -8,7 +8,9 @@ import { PreviewShapeUtil } from '../PreviewShape/PreviewShape'
 import { MakeRealButton } from '../components/MakeRealButton'
 
 import { useEffect } from 'react'
+import { DefaultMainMenu, DefaultMainMenuContent } from 'tldraw'
 import { LinkArea } from '../components/LinkArea'
+import { Links } from '../components/Links'
 import { makeRealSettings } from '../lib/settings'
 
 const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
@@ -16,7 +18,15 @@ const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
 })
 
 const shapeUtils = [PreviewShapeUtil]
-const components = { SharePanel: () => <MakeRealButton /> }
+const components = {
+	SharePanel: () => <MakeRealButton />,
+	MainMenu: () => (
+		<DefaultMainMenu>
+			<DefaultMainMenuContent />
+			<Links />
+		</DefaultMainMenu>
+	),
+}
 
 export default function Home() {
 	useEffect(() => {
