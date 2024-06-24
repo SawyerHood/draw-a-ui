@@ -6,15 +6,16 @@ import dynamic from 'next/dynamic'
 import 'tldraw/tldraw.css'
 import { PreviewShapeUtil } from '../../PreviewShape/PreviewShape'
 import '../../Slides/slides.css'
-import { APIKeyInput } from '../../components/APIKeyInput'
-import { ExportButton } from '../../components/ExportButton'
+import { MakeRealButton } from '../../components/MakeRealButton'
 
+import { useEffect } from 'react'
 import { TLAnyShapeUtilConstructor, TLUiOverrides, computed } from 'tldraw'
 import { SlideShapeTool } from '../../Slides/SlideShapeTool'
 import { SlideShapeUtil } from '../../Slides/SlideShapeUtil'
 import { SlidesPanel } from '../../Slides/SlidesPanel'
 import { $currentSlide, getSlides, moveToSlide } from '../../Slides/useSlides'
 import { LinkArea } from '../../components/LinkArea'
+import { makeRealSettings } from '../../lib/makeRealSettings'
 
 const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
 	ssr: false,
@@ -71,8 +72,21 @@ const overrides: TLUiOverrides = {
 
 const shapeUtils: TLAnyShapeUtilConstructor[] = [PreviewShapeUtil, SlideShapeUtil]
 const tools = [SlideShapeTool]
+const components = {
+	SharePanel: MakeRealButton,
+	HelperButtons: SlidesPanel,
+	Minimap: null,
+}
 
 export default function Home() {
+	useEffect(() => {
+		const value = localStorage.getItem('makereal_settings_2')
+		if (value) {
+			const json = JSON.parse(value)
+			makeRealSettings.set(json)
+		}
+	}, [])
+
 	return (
 		<div className="tldraw__editor">
 			<Tldraw
@@ -80,16 +94,11 @@ export default function Home() {
 				shapeUtils={shapeUtils}
 				tools={tools}
 				overrides={overrides}
-				components={{
-					SharePanel: ExportButton,
-					HelperButtons: SlidesPanel,
-					Minimap: null,
-				}}
+				components={components}
 				onMount={(editor) => {
 					window['editor'] = editor
 				}}
 			>
-				<APIKeyInput />
 				<LinkArea />
 			</Tldraw>
 		</div>

@@ -1,6 +1,6 @@
-import { useEditor, useToasts } from 'tldraw'
 import { track } from '@vercel/analytics/react'
 import { useCallback } from 'react'
+import { useEditor, useToasts } from 'tldraw'
 import { makeReal } from '../lib/makeReal'
 
 export function useMakeReal() {
@@ -8,13 +8,10 @@ export function useMakeReal() {
 	const toast = useToasts()
 
 	return useCallback(async () => {
-		const input = document.getElementById('openai_key_risky_but_cool') as HTMLInputElement
-		const apiKey = input?.value ?? null
-
 		track('make_real', { timestamp: Date.now() })
 
 		try {
-			await makeReal(editor, apiKey)
+			await makeReal(editor)
 		} catch (e: any) {
 			track('no_luck', { timestamp: Date.now() })
 
