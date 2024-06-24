@@ -10,7 +10,6 @@ import {
 	Vec,
 	toDomPrecision,
 	useIsEditing,
-	useToasts,
 	useValue,
 } from 'tldraw'
 import { Dropdown } from '../components/Dropdown'
@@ -49,7 +48,6 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 
 	override component(shape: PreviewShape) {
 		const isEditing = useIsEditing(shape.id)
-		const toast = useToasts()
 
 		const boxShadow = useValue(
 			'box shadow',
@@ -91,7 +89,6 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
-				{/* <div style={{ position: 'absolute', top: 0, left: 0 }}>{shape.meta.provider as string}</div> */}
 				{isLoading ? (
 					<div
 						style={{
@@ -188,11 +185,6 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 
 			const windowListener = (event: MessageEvent) => {
 				if (event.data.screenshot && event.data?.shapeid === shape.id) {
-					// const image = document.createElementNS('http://www.w3.org/2000/svg', 'image')
-					// image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', event.data.screenshot)
-					// image.setAttribute('width', shape.props.w.toString())
-					// image.setAttribute('height', shape.props.h.toString())
-					// g.appendChild(image)
 					window.removeEventListener('message', windowListener)
 					clearTimeout(timeOut)
 

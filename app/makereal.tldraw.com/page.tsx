@@ -16,6 +16,7 @@ const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
 })
 
 const shapeUtils = [PreviewShapeUtil]
+const components = { SharePanel: () => <MakeRealButton /> }
 
 export default function Home() {
 	useEffect(() => {
@@ -28,11 +29,7 @@ export default function Home() {
 
 	return (
 		<div className="tldraw__editor">
-			<Tldraw
-				persistenceKey="tldraw"
-				shapeUtils={shapeUtils}
-				components={{ SharePanel: () => <MakeRealButton /> }}
-			>
+			<Tldraw persistenceKey="tldraw" shapeUtils={shapeUtils} components={components}>
 				<LinkArea />
 			</Tldraw>
 		</div>
