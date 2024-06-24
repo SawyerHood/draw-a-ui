@@ -2,10 +2,10 @@ import { track } from '@vercel/analytics/react'
 import { Editor, createShapeId, getSvgAsImage } from 'tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { ResultType, getContentFromAnthropic, getContentFromOpenAI } from './actions'
-import { makeRealSettings } from './apiKeys'
 import { blobToBase64 } from './blobToBase64'
 import { getMessages } from './getMessages'
 import { getSelectionAsText } from './getSelectionAsText'
+import { makeRealSettings } from './makeRealSettings'
 import { uploadLink } from './uploadLink'
 
 export async function makeReal(editor: Editor) {
@@ -83,7 +83,7 @@ export async function makeReal(editor: Editor) {
 							previousPreviews,
 							theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 						})
-						result = await getContentFromOpenAI(apiKey, messages)
+						result = await getContentFromOpenAI(apiKey, messages, 'gpt-4o')
 						break
 					}
 					case 'anthropic': {
@@ -97,7 +97,7 @@ export async function makeReal(editor: Editor) {
 							theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 						})
 
-						result = await getContentFromAnthropic(apiKey, messages)
+						result = await getContentFromAnthropic(apiKey, messages, 'claude-3-5-sonnet-20240620')
 						break
 					}
 				}

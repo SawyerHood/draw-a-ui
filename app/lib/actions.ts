@@ -5,10 +5,10 @@ import { createOpenAI } from '@ai-sdk/openai'
 import { generateText } from 'ai'
 import { SYSTEM_PROMPT } from '../prompt'
 
-export async function getContentFromAnthropic(apiKey: string, messages: any) {
+export async function getContentFromAnthropic(apiKey: string, messages: any, model: string) {
 	const anthropic = createAnthropic({ apiKey })
 	const { text, finishReason, usage } = await generateText({
-		model: anthropic('claude-3-5-sonnet-20240620'),
+		model: anthropic(model),
 		system: SYSTEM_PROMPT,
 		messages,
 		maxTokens: 4096,
@@ -19,10 +19,10 @@ export async function getContentFromAnthropic(apiKey: string, messages: any) {
 	return { text, finishReason, usage }
 }
 
-export async function getContentFromOpenAI(apiKey: string, messages: any) {
+export async function getContentFromOpenAI(apiKey: string, messages: any, model: string) {
 	const openai = createOpenAI({ apiKey })
 	const { text, finishReason, usage } = await generateText({
-		model: openai('gpt-4o'),
+		model: openai(model),
 		system: SYSTEM_PROMPT,
 		messages,
 		maxTokens: 4096,
