@@ -9,7 +9,7 @@ import { MakeRealButton } from '../components/MakeRealButton'
 
 import { useEffect } from 'react'
 import { LinkArea } from '../components/LinkArea'
-import { makeRealSettings } from '../lib/makeRealSettings'
+import { makeRealSettings } from '../lib/settings'
 
 const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
 	ssr: false,

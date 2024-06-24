@@ -60,6 +60,12 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 
 		const { html, linkUploadVersion, uploadedShapeId } = shape.props
 
+		const isOnlySelected = useValue(
+			'is only selected',
+			() => this.editor.getOnlySelectedShapeId() === shape.id,
+			[shape.id, this.editor]
+		)
+
 		// upload the html if we haven't already:
 		useEffect(() => {
 			let isCancelled = false
@@ -121,27 +127,29 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 								borderRadius: 'var(--radius-2)',
 							}}
 						/>
-						<div
-							style={{
-								all: 'unset',
-								position: 'absolute',
-								top: -3,
-								right: -45,
-								height: 40,
-								width: 40,
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-								cursor: 'pointer',
-								pointerEvents: 'all',
-							}}
-						>
-							<Dropdown boxShadow={boxShadow} html={shape.props.html} uploadUrl={uploadUrl}>
-								<button className="bg-white rounded p-2" style={{ boxShadow }}>
-									<TldrawUiIcon icon="dots-vertical" />
-								</button>
-							</Dropdown>
-						</div>
+						{isOnlySelected && (
+							<div
+								style={{
+									all: 'unset',
+									position: 'absolute',
+									top: -3,
+									right: -45,
+									height: 40,
+									width: 40,
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									cursor: 'pointer',
+									pointerEvents: 'all',
+								}}
+							>
+								<Dropdown boxShadow={boxShadow} html={shape.props.html} uploadUrl={uploadUrl}>
+									<button className="bg-white rounded p-2" style={{ boxShadow }}>
+										<TldrawUiIcon icon="dots-vertical" />
+									</button>
+								</Dropdown>
+							</div>
+						)}
 						<div
 							style={{
 								textAlign: 'center',

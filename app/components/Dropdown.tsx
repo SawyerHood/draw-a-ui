@@ -6,7 +6,7 @@ import {
 	createReplitProject,
 	createStackBlitzProject,
 	getCodeSandboxUrl,
-} from '../lib/uploadToThirdParty'
+} from '../lib/third-parties'
 
 export function Dropdown({
 	boxShadow,

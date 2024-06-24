@@ -15,7 +15,7 @@ import { SlideShapeUtil } from '../../Slides/SlideShapeUtil'
 import { SlidesPanel } from '../../Slides/SlidesPanel'
 import { $currentSlide, getSlides, moveToSlide } from '../../Slides/useSlides'
 import { LinkArea } from '../../components/LinkArea'
-import { makeRealSettings } from '../../lib/makeRealSettings'
+import { makeRealSettings } from '../../lib/settings'
 
 const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
 	ssr: false,
