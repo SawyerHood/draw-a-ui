@@ -19,7 +19,7 @@ export async function makeReal(editor: Editor) {
 	// Create the preview shape
 	const { maxX, midY } = editor.getSelectionPageBounds()
 
-	const providers = provider === 'all' ? ['openai', 'anthropic', 'google'] : [provider]
+	const providers = provider === 'all' ? ['openai', 'anthropic'] : [provider]
 
 	const previewHeight = (540 * 2) / 3
 	const totalHeight = (previewHeight + 40) * providers.length - 40
