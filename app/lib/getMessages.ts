@@ -6,7 +6,6 @@ export function getMessages({
 	image,
 	text,
 	grid,
-	apiKey,
 	theme = 'light',
 	previousPreviews,
 }: {
@@ -18,11 +17,8 @@ export function getMessages({
 		size: number
 		labels: boolean
 	}
-	apiKey: string
 	previousPreviews?: PreviewShape[]
 }) {
-	if (!apiKey) throw Error('You need to provide an API key (sorry)')
-
 	const messages: CoreUserMessage[] = [
 		{
 			role: 'user',

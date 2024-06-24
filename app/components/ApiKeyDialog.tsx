@@ -8,7 +8,6 @@ import {
 	TldrawUiDialogFooter,
 	TldrawUiDialogHeader,
 	TldrawUiDialogTitle,
-	TldrawUiIcon,
 	TldrawUiInput,
 	useValue,
 } from 'tldraw'
@@ -28,9 +27,13 @@ export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 				style={{ maxWidth: 350, display: 'flex', flexDirection: 'column', gap: 8 }}
 			>
 				<p>
-					To use Make Real, you will need to enter your API key for each provider you wish to use.
-					For help on how to get an API key for a provider, click the question mark button beside
-					the provider name.
+					To use Make Real, you will need to enter your API key for each provider you wish to use.{' '}
+					<a
+						target="_blank"
+						href="https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e?pvs=4"
+					>
+						<u>Read our guide.</u>
+					</a>
 				</p>
 				<div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 8 }}>
 					<div style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
@@ -47,6 +50,7 @@ export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 					>
 						<option value="openai">OpenAI (gpt-4o)</option>
 						<option value="anthropic">Anthropic (Claude Sonnet 3.5)</option>
+						{/* <option value="google">Google (Gemeni 1.5 Pro)</option> */}
 						<option value="all">All</option>
 					</select>
 				</div>
@@ -58,13 +62,6 @@ export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 				>
 					<div style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
 						<label style={{ flexGrow: 2 }}>OpenAI</label>
-						<a
-							target="_blank"
-							style={{ pointerEvents: 'all' }}
-							href="https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e?pvs=4"
-						>
-							<TldrawUiIcon icon={'question'} small />
-						</a>
 					</div>
 					<TldrawUiInput
 						className="apikey_input"
@@ -80,13 +77,6 @@ export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 				<div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
 					<div style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
 						<label style={{ flexGrow: 2 }}>Anthropic</label>
-						<a
-							target="_blank"
-							style={{ pointerEvents: 'all' }}
-							href="https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e?pvs=4"
-						>
-							<TldrawUiIcon icon={'question'} small />
-						</a>
 					</div>
 					<TldrawUiInput
 						className="apikey_input"
@@ -99,6 +89,21 @@ export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 						}}
 					/>
 				</div>
+				{/* <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+					<div style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
+						<label style={{ flexGrow: 2 }}>Google</label>
+					</div>
+					<TldrawUiInput
+						className="apikey_input"
+						value={settings.keys.google}
+						placeholder="risky but cool"
+						onValueChange={(value) => {
+							const next = { ...settings, keys: { ...settings.keys, google: value } }
+							localStorage.setItem('makereal_settings_2', JSON.stringify(next))
+							makeRealSettings.set(next)
+						}}
+					/>
+				</div> */}
 			</TldrawUiDialogBody>
 			<TldrawUiDialogFooter className="tlui-dialog__footer__actions">
 				<TldrawUiButton

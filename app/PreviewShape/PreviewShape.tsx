@@ -91,6 +91,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
+				{/* <div style={{ position: 'absolute', top: 0, left: 0 }}>{shape.meta.provider as string}</div> */}
 				{isLoading ? (
 					<div
 						style={{

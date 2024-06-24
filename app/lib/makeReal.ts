@@ -19,7 +19,7 @@ export async function makeReal(editor: Editor) {
 	// Create the preview shape
 	const { maxX, midY } = editor.getSelectionPageBounds()
 
-	const providers = provider === 'all' ? ['openai', 'anthropic'] : [provider]
+	const providers = provider === 'all' ? ['openai', 'anthropic', 'google'] : [provider]
 
 	const previewHeight = (540 * 2) / 3
 	const totalHeight = (previewHeight + 40) * providers.length - 40
@@ -34,6 +34,9 @@ export async function makeReal(editor: Editor) {
 				x: maxX + 60, // to the right of the selection
 				y: y + (previewHeight + 40) * i, // half the height of the preview's initial shape
 				props: { html: '', source: '' },
+				meta: {
+					provider,
+				},
 			})
 
 			// Get an SVG based on the selected shapes
@@ -72,33 +75,26 @@ export async function makeReal(editor: Editor) {
 			try {
 				let result: ResultType
 
+				const messages = getMessages({
+					image: dataUrl,
+					text: getSelectionAsText(editor),
+					previousPreviews,
+					theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
+				})
+
 				switch (provider) {
 					case 'openai': {
 						const apiKey = keys[provider]
-
-						const messages = getMessages({
-							apiKey,
-							image: dataUrl,
-							text: getSelectionAsText(editor),
-							previousPreviews,
-							theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
-						})
 						result = await getContentFromOpenAI(apiKey, messages, 'gpt-4o')
 						break
 					}
 					case 'anthropic': {
 						const apiKey = keys[provider]
-
-						const messages = getMessages({
-							apiKey,
-							image: dataUrl,
-							text: getSelectionAsText(editor),
-							previousPreviews,
-							theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
-						})
-
 						result = await getContentFromAnthropic(apiKey, messages, 'claude-3-5-sonnet-20240620')
 						break
+					}
+					case 'google': {
+						throw Error('not implemented')
 					}
 				}
 
