@@ -36,8 +36,8 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		return {
 			html: '',
 			source: '',
-			w: (960 * 2) / 3,
-			h: (540 * 2) / 3,
+			w: 1000,
+			h: 1000,
 			dateCreated: Date.now(),
 		}
 	}

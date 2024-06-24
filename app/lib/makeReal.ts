@@ -21,7 +21,7 @@ export async function makeReal(editor: Editor) {
 
 	const providers = provider === 'all' ? ['openai', 'anthropic', 'google'] : [provider]
 
-	const previewHeight = (540 * 2) / 3
+	const previewHeight = 1000
 	const totalHeight = (previewHeight + 40) * providers.length - 40
 	let y = midY - totalHeight / 2
 
