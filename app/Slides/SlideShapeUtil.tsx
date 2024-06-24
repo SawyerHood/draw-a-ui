@@ -8,10 +8,10 @@ import {
 	T,
 	TLBaseShape,
 	TLOnResizeHandler,
+	getPerfectDashProps,
 	resizeBox,
 	useValue,
 } from 'tldraw'
-import { getPerfectDashProps } from '../lib/getPerfectDashProps'
 import { moveToSlide, useSlides } from './useSlides'
 
 export type SlideShape = TLBaseShape<

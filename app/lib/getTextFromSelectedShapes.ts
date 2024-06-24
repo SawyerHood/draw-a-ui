@@ -1,6 +1,6 @@
 import { Editor, TLGeoShape, TLTextShape } from 'tldraw'
 
-export function getSelectionAsText(editor: Editor) {
+export function getTextFromSelectedShapes(editor: Editor) {
 	const selectedShapeIds = editor.getSelectedShapeIds()
 	const selectedShapeDescendantIds = editor.getShapeAndDescendantIds(selectedShapeIds)
 
@@ -27,8 +27,8 @@ export function getSelectionAsText(editor: Editor) {
 					? -1
 					: 1
 				: pageBoundsA.y < pageBoundsB.y
-					? -1
-					: 1
+				  ? -1
+				  : 1
 		})
 		.map((shape: TLTextShape | TLGeoShape) => {
 			if (!shape) return null

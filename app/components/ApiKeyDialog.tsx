@@ -11,7 +11,7 @@ import {
 	TldrawUiInput,
 	useValue,
 } from 'tldraw'
-import { makeRealSettings } from '../lib/makeRealSettings'
+import { makeRealSettings } from '../lib/settings'
 
 export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 	const settings = useValue('settings', () => makeRealSettings.get(), [])

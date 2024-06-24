@@ -4,8 +4,8 @@ import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { ResultType, getContentFromAnthropic, getContentFromOpenAI } from './actions'
 import { blobToBase64 } from './blobToBase64'
 import { getMessages } from './getMessages'
-import { getSelectionAsText } from './getSelectionAsText'
-import { makeRealSettings } from './makeRealSettings'
+import { getTextFromSelectedShapes } from './getTextFromSelectedShapes'
+import { makeRealSettings } from './settings'
 import { uploadLink } from './uploadLink'
 
 export async function makeReal(editor: Editor) {
@@ -77,7 +77,7 @@ export async function makeReal(editor: Editor) {
 
 				const messages = getMessages({
 					image: dataUrl,
-					text: getSelectionAsText(editor),
+					text: getTextFromSelectedShapes(editor),
 					previousPreviews,
 					theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 				})
