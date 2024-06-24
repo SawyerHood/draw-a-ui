@@ -9,7 +9,7 @@ import { makeRealSettings } from './settings'
 import { uploadLink } from './uploadLink'
 
 export async function makeReal(editor: Editor) {
-	const { keys, provider } = makeRealSettings.get()
+	const { keys, provider, prompts } = makeRealSettings.get()
 
 	// Get the selected shapes (we need at least one)
 	const selectedShapes = editor.getSelectedShapes()
@@ -85,12 +85,22 @@ export async function makeReal(editor: Editor) {
 				switch (provider) {
 					case 'openai': {
 						const apiKey = keys[provider]
-						result = await getContentFromOpenAI(apiKey, messages, 'gpt-4o')
+						result = await getContentFromOpenAI({
+							apiKey,
+							messages,
+							systemPrompt: prompts.system,
+							model: 'gpt-4o',
+						})
 						break
 					}
 					case 'anthropic': {
 						const apiKey = keys[provider]
-						result = await getContentFromAnthropic(apiKey, messages, 'claude-3-5-sonnet-20240620')
+						result = await getContentFromAnthropic({
+							apiKey,
+							messages,
+							systemPrompt: prompts.system,
+							model: 'claude-3-5-sonnet-20240620',
+						})
 						break
 					}
 					case 'google': {
