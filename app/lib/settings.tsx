@@ -7,7 +7,7 @@ export const PROVIDERS = [
 		name: 'OpenAI',
 		model: 'GPT-4o',
 		help: 'https://tldraw.notion.site/Make-Real-Help-93be8b5273d14f7386e14eb142575e6e#a9b75e58b1824962a1a69a2f29ace9be',
-		validate: (key: string) => key.match(/sk-proj-[A-Za-z0-9]{32}/) !== null,
+		validate: (key: string) => key.startsWith('sk-proj'),
 	},
 	{
 		id: 'anthropic',
