@@ -1,12 +1,13 @@
 import { track } from '@vercel/analytics/react'
+import { readStreamableValue } from 'ai/rsc'
 import { Editor, createShapeId, getSvgAsImage } from 'tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
-import { ResultType, getContentFromAnthropic, getContentFromOpenAI } from './actions'
+import { getContentFromAnthropic, getContentFromOpenAI } from './actions'
 import { blobToBase64 } from './blobToBase64'
 import { getMessages } from './getMessages'
 import { getTextFromSelectedShapes } from './getTextFromSelectedShapes'
+import { htmlify } from './htmlify'
 import { makeRealSettings } from './settings'
-import { uploadLink } from './uploadLink'
 
 export async function makeReal(editor: Editor) {
 	const { keys, provider, prompts } = makeRealSettings.get()
@@ -73,7 +74,7 @@ export async function makeReal(editor: Editor) {
 
 			// Send everything to OpenAI and get some HTML back
 			try {
-				let result: ResultType
+				let result: { text: string; finishReason: string }
 
 				const messages = getMessages({
 					image: dataUrl,
@@ -95,12 +96,37 @@ export async function makeReal(editor: Editor) {
 					}
 					case 'anthropic': {
 						const apiKey = keys[provider]
-						result = await getContentFromAnthropic({
+						const { output } = await getContentFromAnthropic({
 							apiKey,
 							messages,
 							systemPrompt: prompts.system,
 							model: 'claude-3-5-sonnet-20240620',
 						})
+
+						// Update the shape with the new props
+						editor.updateShape<PreviewShape>({
+							id: newShapeId,
+							type: 'preview',
+							props: {
+								html: '',
+								source: dataUrl as string,
+							},
+						})
+
+						let text = ''
+
+						for await (const delta of readStreamableValue(output)) {
+							text += delta
+							editor.updateShape<PreviewShape>({
+								id: newShapeId,
+								type: 'preview',
+								props: {
+									html: htmlify(text),
+								},
+							})
+						}
+
+						result = { text, finishReason: 'complete' }
 						break
 					}
 					case 'google': {
@@ -118,33 +144,27 @@ export async function makeReal(editor: Editor) {
 				}
 
 				// Extract the HTML from the response
-				const message = result.text
-				const start = message.indexOf('<!DOCTYPE html>')
-				const end = message.indexOf('</html>')
-				const html = message.slice(start, end + '</html>'.length)
+				const html = htmlify(result.text)
 
 				// No HTML? Something went wrong
 				if (html.length < 100) {
-					console.warn(message)
+					console.warn(result.text)
 					throw Error('Could not generate a design from those wireframes.')
 				}
 
-				// Upload the HTML / link for the shape
-				await uploadLink(newShapeId, html)
+				// // Upload the HTML / link for the shape
+				// await uploadLink(newShapeId, html)
 
-				// Update the shape with the new props
-				editor.updateShape<PreviewShape>({
-					id: newShapeId,
-					type: 'preview',
-					props: {
-						html,
-						source: dataUrl as string,
-						linkUploadVersion: 1,
-						uploadedShapeId: newShapeId,
-					},
-				})
+				// editor.updateShape<PreviewShape>({
+				// 	id: newShapeId,
+				// 	type: 'preview',
+				// 	props: {
+				// 		linkUploadVersion: 1,
+				// 		uploadedShapeId: newShapeId,
+				// 	},
+				// })
 
-				console.log(`Response: ${message}`)
+				console.log(`Response: ${result.text}`)
 			} catch (e) {
 				// If anything went wrong, delete the shape.
 				editor.deleteShape(newShapeId)

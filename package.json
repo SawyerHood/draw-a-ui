@@ -20,7 +20,7 @@
 		"@vercel/blob": "^0.15.1",
 		"@vercel/kv": "^1.0.0",
 		"@vercel/postgres": "^0.5.1",
-		"ai": "^3.2.7",
+		"ai": "^3.2.9",
 		"canvas-size": "^1.2.6",
 		"google-auth-library": "^9.11.0",
 		"lz-string": "^1.5.0",

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { ReactElement, useEffect } from 'react'
 import {
 	BaseBoxShapeUtil,
 	DefaultSpinner,
@@ -89,28 +88,58 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			}
 		}, [shape.id, html, linkUploadVersion, uploadedShapeId])
 
+		const rIframe = useRef<HTMLIFrameElement>(null)
+
 		const isLoading = linkUploadVersion === undefined || uploadedShapeId !== shape.id
 
 		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
 
+		const htmlIsEmpty = html === ''
+
+		useEffect(() => {
+			if (!isLoading) return
+			const iframe = rIframe.current
+			if (!iframe) return
+			iframe.contentDocument.write(html)
+		}, [isLoading, html])
+
+		console.log(`${uploadUrl}?preview=1&v=${linkUploadVersion}`)
+
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
 				{isLoading ? (
-					<div
-						style={{
-							width: '100%',
-							height: '100%',
-							backgroundColor: 'var(--color-culled)',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							boxShadow,
-							border: '1px solid var(--color-panel-contrast)',
-							borderRadius: 'var(--radius-2)',
-						}}
-					>
-						<DefaultSpinner />
-					</div>
+					htmlIsEmpty ? (
+						<div
+							style={{
+								width: '100%',
+								height: '100%',
+								backgroundColor: 'var(--color-culled)',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								boxShadow,
+								border: '1px solid var(--color-panel-contrast)',
+								borderRadius: 'var(--radius-2)',
+							}}
+						>
+							<DefaultSpinner />
+						</div>
+					) : (
+						<iframe
+							ref={rIframe}
+							id={`iframe-1-${shape.id}`}
+							width={toDomPrecision(shape.props.w)}
+							height={toDomPrecision(shape.props.h)}
+							draggable={false}
+							style={{
+								backgroundColor: 'var(--color-panel)',
+								pointerEvents: isEditing ? 'auto' : 'none',
+								boxShadow,
+								border: '1px solid var(--color-panel-contrast)',
+								borderRadius: 'var(--radius-2)',
+							}}
+						/>
+					)
 				) : (
 					<>
 						<iframe
@@ -212,7 +241,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 					'*'
 				)
 			} else {
-				console.log('first level iframe not found or not accessible')
+				console.error('first level iframe not found or not accessible')
 			}
 		})
 	}

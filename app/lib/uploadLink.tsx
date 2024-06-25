@@ -11,5 +11,6 @@ export async function uploadLink(shapeId: string, html: string) {
 	}
 
 	shapeId = shapeId.replace(/^shape:/, '')
+	console.log(html)
 	await sql`INSERT INTO links (shape_id, html) VALUES (${shapeId}, ${html})`
 }
