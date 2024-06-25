@@ -15,7 +15,7 @@ import {
 import { PROVIDERS, makeRealSettings } from '../lib/settings'
 import { SYSTEM_PROMPT } from '../prompt'
 
-export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
+export function SettingsDialog({ onClose }: TLUiDialogProps) {
 	const settings = useValue('settings', () => makeRealSettings.get(), [])
 
 	useReactor(
@@ -36,7 +36,8 @@ export const ApiKeyDialog = ({ onClose }: TLUiDialogProps) => {
 				style={{ maxWidth: 350, display: 'flex', flexDirection: 'column', gap: 8 }}
 			>
 				<p>
-					To use Make Real, enter your API key for each provider you wish to use.{' '}
+					To use Make Real, enter your API key for each provider you wish to use. Draw some shapes,
+					then select the shapes and click Make Real.{' '}
 					<a
 						target="_blank"
 						href="https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e?pvs=4"

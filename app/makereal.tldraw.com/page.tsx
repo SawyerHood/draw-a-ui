@@ -8,10 +8,11 @@ import { PreviewShapeUtil } from '../PreviewShape/PreviewShape'
 import { MakeRealButton } from '../components/MakeRealButton'
 
 import { useEffect } from 'react'
-import { DefaultMainMenu, DefaultMainMenuContent } from 'tldraw'
+import { DefaultMainMenu, DefaultMainMenuContent, useDialogs } from 'tldraw'
 import { LinkArea } from '../components/LinkArea'
 import { Links } from '../components/Links'
-import { makeRealSettings } from '../lib/settings'
+import { SettingsDialog } from '../components/SettingsDialog'
+import { PROVIDERS, makeRealSettings } from '../lib/settings'
 
 const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
 	ssr: false,
@@ -29,19 +30,40 @@ const components = {
 }
 
 export default function Home() {
+	return (
+		<div className="tldraw__editor">
+			<Tldraw persistenceKey="tldraw" shapeUtils={shapeUtils} components={components}>
+				<LinkArea />
+				<InsideTldrawContext />
+			</Tldraw>
+		</div>
+	)
+}
+
+function InsideTldrawContext() {
+	const { addDialog } = useDialogs()
+
 	useEffect(() => {
 		const value = localStorage.getItem('makereal_settings_2')
 		if (value) {
 			const json = JSON.parse(value)
 			makeRealSettings.set(json)
 		}
-	}, [])
+		const settings = makeRealSettings.get()
 
-	return (
-		<div className="tldraw__editor">
-			<Tldraw persistenceKey="tldraw" shapeUtils={shapeUtils} components={components}>
-				<LinkArea />
-			</Tldraw>
-		</div>
-	)
+		for (const provider of PROVIDERS) {
+			const apiKey = settings.keys[provider.id]
+			if (apiKey && provider.validate(apiKey)) {
+				return
+			}
+		}
+
+		// no valid key found, show the settings modal
+		addDialog({
+			id: 'api keys',
+			component: SettingsDialog,
+		})
+	}, [addDialog])
+
+	return null
 }

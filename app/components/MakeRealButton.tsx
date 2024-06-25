@@ -1,10 +1,74 @@
-import { TldrawUiButton, useDialogs } from 'tldraw'
-import { useMakeReal } from '../hooks/useMakeReal'
-import { ApiKeyDialog } from './ApiKeyDialog'
+import { track } from '@vercel/analytics/react'
+import { useCallback } from 'react'
+import { TldrawUiButton, useDialogs, useEditor, useToasts } from 'tldraw'
+import { makeReal } from '../lib/makeReal'
+import { PROVIDERS, makeRealSettings } from '../lib/settings'
+import { SettingsDialog } from './SettingsDialog'
 
 export function MakeRealButton() {
-	const makeReal = useMakeReal()
+	const editor = useEditor()
+	const { addToast } = useToasts()
 	const { addDialog } = useDialogs()
+
+	const handleClick = useCallback(async () => {
+		track('make_real', { timestamp: Date.now() })
+
+		const settings = makeRealSettings.get()
+		let didError = false
+		if (settings.provider === 'all') {
+			for (const provider of PROVIDERS) {
+				const apiKey = settings.keys[provider.id]
+				if (apiKey && provider.validate(apiKey)) {
+					continue
+				}
+				didError = true
+			}
+		} else {
+			const provider = PROVIDERS.find((p) => p.id === settings.provider)
+			const apiKey = settings.keys[settings.provider]
+			if (apiKey && provider.validate(apiKey)) {
+				// noop
+			} else {
+				didError = true
+			}
+		}
+
+		if (didError) {
+			addDialog({
+				id: 'api keys',
+				component: SettingsDialog,
+			})
+			return
+		}
+
+		// no valid key found, show the settings modal
+
+		try {
+			await makeReal(editor)
+		} catch (e: any) {
+			track('no_luck', { timestamp: Date.now() })
+
+			console.error(e)
+
+			addToast({
+				title: 'Something went wrong',
+				description: `${e.message.slice(0, 200)}`,
+				actions: [
+					{
+						type: 'primary',
+						label: 'Read the guide',
+						onClick: () => {
+							// open a new tab with the url...
+							window.open(
+								'https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e',
+								'_blank'
+							)
+						},
+					},
+				],
+			})
+		}
+	}, [editor, addDialog, addToast])
 
 	return (
 		<div style={{ display: 'flex' }}>
@@ -14,7 +78,7 @@ export function MakeRealButton() {
 				onClick={() => {
 					addDialog({
 						id: 'api keys',
-						component: ApiKeyDialog,
+						component: SettingsDialog,
 					})
 				}}
 			>
@@ -35,7 +99,7 @@ export function MakeRealButton() {
 				</svg>
 			</TldrawUiButton>
 			<button
-				onClick={makeReal}
+				onClick={handleClick}
 				className="pt-2 pb-2 pr-2"
 				style={{ cursor: 'pointer', zIndex: 100000, pointerEvents: 'all' }}
 			>
