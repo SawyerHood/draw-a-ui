@@ -45,7 +45,8 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 	}
 
 	// Only allow editing once the shape's content is finished
-	override canEdit = (shape: PreviewShape) => shape.props.html.length > 0
+	override canEdit = (shape: PreviewShape) =>
+		shape.props.parts.length > 0 || shape.props.html.length > 0
 
 	override isAspectRatioLocked = (_shape: PreviewShape) => false
 
