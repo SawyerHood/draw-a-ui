@@ -63,7 +63,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			[this.editor]
 		)
 
-		const { html, linkUploadVersion, uploadedShapeId } = shape.props
+		const { linkUploadVersion, uploadedShapeId } = shape.props
 
 		const isOnlySelected = useValue(
 			'is only selected',
