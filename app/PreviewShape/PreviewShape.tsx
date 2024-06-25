@@ -8,6 +8,7 @@ import {
 	TLBaseShape,
 	TldrawUiIcon,
 	Vec,
+	stopEventPropagation,
 	toDomPrecision,
 	useIsEditing,
 	useValue,
@@ -144,7 +145,11 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 								}}
 							>
 								<Dropdown boxShadow={boxShadow} html={shape.props.html} uploadUrl={uploadUrl}>
-									<button className="bg-white rounded p-2" style={{ boxShadow }}>
+									<button
+										className="bg-white rounded p-2"
+										style={{ boxShadow }}
+										onPointerDown={stopEventPropagation}
+									>
 										<TldrawUiIcon icon="dots-vertical" />
 									</button>
 								</Dropdown>
