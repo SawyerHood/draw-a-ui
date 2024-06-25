@@ -15,12 +15,12 @@ import {
 } from 'tldraw'
 import { Dropdown } from '../components/Dropdown'
 import { LINK_HOST, PROTOCOL } from '../lib/hosts'
-import { uploadLink } from '../lib/uploadLink'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
 	{
 		html: string
+		parts: string[]
 		source: string
 		w: number
 		h: number
@@ -37,6 +37,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		return {
 			html: '',
 			source: '',
+			parts: [],
 			w: (960 * 2) / 3,
 			h: (540 * 2) / 3,
 			dateCreated: Date.now(),
@@ -67,45 +68,35 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			[shape.id, this.editor]
 		)
 
-		// upload the html if we haven't already:
-		useEffect(() => {
-			let isCancelled = false
-			if (html && (linkUploadVersion === undefined || uploadedShapeId !== shape.id)) {
-				;(async () => {
-					await uploadLink(shape.id, html)
-					if (isCancelled) return
-
-					this.editor.updateShape<PreviewShape>({
-						id: shape.id,
-						type: 'preview',
-						props: {
-							linkUploadVersion: 1,
-							uploadedShapeId: shape.id,
-						},
-					})
-				})()
-			}
-			return () => {
-				isCancelled = true
-			}
-		}, [shape.id, html, linkUploadVersion, uploadedShapeId])
-
 		const rIframe = useRef<HTMLIFrameElement>(null)
 
 		const isLoading = linkUploadVersion === undefined || uploadedShapeId !== shape.id
 
 		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
 
-		const htmlIsEmpty = html === ''
+		const htmlIsEmpty = shape.props.parts?.length === 0
+
+		const rCursor = useRef(0)
 
 		useEffect(() => {
 			if (!isLoading) return
 			const iframe = rIframe.current
 			if (!iframe) return
-			iframe.contentDocument.write(html)
-		}, [isLoading, html])
 
-		console.log(`${uploadUrl}?preview=1&v=${linkUploadVersion}`)
+			if (!shape.props.parts) return
+
+			for (let i = rCursor.current; i < shape.props.parts.length; i++) {
+				const part = shape.props.parts[i]
+				console.log(i, part)
+				iframe.contentDocument.write(part)
+			}
+
+			rCursor.current = shape.props.parts.length
+
+			// iframe.contentDocument.close()
+			// iframe.contentDocument.open()
+			// iframe.contentDocument.write(html)
+		}, [isLoading, shape.props.parts])
 
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
@@ -117,6 +108,8 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 								height: '100%',
 								backgroundColor: 'var(--color-culled)',
 								display: 'flex',
+								flexDirection: 'column',
+								gap: 8,
 								alignItems: 'center',
 								justifyContent: 'center',
 								boxShadow,
@@ -125,6 +118,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 							}}
 						>
 							<DefaultSpinner />
+							{shape.meta.provider && <div>Waiting on {shape.meta.provider as string}</div>}
 						</div>
 					) : (
 						<iframe

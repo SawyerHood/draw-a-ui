@@ -1,6 +1,6 @@
 import { track } from '@vercel/analytics/react'
 import { readStreamableValue } from 'ai/rsc'
-import { Editor, createShapeId, getSvgAsImage } from 'tldraw'
+import { Editor, createShapeId, getSvgAsImage, sortByIndex } from 'tldraw'
 import { PreviewShape } from '../PreviewShape/PreviewShape'
 import { getContentFromAnthropic, getContentFromOpenAI } from './actions'
 import { blobToBase64 } from './blobToBase64'
@@ -8,6 +8,7 @@ import { getMessages } from './getMessages'
 import { getTextFromSelectedShapes } from './getTextFromSelectedShapes'
 import { htmlify } from './htmlify'
 import { makeRealSettings } from './settings'
+import { uploadLink } from './uploadLink'
 
 export async function makeReal(editor: Editor) {
 	const { keys, provider, prompts } = makeRealSettings.get()
@@ -22,9 +23,25 @@ export async function makeReal(editor: Editor) {
 
 	const providers = provider === 'all' ? ['openai', 'anthropic'] : [provider]
 
-	const previewHeight = (540 * 2) / 3
+	let previewHeight = (540 * 2) / 3
+	let previewWidth = (960 * 2) / 3
+
+	const highestPreview = selectedShapes
+		.filter((s) => s.type === 'preview')
+		.sort(sortByIndex)
+		.reverse()[0] as PreviewShape
+
+	if (highestPreview) {
+		previewHeight = highestPreview.props.h
+		previewWidth = highestPreview.props.w
+	}
+
 	const totalHeight = (previewHeight + 40) * providers.length - 40
 	let y = midY - totalHeight / 2
+
+	if (highestPreview && Math.abs(y - highestPreview.y) < totalHeight) {
+		y = highestPreview.y
+	}
 
 	await Promise.allSettled(
 		providers.map(async (provider, i) => {
@@ -34,7 +51,7 @@ export async function makeReal(editor: Editor) {
 				type: 'preview',
 				x: maxX + 60, // to the right of the selection
 				y: y + (previewHeight + 40) * i, // half the height of the preview's initial shape
-				props: { html: '', source: '' },
+				props: { html: '', source: '', w: previewWidth, h: previewHeight },
 				meta: {
 					provider,
 				},
@@ -83,15 +100,59 @@ export async function makeReal(editor: Editor) {
 					theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 				})
 
+				const parts: string[] = []
+				let text = ''
+				let didStart = false
+				let didEnd = false
+
 				switch (provider) {
 					case 'openai': {
 						const apiKey = keys[provider]
-						result = await getContentFromOpenAI({
+						const { output } = await getContentFromOpenAI({
 							apiKey,
 							messages,
 							systemPrompt: prompts.system,
 							model: 'gpt-4o',
 						})
+
+						// Update the shape with the new props
+						editor.updateShape<PreviewShape>({
+							id: newShapeId,
+							type: 'preview',
+							props: {
+								html: '',
+								source: dataUrl as string,
+							},
+						})
+
+						for await (const delta of readStreamableValue(output)) {
+							text += delta
+
+							if (didEnd) {
+								continue
+							} else if (!didStart && text.includes('<!DOCTYPE html>')) {
+								const startIndex = text.indexOf('<!DOCTYPE html>')
+								parts.push(text.slice(startIndex))
+								didStart = true
+							} else if (didStart && text.includes('</html>')) {
+								const endIndex = text.indexOf('</html>') + 7
+								parts.push(text.slice(0, endIndex))
+								didEnd = true
+							} else if (didStart) {
+								parts.push(delta)
+								if (parts.length % 10 === 0) {
+									editor.updateShape<PreviewShape>({
+										id: newShapeId,
+										type: 'preview',
+										props: {
+											parts: [...parts],
+										},
+									})
+								}
+							}
+						}
+
+						result = { text, finishReason: 'complete' }
 						break
 					}
 					case 'anthropic': {
@@ -113,17 +174,30 @@ export async function makeReal(editor: Editor) {
 							},
 						})
 
-						let text = ''
-
 						for await (const delta of readStreamableValue(output)) {
 							text += delta
-							editor.updateShape<PreviewShape>({
-								id: newShapeId,
-								type: 'preview',
-								props: {
-									html: htmlify(text),
-								},
-							})
+							if (didEnd) {
+								continue
+							} else if (!didStart && text.includes('<!DOCTYPE html>')) {
+								const startIndex = text.indexOf('<!DOCTYPE html>')
+								parts.push(text.slice(startIndex))
+								didStart = true
+							} else if (didStart && text.includes('</html>')) {
+								const endIndex = text.indexOf('</html>')
+								parts.push(text.slice(endIndex, endIndex + 7))
+								didEnd = true
+							} else if (didStart) {
+								parts.push(delta)
+								if (parts.length % 10 === 0) {
+									editor.updateShape<PreviewShape>({
+										id: newShapeId,
+										type: 'preview',
+										props: {
+											parts: [...parts],
+										},
+									})
+								}
+							}
 						}
 
 						result = { text, finishReason: 'complete' }
@@ -152,20 +226,23 @@ export async function makeReal(editor: Editor) {
 					throw Error('Could not generate a design from those wireframes.')
 				}
 
-				// // Upload the HTML / link for the shape
-				// await uploadLink(newShapeId, html)
+				// Upload the HTML / link for the shape
+				await uploadLink(newShapeId, html)
 
-				// editor.updateShape<PreviewShape>({
-				// 	id: newShapeId,
-				// 	type: 'preview',
-				// 	props: {
-				// 		linkUploadVersion: 1,
-				// 		uploadedShapeId: newShapeId,
-				// 	},
-				// })
+				editor.updateShape<PreviewShape>({
+					id: newShapeId,
+					type: 'preview',
+					props: {
+						parts: [],
+						html: htmlify(text),
+						linkUploadVersion: 1,
+						uploadedShapeId: newShapeId,
+					},
+				})
 
-				console.log(`Response: ${result.text}`)
+				// console.log(`Response: ${result.text}`)
 			} catch (e) {
+				console.log(e)
 				// If anything went wrong, delete the shape.
 				editor.deleteShape(newShapeId)
 				throw e

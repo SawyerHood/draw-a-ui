@@ -2,7 +2,7 @@
 
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createOpenAI } from '@ai-sdk/openai'
-import { generateText, streamText } from 'ai'
+import { streamText } from 'ai'
 import { createStreamableValue } from 'ai/rsc'
 
 export async function getContentFromAnthropic(opts: {
@@ -43,16 +43,26 @@ export async function getContentFromOpenAI(opts: {
 }) {
 	const { apiKey, messages, model, systemPrompt } = opts
 	const openai = createOpenAI({ apiKey })
-	const { text, finishReason, usage } = await generateText({
-		model: openai(model),
-		system: systemPrompt,
-		messages,
-		maxTokens: 4096,
-		temperature: 0,
-		seed: 42,
-	})
+	const stream = createStreamableValue('')
 
-	return { text, finishReason, usage }
+	;(async () => {
+		const { textStream } = await streamText({
+			model: openai(model),
+			system: systemPrompt,
+			messages,
+			maxTokens: 4096,
+			temperature: 0,
+			seed: 42,
+		})
+
+		for await (const delta of textStream) {
+			stream.update(delta)
+		}
+
+		stream.done()
+	})()
+
+	return { output: stream.value }
 }
 
 export type ResultType = Awaited<

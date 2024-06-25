@@ -5,6 +5,6 @@ export function htmlify(text: string) {
 	if (end > 0) {
 		return message.slice(start, end + '</html>'.length)
 	} else {
-		return message + '</html>'
+		return message.slice(start)
 	}
 }
