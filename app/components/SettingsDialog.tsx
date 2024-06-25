@@ -36,8 +36,8 @@ export function SettingsDialog({ onClose }: TLUiDialogProps) {
 				style={{ maxWidth: 350, display: 'flex', flexDirection: 'column', gap: 8 }}
 			>
 				<p>
-					To use Make Real, enter your API key for each provider you wish to use. Draw some shapes,
-					then select the shapes and click Make Real.{' '}
+					To use Make Real, enter your API key for each model provider that you wish to use. Draw
+					some shapes, then select the shapes and click Make Real.{' '}
 					<a
 						target="_blank"
 						href="https://tldraw.notion.site/Make-Real-FAQs-93be8b5273d14f7386e14eb142575e6e?pvs=4"
