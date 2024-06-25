@@ -87,7 +87,6 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 
 			for (let i = rCursor.current; i < shape.props.parts.length; i++) {
 				const part = shape.props.parts[i]
-				console.log(i, part)
 				iframe.contentDocument.write(part)
 			}
 

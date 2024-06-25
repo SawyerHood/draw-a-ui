@@ -240,9 +240,8 @@ export async function makeReal(editor: Editor) {
 					},
 				})
 
-				// console.log(`Response: ${result.text}`)
+				console.log(`Response: ${result.text}`)
 			} catch (e) {
-				console.log(e)
 				// If anything went wrong, delete the shape.
 				editor.deleteShape(newShapeId)
 				throw e
