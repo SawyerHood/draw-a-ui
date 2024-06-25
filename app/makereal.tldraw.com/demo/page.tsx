@@ -2,6 +2,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
+export const maxDuration = 120
+
 import dynamic from 'next/dynamic'
 import 'tldraw/tldraw.css'
 import { PreviewShapeUtil } from '../../PreviewShape/PreviewShape'
