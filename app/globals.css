@@ -86,3 +86,11 @@ body {
 	font-size: 12px;
 	font-family: Inter, sans-serif;
 }
+
+.apikey_help_icon {
+	pointer-events: none;
+}
+
+.apikey_input.apikey_input__invalid {
+	color: red !important;
+}
