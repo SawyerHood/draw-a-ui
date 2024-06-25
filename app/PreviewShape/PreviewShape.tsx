@@ -104,26 +104,17 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
 				{isLoading ? (
-					htmlIsEmpty ? (
-						<div
-							style={{
-								width: '100%',
-								height: '100%',
-								backgroundColor: 'var(--color-culled)',
-								display: 'flex',
-								flexDirection: 'column',
-								gap: 8,
-								alignItems: 'center',
-								justifyContent: 'center',
-								boxShadow,
-								border: '1px solid var(--color-panel-contrast)',
-								borderRadius: 'var(--radius-2)',
-							}}
-						>
-							<DefaultSpinner />
-							{shape.meta.provider && <div>Waiting on {shape.meta.provider as string}</div>}
-						</div>
-					) : (
+					<div
+						style={{
+							position: 'relative',
+							width: '100%',
+							height: '100%',
+							backgroundColor: 'var(--color-culled)',
+							boxShadow,
+							border: '1px solid var(--color-panel-contrast)',
+							borderRadius: 'var(--radius-2)',
+						}}
+					>
 						<iframe
 							ref={rIframe}
 							id={`iframe-1-${shape.id}`}
@@ -131,14 +122,32 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 							height={toDomPrecision(shape.props.h)}
 							draggable={false}
 							style={{
+								opacity: 0.62,
 								backgroundColor: 'var(--color-panel)',
-								pointerEvents: isEditing ? 'auto' : 'none',
+								pointerEvents: 'none', // isEditing ? 'auto' : 'none',
 								boxShadow,
 								border: '1px solid var(--color-panel-contrast)',
 								borderRadius: 'var(--radius-2)',
 							}}
 						/>
-					)
+						<div
+							style={{
+								all: 'unset',
+								position: 'absolute',
+								top: -3,
+								right: -45,
+								height: 40,
+								width: 40,
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								cursor: 'pointer',
+								pointerEvents: 'all',
+							}}
+						>
+							<DefaultSpinner />
+						</div>
+					</div>
 				) : (
 					<>
 						<iframe

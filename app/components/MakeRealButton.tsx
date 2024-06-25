@@ -1,14 +1,35 @@
 import { track } from '@vercel/analytics/react'
+import { parseStreamPart } from 'ai'
+import { useCompletion } from 'ai/react'
 import { useCallback } from 'react'
-import { TldrawUiButton, useDialogs, useEditor, useToasts } from 'tldraw'
-import { makeReal } from '../lib/makeReal'
+import {
+	TldrawUiButton,
+	createShapeId,
+	getSvgAsImage,
+	sortByIndex,
+	useDialogs,
+	useEditor,
+	useToasts,
+} from 'tldraw'
+import { PreviewShape } from '../PreviewShape/PreviewShape'
+import { blobToBase64 } from '../lib/blobToBase64'
+import { getMessages } from '../lib/getMessages'
+import { getTextFromSelectedShapes } from '../lib/getTextFromSelectedShapes'
+import { htmlify } from '../lib/htmlify'
 import { PROVIDERS, makeRealSettings } from '../lib/settings'
+import { uploadLink } from '../lib/uploadLink'
 import { SettingsDialog } from './SettingsDialog'
 
 export function MakeRealButton() {
 	const editor = useEditor()
 	const { addToast } = useToasts()
 	const { addDialog } = useDialogs()
+	const openaiCompletion = useCompletion({
+		api: '/api/openai',
+	})
+	const anthropicCompletion = useCompletion({
+		api: '/api/anthropic',
+	})
 
 	const handleClick = useCallback(async () => {
 		track('make_real', { timestamp: Date.now() })
@@ -44,7 +65,323 @@ export function MakeRealButton() {
 		// no valid key found, show the settings modal
 
 		try {
-			await makeReal(editor)
+			const { keys, provider, prompts } = makeRealSettings.get()
+
+			// Get the selected shapes (we need at least one)
+			const selectedShapes = editor.getSelectedShapes()
+
+			if (selectedShapes.length === 0) throw Error('First select something to make real.')
+
+			// Create the preview shape
+			const { maxX, midY } = editor.getSelectionPageBounds()
+
+			const providers = provider === 'all' ? ['openai', 'anthropic'] : [provider]
+
+			let previewHeight = (540 * 2) / 3
+			let previewWidth = (960 * 2) / 3
+
+			const highestPreview = selectedShapes
+				.filter((s) => s.type === 'preview')
+				.sort(sortByIndex)
+				.reverse()[0] as PreviewShape
+
+			if (highestPreview) {
+				previewHeight = highestPreview.props.h
+				previewWidth = highestPreview.props.w
+			}
+
+			const totalHeight = (previewHeight + 40) * providers.length - 40
+			let y = midY - totalHeight / 2
+
+			if (highestPreview && Math.abs(y - highestPreview.y) < totalHeight) {
+				y = highestPreview.y
+			}
+
+			await Promise.allSettled(
+				providers.map(async (provider, i) => {
+					const newShapeId = createShapeId()
+
+					// Get an SVG based on the selected shapes
+					const svgResult = await editor.getSvgString(selectedShapes, {
+						scale: 1,
+						background: true,
+					})
+
+					// Add the grid lines to the SVG
+					// const grid = { color: 'red', size: 100, labels: true }
+					// addGridToSvg(svg, grid)
+
+					if (!svgResult) throw Error(`Could not get the SVG.`)
+
+					// Turn the SVG into a DataUrl
+					const blob = await getSvgAsImage(editor, svgResult.svg, {
+						height: svgResult.height,
+						width: svgResult.width,
+						type: 'png',
+						quality: 0.8,
+						scale: 1,
+					})
+					const dataUrl = await blobToBase64(blob!)
+
+					editor.createShape<PreviewShape>({
+						id: newShapeId,
+						type: 'preview',
+						x: maxX + 60, // to the right of the selection
+						y: y + (previewHeight + 40) * i, // half the height of the preview's initial shape
+						props: { html: '', w: previewWidth, h: previewHeight, source: dataUrl },
+						meta: {
+							provider,
+						},
+					})
+
+					// downloadDataURLAsFile(dataUrl, 'tldraw.png')
+
+					// Get any previous previews among the selected shapes
+					const previousPreviews = selectedShapes.filter((shape) => {
+						return shape.type === 'preview'
+					}) as PreviewShape[]
+
+					if (previousPreviews.length > 0) {
+						track('repeat_make_real', { timestamp: Date.now() })
+					}
+
+					// Send everything to OpenAI and get some HTML back
+					try {
+						let result: { text: string; finishReason: string }
+
+						const messages = getMessages({
+							image: dataUrl,
+							text: getTextFromSelectedShapes(editor),
+							previousPreviews,
+							theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
+						})
+
+						const parts: string[] = []
+						let text = ''
+						let didStart = false
+						let didEnd = false
+
+						switch (provider) {
+							case 'openai': {
+								try {
+									const apiKey = keys[provider]
+
+									const abortController = new AbortController()
+
+									const res = await fetch('/api/openai', {
+										method: 'POST',
+										body: JSON.stringify({
+											apiKey,
+											messages,
+											systemPrompt: prompts.system,
+											model: 'gpt-4o',
+										}),
+										headers: {
+											'Content-Type': 'application/json',
+										},
+										signal: abortController.signal,
+									}).catch((err) => {
+										throw err
+									})
+
+									if (!res.ok) {
+										throw new Error((await res.text()) || 'Failed to fetch the chat response.')
+									}
+
+									if (!res.body) {
+										throw new Error('The response body is empty.')
+									}
+
+									let result = ''
+									const reader = res.body.getReader()
+									const decoder = createChunkDecoder(true)
+
+									while (true) {
+										const { done, value } = await reader.read()
+										if (done) {
+											break
+										}
+
+										// Update the completion state with the new message tokens.
+										const decoded = decoder(value) as { value: string }[]
+										for (const { value: delta } of decoded) {
+											result += delta
+											text += delta
+											if (didEnd) {
+												continue
+											} else if (!didStart && text.includes('<!DOCTYPE html>')) {
+												const startIndex = text.indexOf('<!DOCTYPE html>')
+												parts.push(text.slice(startIndex))
+												didStart = true
+											} else if (didStart && text.includes('</html>')) {
+												const endIndex = text.indexOf('</html>')
+												parts.push(text.slice(endIndex, endIndex + 7))
+												didEnd = true
+											} else if (didStart) {
+												parts.push(delta)
+												editor.updateShape<PreviewShape>({
+													id: newShapeId,
+													type: 'preview',
+													props: {
+														parts: [...parts],
+													},
+												})
+											}
+										}
+
+										// The request has been aborted, stop reading the stream.
+										if (abortController === null) {
+											reader.cancel()
+											break
+										}
+									}
+								} catch (err) {
+									// Ignore abort errors as they are expected.
+									if ((err as any).name === 'AbortError') {
+										return null
+									}
+
+									if (err instanceof Error) {
+										// handle error
+									}
+								}
+
+								result = { text, finishReason: 'complete' }
+								break
+							}
+							case 'anthropic': {
+								try {
+									const apiKey = keys[provider]
+
+									const abortController = new AbortController()
+
+									const res = await fetch('/api/anthropic', {
+										method: 'POST',
+										body: JSON.stringify({
+											apiKey,
+											messages,
+											systemPrompt: prompts.system,
+											model: 'claude-3-5-sonnet-20240620',
+										}),
+										headers: {
+											'Content-Type': 'application/json',
+										},
+										signal: abortController.signal,
+									}).catch((err) => {
+										throw err
+									})
+
+									if (!res.ok) {
+										throw new Error((await res.text()) || 'Failed to fetch the chat response.')
+									}
+
+									if (!res.body) {
+										throw new Error('The response body is empty.')
+									}
+
+									let result = ''
+									const reader = res.body.getReader()
+									const decoder = createChunkDecoder(true)
+
+									while (true) {
+										const { done, value } = await reader.read()
+										if (done) {
+											break
+										}
+
+										// Update the completion state with the new message tokens.
+										const decoded = decoder(value) as { value: string }[]
+										for (const { value: delta } of decoded) {
+											result += delta
+											text += delta
+											if (didEnd) {
+												continue
+											} else if (!didStart && text.includes('<!DOCTYPE html>')) {
+												const startIndex = text.indexOf('<!DOCTYPE html>')
+												parts.push(text.slice(startIndex))
+												didStart = true
+											} else if (didStart && text.includes('</html>')) {
+												const endIndex = text.indexOf('</html>')
+												parts.push(text.slice(endIndex, endIndex + 7))
+												didEnd = true
+											} else if (didStart) {
+												parts.push(delta)
+												editor.updateShape<PreviewShape>({
+													id: newShapeId,
+													type: 'preview',
+													props: {
+														parts: [...parts],
+													},
+												})
+											}
+										}
+
+										// The request has been aborted, stop reading the stream.
+										if (abortController === null) {
+											reader.cancel()
+											break
+										}
+									}
+								} catch (err) {
+									// Ignore abort errors as they are expected.
+									if ((err as any).name === 'AbortError') {
+										return null
+									}
+
+									if (err instanceof Error) {
+										// handle error
+									}
+								}
+
+								result = { text, finishReason: 'complete' }
+								break
+							}
+							case 'google': {
+								throw Error('not implemented')
+							}
+						}
+
+						if (!result) {
+							throw Error('Could not contact provider.')
+						}
+
+						if (result?.finishReason === 'error') {
+							console.error(result.finishReason)
+							throw Error(`${result.finishReason?.slice(0, 128)}...`)
+						}
+
+						// Extract the HTML from the response
+						const html = htmlify(result.text)
+
+						// No HTML? Something went wrong
+						if (html.length < 100) {
+							console.warn(result.text)
+							throw Error('Could not generate a design from those wireframes.')
+						}
+
+						// Upload the HTML / link for the shape
+						await uploadLink(newShapeId, html)
+
+						editor.updateShape<PreviewShape>({
+							id: newShapeId,
+							type: 'preview',
+							props: {
+								parts: [],
+								html: htmlify(text),
+								linkUploadVersion: 1,
+								uploadedShapeId: newShapeId,
+							},
+						})
+
+						console.log(`Response: ${result.text}`)
+					} catch (e) {
+						console.error(e.message)
+						// If anything went wrong, delete the shape.
+						editor.deleteShape(newShapeId)
+						throw e
+					}
+				})
+			)
 		} catch (e: any) {
 			track('no_luck', { timestamp: Date.now() })
 
@@ -109,4 +446,24 @@ export function MakeRealButton() {
 			</button>
 		</div>
 	)
+}
+
+function createChunkDecoder(complex?: boolean) {
+	const decoder = new TextDecoder()
+
+	if (!complex) {
+		return function (chunk: Uint8Array | undefined): string {
+			if (!chunk) return ''
+			return decoder.decode(chunk, { stream: true })
+		}
+	}
+
+	return function (chunk: Uint8Array | undefined) {
+		const decoded = decoder
+			.decode(chunk, { stream: true })
+			.split('\n')
+			.filter((line) => line !== '') // splitting leaves an empty string at the end
+
+		return decoded.map(parseStreamPart).filter(Boolean)
+	}
 }

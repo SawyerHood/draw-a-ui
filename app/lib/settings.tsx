@@ -14,7 +14,7 @@ export const PROVIDERS = [
 		name: 'Anthropic',
 		model: 'Claude Sonnet 3.5',
 		help: 'https://tldraw.notion.site/Make-Real-Help-93be8b5273d14f7386e14eb142575e6e#3444b55a2ede405286929956d0be6e77',
-		validate: (key: string) => key.match(/sk-ant-api[0-9][0-9]-[A-Za-z0-9]{32}/) !== null,
+		validate: (key: string) => key.startsWith('sk-ant-api'),
 	},
 	// { id: 'google', name: 'Google', model: 'Gemeni 1.5 Flash', validate: (key: string) => true },
 ]
