@@ -62,7 +62,6 @@ export function Dropdown({
 	const openInReplit = useCallback(async () => {
 		try {
 			const { error, url } = await createReplitProject(html)
-			console.log(error, url)
 			if (error) {
 				console.error(error)
 				throw Error()

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { ReactElement, useEffect } from 'react'
+import { ReactElement, useEffect, useRef } from 'react'
 import {
 	BaseBoxShapeUtil,
 	DefaultSpinner,
@@ -15,12 +15,12 @@ import {
 } from 'tldraw'
 import { Dropdown } from '../components/Dropdown'
 import { LINK_HOST, PROTOCOL } from '../lib/hosts'
-import { uploadLink } from '../lib/uploadLink'
 
 export type PreviewShape = TLBaseShape<
 	'preview',
 	{
 		html: string
+		parts: string[]
 		source: string
 		w: number
 		h: number
@@ -37,14 +37,18 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		return {
 			html: '',
 			source: '',
+			parts: [],
 			w: (960 * 2) / 3,
 			h: (540 * 2) / 3,
 			dateCreated: Date.now(),
 		}
 	}
 
-	override canEdit = () => true
+	// Only allow editing once the shape's content is finished
+	override canEdit = (shape: PreviewShape) => shape.props.html.length > 0
+
 	override isAspectRatioLocked = (_shape: PreviewShape) => false
+
 	override canResize = (_shape: PreviewShape) => true
 
 	override component(shape: PreviewShape) {
@@ -59,7 +63,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			[this.editor]
 		)
 
-		const { html, linkUploadVersion, uploadedShapeId } = shape.props
+		const { linkUploadVersion, uploadedShapeId } = shape.props
 
 		const isOnlySelected = useValue(
 			'is only selected',
@@ -67,51 +71,73 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 			[shape.id, this.editor]
 		)
 
-		// upload the html if we haven't already:
-		useEffect(() => {
-			let isCancelled = false
-			if (html && (linkUploadVersion === undefined || uploadedShapeId !== shape.id)) {
-				;(async () => {
-					await uploadLink(shape.id, html)
-					if (isCancelled) return
-
-					this.editor.updateShape<PreviewShape>({
-						id: shape.id,
-						type: 'preview',
-						props: {
-							linkUploadVersion: 1,
-							uploadedShapeId: shape.id,
-						},
-					})
-				})()
-			}
-			return () => {
-				isCancelled = true
-			}
-		}, [shape.id, html, linkUploadVersion, uploadedShapeId])
+		const rIframe = useRef<HTMLIFrameElement>(null)
 
 		const isLoading = linkUploadVersion === undefined || uploadedShapeId !== shape.id
 
 		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
 
+		const htmlIsEmpty = shape.props.parts?.length === 0
+
+		const rCursor = useRef(0)
+
+		useEffect(() => {
+			if (!isLoading) return
+			const iframe = rIframe.current
+			if (!iframe) return
+
+			if (!shape.props.parts) return
+
+			for (let i = rCursor.current; i < shape.props.parts.length; i++) {
+				const part = shape.props.parts[i]
+				iframe.contentDocument.write(part)
+			}
+
+			rCursor.current = shape.props.parts.length
+
+			// iframe.contentDocument.close()
+			// iframe.contentDocument.open()
+			// iframe.contentDocument.write(html)
+		}, [isLoading, shape.props.parts])
+
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
 				{isLoading ? (
-					<div
-						style={{
-							width: '100%',
-							height: '100%',
-							backgroundColor: 'var(--color-culled)',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							boxShadow,
-							border: '1px solid var(--color-panel-contrast)',
-							borderRadius: 'var(--radius-2)',
-						}}
-					>
-						<DefaultSpinner />
-					</div>
+					htmlIsEmpty ? (
+						<div
+							style={{
+								width: '100%',
+								height: '100%',
+								backgroundColor: 'var(--color-culled)',
+								display: 'flex',
+								flexDirection: 'column',
+								gap: 8,
+								alignItems: 'center',
+								justifyContent: 'center',
+								boxShadow,
+								border: '1px solid var(--color-panel-contrast)',
+								borderRadius: 'var(--radius-2)',
+							}}
+						>
+							<DefaultSpinner />
+							{shape.meta.provider && <div>Waiting on {shape.meta.provider as string}</div>}
+						</div>
+					) : (
+						<iframe
+							ref={rIframe}
+							id={`iframe-1-${shape.id}`}
+							width={toDomPrecision(shape.props.w)}
+							height={toDomPrecision(shape.props.h)}
+							draggable={false}
+							style={{
+								backgroundColor: 'var(--color-panel)',
+								pointerEvents: isEditing ? 'auto' : 'none',
+								boxShadow,
+								border: '1px solid var(--color-panel-contrast)',
+								borderRadius: 'var(--radius-2)',
+							}}
+						/>
+					)
 				) : (
 					<>
 						<iframe
@@ -217,7 +243,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 					'*'
 				)
 			} else {
-				console.log('first level iframe not found or not accessible')
+				console.error('first level iframe not found or not accessible')
 			}
 		})
 	}
