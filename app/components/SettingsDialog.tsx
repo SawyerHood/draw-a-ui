@@ -153,7 +153,11 @@ function ApiKeyInput({
 					{provider.name} API key
 				</label>
 				<a style={{ cursor: 'pointer', pointerEvents: 'all' }} target="_blank" href={provider.help}>
-					<TldrawUiIcon className="apikey_help_icon" small icon="question-mark-circle" />
+					<TldrawUiIcon
+						className="apikey_help_icon"
+						small
+						icon={provider.validate(value) ? 'check' : 'question-mark-circle'}
+					/>
 				</a>
 			</div>
 			<TldrawUiInput
