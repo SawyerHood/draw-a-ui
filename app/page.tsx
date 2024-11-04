@@ -55,6 +55,26 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
   const editor = useEditor();
   const [loading, setLoading] = useState(false);
 
+  const throttle = (func: () => void, limit: number) => {
+    let lastFunc: NodeJS.Timeout | null = null;
+    let lastRan: number | null = null;
+
+    return function () {
+      const context = this;
+      const args = arguments;
+
+      if (lastRan === null || Date.now() - lastRan >= limit) {
+        func.apply(context, args);
+        lastRan = Date.now();
+      } else {
+        clearTimeout(lastFunc!);
+        lastFunc = setTimeout(() => {
+          func.apply(context, args);
+        }, limit - (Date.now() - lastRan));
+      }
+    };
+  };
+
   const handleExport = async () => {
     setLoading(true);
     try {
@@ -91,11 +111,13 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
     }
   };
 
+  const throttledHandleExport = throttle(handleExport, 2000); // 2000ms 节流
+
   return (
       <button
           onClick={(e) => {
             e.preventDefault();
-            handleExport().then();
+            throttledHandleExport();
           }}
           className="fixed bottom-4 right-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           style={{ zIndex: 1000 }}
