@@ -55,13 +55,12 @@ function ExportButton({ setHtml }: { setHtml: (html: string) => void }) {
   const editor = useEditor();
   const [loading, setLoading] = useState(false);
 
-  const throttle = (func: () => void, limit: number) => {
+  const throttle = (func: (...args: any[]) => void, limit: number) => {
     let lastFunc: NodeJS.Timeout | null = null;
     let lastRan: number | null = null;
 
-    return function () {
+    return function (this: any, ...args: any[]) {
       const context = this;
-      const args = arguments;
 
       if (lastRan === null || Date.now() - lastRan >= limit) {
         func.apply(context, args);
