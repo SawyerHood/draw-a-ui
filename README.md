@@ -12,14 +12,28 @@ This works by just taking the current canvas SVG, converting it to a PNG, and se
 
 ## Getting Started
 
-This is a Next.js app. To get started run the following commands in the root directory of the project. You will need an OpenAI API key with access to the GPT-4 Vision API.
+This is a Next.js app. To get started run the following commands in the root directory of the project.
 
 > Note this uses Next.js 14 and requires a version of `node` greater than 18.17. [Read more here](https://nextjs.org/docs/pages/building-your-application/upgrading/version-14).
 
+### OpenAI
+
+You will need an OpenAI API key with access to the GPT-4 Vision API.
+
 ```bash
-echo "OPENAI_API_KEY=sk-your-key" > .env.local
+cp .env-openai.example .env # Edit the .env with your OpenAI key
 npm install
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Ollama
+
+You will need access to an Ollama instance with access to an LLM model with vision capabilities, i.e. llava.
+
+```bash
+cp .env-openai.example .env # Edit the .env with your Ollama base url and model name, you can leave the key as is
+npm install
+npm run dev
+```

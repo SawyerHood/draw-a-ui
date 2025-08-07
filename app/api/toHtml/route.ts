@@ -6,12 +6,21 @@ const systemPrompt = `You are an expert tailwind developer. A user will provide 
 if you need to insert an image, use placehold.co to create a placeholder image. Respond only with the html file.`;
 
 export async function POST(request: Request) {
-  const openai = new OpenAI();
+  const apiKey = process.env.OPENAI_API_KEY;
+  const baseURL = process.env.OPENAI_BASE_URL;
+  const model = process.env.OPENAI_MODEL ?? "gpt-4o";
+  const max_tokens = process.env.OPENAI_MAX_TOKENS
+    ? parseInt(process.env.OPENAI_MAX_TOKENS, 10)
+    : 4096;
+
+  const openai = new OpenAI({ baseURL, apiKey });
+
   const { image } = await request.json();
 
   const resp = await openai.chat.completions.create({
-    model: "gpt-4o",
-    max_tokens: 4096,
+    model,
+    max_tokens,
+    temperature: 0.8,
     messages: [
       {
         role: "system",
