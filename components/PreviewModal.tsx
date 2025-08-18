@@ -1,5 +1,3 @@
-"use client";
-
 import { use, useEffect, useState } from "react";
 import Prism from "prismjs";
 import "prismjs/components/prism-cshtml";
@@ -25,6 +23,11 @@ export function PreviewModal({
   if (!html) {
     return null;
   }
+
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(html || '');
+    alert('HTML copied to clipboard');
+  };
 
   return (
     <div
@@ -54,6 +57,12 @@ export function PreviewModal({
             }}
           >
             Code
+          </TabButton>
+          <TabButton
+            active={false}
+            onClick={copyToClipboard}
+          >
+            Copy HTML
           </TabButton>
         </div>
 
